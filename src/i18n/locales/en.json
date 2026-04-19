@@ -1,0 +1,21 @@
+{
+  "common": {
+    "home": "Home",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading..."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "workouts": "Workouts",
+    "nutrition": "Nutrition",
+    "progress": "Progress"
+  },
+  "home": {
+    "title": "AI Fitness Coach",
+    "subtitle": "Your personal AI-powered fitness companion"
+  }
+}
