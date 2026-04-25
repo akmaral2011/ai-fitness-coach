@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import { LogOut, Menu, User, X, Zap } from 'lucide-react';
 
@@ -9,7 +10,9 @@ import { useAuthStore } from '@/features/auth/authStore';
 import { cn } from '@/lib/utils';
 
 function UserMenu() {
+  const { t } = useTranslation();
   const { user, signOut } = useAuthStore();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -57,10 +60,23 @@ function UserMenu() {
           <div className="p-1">
             <button
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                navigate('/app/dashboard');
+              }}
             >
               <User className="w-4 h-4" />
-              Profile
+              {t('nav.dashboard')}
+            </button>
+            <button
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              onClick={() => {
+                setOpen(false);
+                navigate('/app/profile');
+              }}
+            >
+              <User className="w-4 h-4" />
+              {t('nav.profile')}
             </button>
             <button
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-500/10 transition-colors"
@@ -70,7 +86,7 @@ function UserMenu() {
               }}
             >
               <LogOut className="w-4 h-4" />
-              Sign Out
+              {t('profile.signOut')}
             </button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import { Play, Zap } from 'lucide-react';
 
@@ -128,6 +129,7 @@ function SkeletonMockup() {
 
 export default function Hero() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user, openAuthModal } = useAuthStore();
 
   return (
@@ -163,7 +165,7 @@ export default function Hero() {
 
             <div className="flex flex-wrap gap-4 mb-6">
               <button
-                onClick={user ? undefined : openAuthModal}
+                onClick={() => (user ? navigate('/app/dashboard') : openAuthModal())}
                 className="inline-flex items-center gap-2 px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-200 text-base shadow-xl shadow-emerald-500/25 hover:shadow-emerald-400/30 hover:-translate-y-0.5"
               >
                 {t('landing.hero.ctaPrimary')}

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import { Zap } from 'lucide-react';
 
@@ -6,6 +7,7 @@ import { useAuthStore } from '@/features/auth/authStore';
 
 export default function CTABanner() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user, openAuthModal } = useAuthStore();
 
   return (
@@ -29,7 +31,7 @@ export default function CTABanner() {
         </p>
 
         <button
-          onClick={user ? undefined : openAuthModal}
+          onClick={() => (user ? navigate('/app/dashboard') : openAuthModal())}
           className="inline-flex items-center gap-2 px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-2xl transition-all duration-200 text-lg shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-400/40 hover:-translate-y-1"
         >
           {t('landing.cta.button')}
