@@ -6,16 +6,947 @@
     "logout": "Logout",
     "save": "Save",
     "cancel": "Cancel",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "restart": "Restart",
+    "min": "min",
+    "sec": "sec"
   },
   "nav": {
     "dashboard": "Dashboard",
-    "workouts": "Workouts",
-    "nutrition": "Nutrition",
-    "progress": "Progress"
+    "catalog": "Exercises",
+    "learn": "Learn",
+    "progress": "Progress",
+    "profile": "Profile"
   },
-  "home": {
-    "title": "AI Fitness Coach",
-    "subtitle": "Your personal AI-powered fitness companion"
+  "auth": {
+    "title": "Sign in to AI Fitness Coach",
+    "subtitle": "Track your progress and get personalized coaching",
+    "privacy": "Your video never leaves your device",
+    "signInWithGoogle": "Continue with Google"
+  },
+  "onboarding": {
+    "stepOf": "Step {{current}} of {{total}}",
+    "goal": {
+      "title": "What's your main goal?",
+      "subtitle": "We'll personalize your experience based on this",
+      "lose_weight": "Lose Weight",
+      "build_muscle": "Build Muscle",
+      "improve_technique": "Improve Technique",
+      "stay_active": "Stay Active",
+      "rehabilitation": "Rehabilitation"
+    },
+    "measurements": {
+      "title": "Your measurements",
+      "subtitle": "Helps us calculate BMI and training intensity",
+      "height": "Height",
+      "heightUnit": "cm",
+      "weight": "Weight",
+      "weightUnit": "kg"
+    },
+    "age": {
+      "title": "How old are you?",
+      "subtitle": "Age affects your recovery time and training load",
+      "label": "Age",
+      "unit": "years"
+    },
+    "level": {
+      "title": "Your fitness level",
+      "subtitle": "Be honest — we adapt to you as you improve",
+      "beginner": "Beginner",
+      "beginnerDesc": "New to regular exercise",
+      "intermediate": "Intermediate",
+      "intermediateDesc": "Training 3–5 days a week",
+      "advanced": "Advanced",
+      "advancedDesc": "Serious athlete with years of experience"
+    },
+    "gender": {
+      "title": "What is your biological sex?",
+      "subtitle": "Used to calculate calorie burn and training intensity",
+      "male": "Male",
+      "female": "Female",
+      "other": "Prefer not to say"
+    },
+    "activityLevel": {
+      "title": "How active are you daily?",
+      "subtitle": "Outside of planned workouts",
+      "sedentary": "Sedentary",
+      "sedentaryDesc": "Desk job, little movement",
+      "light": "Lightly Active",
+      "lightDesc": "Light walking, occasional activity",
+      "moderate": "Moderately Active",
+      "moderateDesc": "Walking 30+ min/day, some errands",
+      "active": "Active",
+      "activeDesc": "Physical job or daily exercise",
+      "very_active": "Very Active",
+      "very_activeDesc": "Hard manual labor or 2× daily training"
+    },
+    "injuries": {
+      "title": "Any injuries or limitations?",
+      "subtitle": "We'll avoid movements that could aggravate them",
+      "none": "No limitations",
+      "lower_back": "Lower Back",
+      "knees": "Knees",
+      "shoulders": "Shoulders",
+      "wrists": "Wrists",
+      "neck": "Neck",
+      "ankles": "Ankles",
+      "hips": "Hips"
+    },
+    "camera": {
+      "title": "Set up your camera",
+      "subtitle": "Let's make sure AI can see you clearly",
+      "grant": "Grant Camera Access",
+      "permissionDenied": "Camera access denied — please allow it in browser settings",
+      "loading": "Starting camera...",
+      "checks": {
+        "distance": "Distance",
+        "distanceOk": "Good distance",
+        "distanceFar": "Move closer",
+        "distanceClose": "Move back",
+        "lighting": "Lighting",
+        "lightingOk": "Good lighting",
+        "lightingDark": "Too dark — find better light",
+        "lightingBright": "Good lighting",
+        "position": "Position",
+        "positionOk": "Full body visible",
+        "positionBad": "Step back so full body is visible"
+      },
+      "guide": "Stand 1.5–2 m from camera · Full body in frame",
+      "ready": "Everything looks good!",
+      "notReady": "Adjust until all checks pass",
+      "confirm": "Looks Good — Start!"
+    },
+    "finish": "Start Training!"
+  },
+  "exercises": {
+    "squat": {
+      "name": "Squat",
+      "description": "Fundamental lower body movement for strength and muscle mass",
+      "errors": {
+        "knees": "Knees caving inward",
+        "back": "Back rounding",
+        "depth": "Not going deep enough"
+      },
+      "mods": {
+        "easier": "Wall squat or box squat",
+        "harder": "Jump squat or barbell squat"
+      }
+    },
+    "pushup": {
+      "name": "Push-Up",
+      "description": "Upper body pushing movement for chest, shoulders and triceps",
+      "errors": {
+        "hips": "Hips sagging or raised",
+        "elbows": "Elbows flaring too wide",
+        "range": "Not going through full range"
+      },
+      "mods": {
+        "easier": "Knee push-up",
+        "harder": "Weighted or clap push-up"
+      }
+    },
+    "plank": {
+      "name": "Plank",
+      "description": "Core stability hold targeting the entire midsection",
+      "errors": {
+        "hips": "Hips not level with shoulders",
+        "neck": "Head dropping or raised"
+      },
+      "mods": {
+        "easier": "Knee plank",
+        "harder": "Single-leg or weighted plank"
+      }
+    },
+    "lunge": {
+      "name": "Lunge",
+      "description": "Unilateral lower body exercise for legs and glutes",
+      "errors": {
+        "knee": "Front knee going past toes",
+        "torso": "Torso leaning forward"
+      },
+      "mods": {
+        "easier": "Stationary lunge",
+        "harder": "Walking or jump lunge"
+      }
+    },
+    "shoulderPress": {
+      "name": "Shoulder Press",
+      "description": "Overhead pressing movement for shoulder strength",
+      "errors": {
+        "arch": "Lower back arching",
+        "lockout": "Not locking out at top"
+      },
+      "mods": {
+        "easier": "Seated dumbbell press",
+        "harder": "Single-arm or barbell press"
+      }
+    },
+    "bicepCurl": {
+      "name": "Bicep Curl",
+      "description": "Isolation movement for bicep strength and definition",
+      "errors": {
+        "swing": "Swinging body for momentum",
+        "range": "Not curling to full contraction"
+      },
+      "mods": {
+        "easier": "Seated curl or lighter weight",
+        "harder": "Incline or hammer curl"
+      }
+    },
+    "gluteBridge": {
+      "name": "Glute Bridge",
+      "description": "Posterior chain exercise targeting glutes and hamstrings",
+      "errors": {
+        "height": "Not extending hips high enough",
+        "squeeze": "Not squeezing glutes at top"
+      },
+      "mods": {
+        "easier": "Floor bridge hold",
+        "harder": "Single-leg or barbell bridge"
+      }
+    },
+    "mountainClimber": {
+      "name": "Mountain Climber",
+      "description": "Dynamic full-body cardio and core exercise",
+      "errors": {
+        "hips": "Hips rising too high",
+        "pace": "Moving too slowly to get cardio benefit"
+      },
+      "mods": {
+        "easier": "Slow mountain climber",
+        "harder": "Cross-body mountain climber"
+      }
+    },
+    "deadlift": {
+      "name": "Deadlift",
+      "description": "Full-body posterior chain strength movement",
+      "errors": {
+        "back": "Back rounding under load",
+        "hinge": "Not hinging at hips properly"
+      },
+      "mods": {
+        "easier": "Romanian deadlift or kettlebell",
+        "harder": "Barbell conventional deadlift"
+      }
+    },
+    "jumpingJack": {
+      "name": "Jumping Jack",
+      "description": "Full-body cardio warm-up exercise",
+      "errors": {
+        "arms": "Arms not reaching overhead",
+        "landing": "Landing flat-footed"
+      },
+      "mods": {
+        "easier": "Step jack (no jump)",
+        "harder": "Squat jack"
+      }
+    },
+    "tricepDip": {
+      "name": "Tricep Dip",
+      "description": "Bodyweight pushing movement targeting the triceps using a chair or bench",
+      "errors": {
+        "flare": "Elbows flaring out to the sides",
+        "depth": "Not dipping deep enough — upper arm should reach parallel",
+        "shrug": "Shoulders shrugging up during the movement"
+      },
+      "mods": {
+        "easier": "Bent-knee dip on floor",
+        "harder": "Straight-leg or weighted dip"
+      }
+    },
+    "calfRaise": {
+      "name": "Calf Raise",
+      "description": "Isolation movement for the gastrocnemius and soleus muscles",
+      "errors": {
+        "knee": "Bending the knees — keep legs straight",
+        "bounce": "Bouncing at the bottom — control the descent"
+      },
+      "mods": {
+        "easier": "Seated calf raise",
+        "harder": "Single-leg or weighted calf raise"
+      }
+    },
+    "sideLunge": {
+      "name": "Side Lunge",
+      "description": "Lateral lower body movement targeting inner thighs and glutes",
+      "errors": {
+        "knee": "Knee caving inward over the foot",
+        "torso": "Torso leaning too far forward",
+        "depth": "Not stepping wide enough to get full range"
+      },
+      "mods": {
+        "easier": "Narrow stance side squat",
+        "harder": "Side lunge with touch or dumbbell"
+      }
+    },
+    "superman": {
+      "name": "Superman",
+      "description": "Prone back extension to strengthen the erector spinae and glutes",
+      "errors": {
+        "neck": "Straining the neck — keep it neutral",
+        "hold": "Not pausing at the top for 1–2 seconds",
+        "range": "Not lifting high enough off the floor"
+      },
+      "mods": {
+        "easier": "Alternating arm or leg only",
+        "harder": "Hold a light plate or add resistance band"
+      }
+    },
+    "burpee": {
+      "name": "Burpee",
+      "description": "High-intensity full-body movement combining a squat, plank and jump",
+      "errors": {
+        "hips": "Hips sagging in the plank position",
+        "jump": "Not fully extending at the jump — arms overhead",
+        "pace": "Losing form chasing speed"
+      },
+      "mods": {
+        "easier": "Step back instead of jumping — no jump at top",
+        "harder": "Add a push-up in the plank position"
+      }
+    },
+    "highKnees": {
+      "name": "High Knees",
+      "description": "Running in place with exaggerated knee drive for cardio and core",
+      "errors": {
+        "height": "Knees not reaching hip height",
+        "torso": "Leaning back — keep core tight and chest up",
+        "pace": "Shuffling instead of driving knees up"
+      },
+      "mods": {
+        "easier": "March in place with high knees",
+        "harder": "Sprint pace or add arm drive"
+      }
+    },
+    "lateralRaise": {
+      "name": "Lateral Raise",
+      "description": "Shoulder isolation movement targeting the medial deltoid",
+      "errors": {
+        "height": "Arms not reaching shoulder height at the top",
+        "shrug": "Traps taking over — shrugging shoulders up",
+        "swing": "Using momentum to swing the weights up"
+      },
+      "mods": {
+        "easier": "Cable or resistance band lateral raise",
+        "harder": "Tempo raise with 3-second descent"
+      }
+    },
+    "tricepExtension": {
+      "name": "Tricep Extension",
+      "description": "Overhead isolation movement for full tricep length under stretch",
+      "errors": {
+        "elbow": "Elbows flaring out — keep them close to the head",
+        "range": "Not lowering fully — full stretch at the bottom",
+        "arch": "Lower back arching — keep core braced"
+      },
+      "mods": {
+        "easier": "Seated with lighter weight",
+        "harder": "Single-arm or cable variation"
+      }
+    },
+    "reverseLunge": {
+      "name": "Reverse Lunge",
+      "description": "Backward stepping lunge with less knee stress than forward lunge",
+      "errors": {
+        "knee": "Front knee tracking past toes",
+        "torso": "Torso collapsing forward",
+        "balance": "Losing balance — use wall support if needed"
+      },
+      "mods": {
+        "easier": "Hold wall for balance support",
+        "harder": "Weighted or deficit reverse lunge"
+      }
+    },
+    "wallSit": {
+      "name": "Wall Sit",
+      "description": "Isometric quad hold against the wall — builds endurance and strength",
+      "errors": {
+        "angle": "Thighs not parallel to the floor — slide down more",
+        "heels": "Heels rising off the floor",
+        "arms": "Pushing off thighs with hands"
+      },
+      "mods": {
+        "easier": "Partial wall sit at higher angle",
+        "harder": "Add weight on thighs or single-leg"
+      }
+    }
+  },
+  "workout": {
+    "feedback": {
+      "squat": {
+        "depth": "Go deeper — aim for 90° knee bend",
+        "back": "Keep your back straight, chest up"
+      },
+      "pushup": {
+        "elbow": "Control elbow angle on the way down",
+        "body": "Keep body in a straight line"
+      },
+      "plank": {
+        "alignment": "Align hips with shoulders and ankles"
+      },
+      "lunge": {
+        "knee": "Keep front knee above ankle, not past toes"
+      },
+      "press": {
+        "lockout": "Extend arms fully at the top"
+      },
+      "curl": {
+        "top": "Curl all the way up — squeeze at top"
+      },
+      "bridge": {
+        "hip": "Drive hips higher — squeeze glutes"
+      },
+      "climber": {
+        "hips": "Keep hips level with shoulders"
+      },
+      "deadlift": {
+        "hinge": "Hinge at hips, keep back neutral"
+      },
+      "jumpingJack": {
+        "arms": "Raise arms fully overhead"
+      },
+      "tricepDip": {
+        "elbow": "Bend elbows to ~90° — dip deeper",
+        "extension": "Fully straighten arms at the top"
+      },
+      "calfRaise": {
+        "knee": "Keep knees straight throughout"
+      },
+      "sideLunge": {
+        "knee": "Push knee out over pinky toe — don't let it cave"
+      },
+      "superman": {
+        "extension": "Lift higher — squeeze glutes at the top"
+      },
+      "burpee": {
+        "squat": "Squat deep before kicking legs back",
+        "body": "Keep hips level in the plank — don't sag"
+      },
+      "highKnees": {
+        "lift": "Drive knee up to hip height",
+        "torso": "Stay upright — don't lean back"
+      },
+      "lateralRaise": {
+        "height": "Raise arms to shoulder level — slightly higher"
+      },
+      "tricepExtension": {
+        "elbow": "Keep elbows close to your head",
+        "extension": "Fully extend arms overhead — squeeze triceps"
+      },
+      "reverseLunge": {
+        "knee": "Keep front knee over ankle, not past toes",
+        "torso": "Chest up — don't hunch forward"
+      },
+      "wallSit": {
+        "angle": "Slide down until thighs are parallel to floor",
+        "back": "Press your back flat against the wall"
+      }
+    },
+    "repOf": "Rep {{current}} / {{total}}",
+    "setOf": "Set {{current}} / {{total}}",
+    "score": "Form Score",
+    "calibrating": "Calibrating camera...",
+    "positionYourself": "Stand in frame — full body visible",
+    "poseDetected": "Pose detected — ready!",
+    "noPose": "No pose detected",
+    "great": "Great form!",
+    "sets": "sets",
+    "rest": "Rest",
+    "skipRest": "Skip Rest",
+    "comingUp": "coming up",
+    "holdExercise": "Hold for {{s}} seconds per set",
+    "enableCamera": "Enable Camera",
+    "getInPosition": "Get in position and press Start",
+    "summary": {
+      "title": "Workout Complete!",
+      "totalReps": "Total Reps",
+      "formScore": "Form Score",
+      "duration": "Duration",
+      "grade": "Grade",
+      "setsCompleted": "Sets Done",
+      "setBreakdown": "Set Breakdown",
+      "save": "Save & Continue",
+      "tryAgain": "Try Again",
+      "backToExercises": "Back to Exercises",
+      "message": {
+        "excellent": "Outstanding form — keep it up!",
+        "good": "Good work — small tweaks will perfect it.",
+        "ok": "Decent effort — focus on form next time.",
+        "needsWork": "Slow down and focus on form — quality over speed."
+      }
+    },
+    "permissionDenied": "Camera access denied. Please allow camera in browser settings.",
+    "grantCamera": "Grant Camera Access"
+  },
+  "dashboard": {
+    "greeting": "Hello, {{name}}!",
+    "greetingDefault": "Hello!",
+    "streak": "Day Streak",
+    "totalWorkouts": "Workouts",
+    "avgScore": "Avg Score",
+    "totalReps": "Total Reps",
+    "startWorkout": "Start Workout",
+    "quickStart": "Quick Start",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No workouts yet — start your first!",
+    "reps": "reps",
+    "score": "score"
+  },
+  "catalog": {
+    "title": "Exercise Library",
+    "searchPlaceholder": "Search exercises...",
+    "all": "All",
+    "noResults": "No exercises found",
+    "categories": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "hiit": "HIIT",
+      "mobility": "Mobility"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "muscles": {
+      "chest": "Chest",
+      "back": "Back",
+      "shoulders": "Shoulders",
+      "arms": "Arms",
+      "core": "Core",
+      "legs": "Legs",
+      "glutes": "Glutes",
+      "fullbody": "Full Body"
+    },
+    "detail": {
+      "primaryMuscles": "Primary Muscles",
+      "secondaryMuscles": "Secondary Muscles",
+      "commonErrors": "Common Errors",
+      "modifications": "Modifications",
+      "estimatedTime": "Est. Time",
+      "startWorkout": "Start Workout",
+      "sets": "sets",
+      "reps": "reps"
+    }
+  },
+  "progress": {
+    "title": "My Progress",
+    "noSessions": "No workouts yet — complete your first!",
+    "summary": {
+      "sessions": "Sessions",
+      "reps": "Total Reps",
+      "time": "Total Time",
+      "avgScore": "Avg Score",
+      "streak": "Streak"
+    },
+    "chart": {
+      "weeklyScore": "Weekly Score",
+      "weeklyVolume": "Weekly Volume",
+      "scoreTrend": "Score Trend"
+    },
+    "history": "Workout History",
+    "personalBests": "Personal Bests",
+    "noBests": "Complete workouts to see personal bests",
+    "session": {
+      "reps": "reps",
+      "score": "score",
+      "duration": "duration"
+    },
+    "period": { "week": "7 Days", "month": "30 Days", "all": "All Time" },
+    "calendar": { "title": "Activity" },
+    "muscles": { "title": "Muscles Trained", "front": "Front", "back": "Back", "empty": "Complete a workout to see muscle activity", "high": "High", "med": "Med", "low": "Low", "none": "None" }
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "saveChanges": "Save Changes",
+    "goal": "Goal",
+    "height": "Height",
+    "weight": "Weight",
+    "age": "Age",
+    "fitnessLevel": "Fitness Level",
+    "signOut": "Sign Out",
+    "achievements": "Achievements",
+    "noAchievements": "Complete workouts to unlock achievements",
+    "goals": {
+      "lose_weight": "Lose Weight",
+      "build_muscle": "Build Muscle",
+      "improve_technique": "Improve Technique",
+      "stay_active": "Stay Active",
+      "rehabilitation": "Rehabilitation"
+    },
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "achievementList": {
+      "first_workout": "First Workout",
+      "first_workout_desc": "Completed your first workout",
+      "streak_3": "3-Day Streak",
+      "streak_3_desc": "Trained 3 days in a row",
+      "streak_7": "Week Warrior",
+      "streak_7_desc": "Trained 7 days in a row",
+      "perfect_score": "Perfect Form",
+      "perfect_score_desc": "Scored 100 on a workout",
+      "hundred_reps": "Century Club",
+      "hundred_reps_desc": "Completed 100 total reps"
+    }
+  },
+  "programs": {
+    "title": "Training Programs",
+    "subtitle": "4-week structured plans with progressive overload",
+    "allPrograms": "All Programs",
+    "startProgram": "Start Program",
+    "continueProgram": "Continue",
+    "enrolled": "Enrolled",
+    "completed": "Completed",
+    "notStarted": "Not started",
+    "weekOf": "Week {{current}} of {{total}}",
+    "sessionsDone": "{{done}} / {{total}} sessions done",
+    "restDay": "Rest Day",
+    "recoveryDay": "Active Recovery",
+    "workoutDay": "Workout",
+    "dayLabel": "Day {{n}}",
+    "enrollConfirm": "Start this program?",
+    "unenrollConfirm": "Leave this program? Progress will be lost.",
+    "leaveProgram": "Leave Program",
+    "durationWeeks": "{{n}} weeks",
+    "sessionsPerWeek": "{{n}}×/week",
+    "minutesPerSession": "~{{n}} min/session",
+    "themes": {
+      "foundation": "Foundation",
+      "build": "Build",
+      "progress": "Progress",
+      "peak": "Peak Week"
+    },
+    "foundation": {
+      "name": "Foundation",
+      "description": "Build the movement fundamentals: squat, hinge, push and hold. Perfect for anyone starting their fitness journey.",
+      "goal1": "Learn correct movement patterns",
+      "goal2": "Build base strength and endurance",
+      "goal3": "Establish a consistent workout habit"
+    },
+    "build": {
+      "name": "Build",
+      "description": "4-week intermediate program targeting muscle growth with compound and isolation movements across 4 sessions per week.",
+      "goal1": "Increase muscle volume and strength",
+      "goal2": "Master upper/lower body splits",
+      "goal3": "Improve mind-muscle connection"
+    },
+    "athlete": {
+      "name": "Athlete",
+      "description": "Advanced 5-day performance program combining strength, HIIT and conditioning for peak athletic output.",
+      "goal1": "Maximize strength and power output",
+      "goal2": "Boost cardiovascular conditioning",
+      "goal3": "Build functional full-body fitness"
+    }
+  },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "pricing": "Pricing",
+      "getStarted": "Get Started Free"
+    },
+    "hero": {
+      "badge": "AI-Powered Real-Time Coaching",
+      "title": "Train Smarter with",
+      "titleHighlight": "Real-Time AI Coaching",
+      "subtitle": "Your camera becomes your personal trainer. AI analyzes 33 body keypoints in real-time and corrects your form before bad habits become injuries.",
+      "ctaPrimary": "Start for Free",
+      "ctaSecondary": "See How It Works",
+      "noCreditCard": "No credit card required · Free plan always available"
+    },
+    "stats": {
+      "exercises": "exercises in library",
+      "exercisesValue": "300+",
+      "bodyPoints": "body keypoints tracked",
+      "bodyPointsValue": "33",
+      "feedback": "feedback latency",
+      "feedbackValue": "<150ms",
+      "languages": "languages supported",
+      "languagesValue": "3"
+    },
+    "problem": {
+      "badge": "The Problem",
+      "title": "73% exercise with wrong form",
+      "source": "ACSM Research, 2024",
+      "description": "Bad technique causes injuries, stalls progress, and kills motivation. A personal trainer costs $50–150 per session — out of reach for most. Existing apps show videos but never tell you if you're doing it right.",
+      "points": {
+        "injuries": "Injuries from incorrect technique",
+        "plateau": "Progress plateau with no feedback",
+        "cost": "Personal trainers cost $50–150/session",
+        "noFeedback": "Apps show video, not corrections"
+      }
+    },
+    "features": {
+      "badge": "Features",
+      "title": "Everything you need to train with perfect form",
+      "ai": {
+        "title": "Real-Time AI Analysis",
+        "description": "MediaPipe tracks 33 body keypoints at 25+ FPS. Instant feedback via text prompts, skeleton overlay, and sound alerts — green means correct, red means fix it now."
+      },
+      "library": {
+        "title": "300+ Exercise Library",
+        "description": "Strength, cardio, HIIT, yoga, stretching and functional training. Every exercise includes technique rules, multi-angle video demos, and AI form correction."
+      },
+      "programs": {
+        "title": "Structured Training Programs",
+        "description": "4–12 week programs from beginner to advanced with built-in progressive overload. AI personalizes based on your technique scores and weekly progress."
+      },
+      "gamification": {
+        "title": "Gamification & Analytics",
+        "description": "Earn XP for good technique. Track streaks, unlock achievements, compete on leaderboards. Detailed analytics reveal your improvement over time."
+      }
+    },
+    "howItWorks": {
+      "badge": "How It Works",
+      "title": "First AI-coached workout in minutes",
+      "steps": {
+        "1": {
+          "title": "Set Up Your Camera",
+          "description": "Point your phone or laptop camera at your workout space. The AI guides you to the optimal position and checks lighting conditions automatically."
+        },
+        "2": {
+          "title": "AI Analyzes Your Form",
+          "description": "33 body keypoints tracked every frame. Joint angles calculated in real-time and compared against perfect-form reference models for each exercise."
+        },
+        "3": {
+          "title": "Get Instant Corrections",
+          "description": "Corrections arrive in under 150ms — text prompts on screen, skeleton overlay, and sound alerts. Fix bad habits before they become injuries."
+        }
+      }
+    },
+    "pricing": {
+      "badge": "Pricing",
+      "title": "Start free. Upgrade when ready.",
+      "free": {
+        "name": "Free",
+        "price": "$0",
+        "period": "forever",
+        "description": "Perfect for getting started",
+        "features": [
+          "20 basic exercises",
+          "3 AI sessions per week",
+          "1 beginner program",
+          "Basic progress tracking",
+          "Community support"
+        ],
+        "cta": "Get Started Free"
+      },
+      "premium": {
+        "name": "Premium",
+        "price": "$25",
+        "period": "/ month",
+        "badge": "Most Popular",
+        "description": "For serious fitness enthusiasts",
+        "features": [
+          "300+ exercises",
+          "Unlimited AI sessions",
+          "All training programs",
+          "Advanced analytics + export",
+          "Full AI personalization",
+          "Priority support"
+        ],
+        "cta": "Start 7-Day Free Trial"
+      },
+      "team": {
+        "name": "Team",
+        "price": "$15",
+        "period": "/ person / month",
+        "description": "Corporate wellness programs",
+        "features": [
+          "Everything in Premium",
+          "Team analytics dashboard",
+          "Corporate training programs",
+          "Dedicated account manager",
+          "Custom branding",
+          "API access"
+        ],
+        "cta": "Contact Sales"
+      }
+    },
+    "testimonials": {
+      "badge": "Testimonials",
+      "title": "Trusted by athletes at every level",
+      "items": {
+        "1": {
+          "name": "Sarah M.",
+          "role": "Home Athlete, 28",
+          "text": "I trained at home for 3 years but never knew my squat form was off until AI Coach showed me. Fixed my chronic knee issue in just 2 weeks."
+        },
+        "2": {
+          "name": "Alex K.",
+          "role": "Beginner, 23",
+          "text": "As a total beginner I was terrified of injuring myself. AI Coach gave me the confidence to push harder knowing every rep is being checked."
+        },
+        "3": {
+          "name": "Maria L.",
+          "role": "Fitness Enthusiast, 35",
+          "text": "The technique score gamification is genius. I went from 72 to 91 average in 6 weeks just trying to beat my own score. Results followed naturally."
+        }
+      }
+    },
+    "faq": {
+      "badge": "FAQ",
+      "title": "Common questions answered",
+      "items": {
+        "1": {
+          "q": "Does my video get sent to your servers?",
+          "a": "No. All AI processing happens entirely on your device using WebAssembly. Your camera feed never leaves your phone or computer — only anonymous metadata (joint angles, scores, rep counts) is synced."
+        },
+        "2": {
+          "q": "What devices does it work on?",
+          "a": "iPhone 11+, Android mid-range 2022+ (Snapdragon 665+), and any desktop with Chrome, Edge, or Firefox with a camera and WebGL 2.0 support."
+        },
+        "3": {
+          "q": "How accurate is the AI form analysis?",
+          "a": "Joint angles are calculated to ±3° accuracy. Reference models were built with certified personal trainers. The system delivers 25+ FPS on mobile with under 150ms correction latency."
+        },
+        "4": {
+          "q": "Can I use it without a dedicated camera setup?",
+          "a": "Yes — any built-in front or rear camera works. The app alerts you if lighting or positioning are suboptimal. A phone stand or tripod is recommended for best results."
+        },
+        "5": {
+          "q": "What languages are supported?",
+          "a": "English, Russian, and Kyrgyz are available now. Spanish, German, and Portuguese are planned for the next phase."
+        }
+      }
+    },
+    "cta": {
+      "title": "Start training with perfect form today",
+      "subtitle": "Join thousands of athletes improving their technique with AI coaching. Free forever — upgrade only when you're ready.",
+      "button": "Get Started Free",
+      "noCreditCard": "No credit card required · Cancel anytime"
+    },
+    "footer": {
+      "tagline": "AI-powered personal trainer. Zero equipment. Just your camera.",
+      "product": "Product",
+      "company": "Company",
+      "links": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "howItWorks": "How It Works",
+        "exercises": "Exercise Library",
+        "about": "About",
+        "blog": "Blog",
+        "careers": "Careers",
+        "contact": "Contact"
+      },
+      "legal": {
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
+      },
+      "copyright": "© 2026 AI Fitness Coach. All rights reserved.",
+      "privacyNote": "Video never leaves your device."
+    }
+  },
+  "learn": {
+    "title": "Learn",
+    "subtitle": "Articles on technique, training, and recovery",
+    "categories": {
+      "all": "All",
+      "technique": "Technique",
+      "training": "Training",
+      "recovery": "Recovery",
+      "beginner": "Beginner"
+    },
+    "readMin": "min read",
+    "back": "Back",
+    "articles": {
+      "formOverReps": {
+        "title": "Form Over Reps — Why Technique Is Everything",
+        "summary": "Why correct form matters more than rep count, and how sloppy reps wire bad movement patterns into your nervous system.",
+        "p1": "Most beginners focus on how many reps they can complete, but this misses the point entirely. Every repetition performed with poor form reinforces bad movement patterns in your nervous system. Over time, these patterns become automatic — and automatic bad habits lead to chronic pain and injury.",
+        "p2": "The neuromuscular system learns by repetition. When you practice a movement correctly, you build efficient neural pathways that improve strength, coordination, and injury resilience. When you rush through sloppy reps, you are literally training yourself to move poorly.",
+        "p3": "Start lighter. Move slower. Master the pattern before adding load or speed. The AI Fitness Coach tracks your joint angles in real time so you always know when your form breaks down — not after the workout, but during the rep where it matters."
+      },
+      "squatForm": {
+        "title": "The Perfect Squat: A Complete Guide",
+        "summary": "Step-by-step breakdown of squat technique: foot position, knee tracking, neutral spine, and the most common errors to avoid.",
+        "p1": "The squat is the king of lower-body movements, but it's also one of the most commonly butchered exercises. The foundation starts with foot position: stand hip to shoulder-width apart, toes pointed out 15–30 degrees. This allows the femur to track over the foot without collapsing inward.",
+        "p2": "On the way down, push your knees out in the direction of your toes and sit back into your hips — don't just bend forward. Your chest should stay tall, spine neutral. The moment your lower back rounds, you have reached your current mobility limit. Stop there and work on hip flexor and ankle mobility to go deeper safely.",
+        "p3": "Depth matters, but not at the expense of spinal alignment. Parallel (thighs parallel to the floor) is a solid target for most people. Below parallel is fine if you can maintain a neutral spine.",
+        "p4": "Common errors: knees caving inward (weak glutes), forward lean (tight hips or ankles), rising on the heels (ankle mobility issue). The AI module tracks your hip, knee, and ankle angles in real time so corrections happen immediately."
+      },
+      "pushupProgression": {
+        "title": "Build Your Push-Up from Zero to Advanced",
+        "summary": "Correct push-up technique, body alignment, and a step-by-step progression plan for every fitness level.",
+        "p1": "The push-up is a fundamental upper-body pressing movement, but very few people perform it correctly. The hands should be just outside shoulder width, fingers pointing forward or slightly out. Your elbows should travel at roughly 45 degrees from your torso — not flared wide (shoulder stress) and not fully tucked.",
+        "p2": "The key is body alignment. From head to heels, you should form one rigid plank. Hips that sag down overload the lower back; hips that pike up disconnect the core. Brace your abs and glutes before every single rep.",
+        "p3": "Progression path: Wall push-ups → Incline push-ups → Knee push-ups → Full push-ups → Deficit push-ups → Archer push-ups. Move to the next step when you can complete 3 sets of 12 with perfect form."
+      },
+      "hipHinge": {
+        "title": "The Hip Hinge: The Movement Pattern That Protects Your Back",
+        "summary": "What the hip hinge is, why it's critical for safe deadlifts and bends, and how to learn it correctly.",
+        "p1": "The hip hinge is the foundational movement for deadlifts, Romanian deadlifts, and kettlebell swings. It's also the movement pattern most often missing in people with low back pain — because they flex their spine instead of hinging at the hip.",
+        "p2": "To learn it: stand 6 inches from a wall. Push your hips back to touch the wall, keeping your knees soft, back flat, and shins nearly vertical. This is the hinge. The movement should feel like you are folding at the crease of your hips, not bending at the waist.",
+        "p3": "The cue that changes everything: 'proud chest.' When you try to show your chest to the wall in front of you as you hinge, your thoracic spine automatically extends, your lats engage, and your lower back stops rounding. Combine this with pushing the floor away on the way up."
+      },
+      "progressiveOverload": {
+        "title": "Progressive Overload: The Only Principle That Drives Gains",
+        "summary": "How and why progressively increasing training demand is the single most important concept for continued progress.",
+        "p1": "Your body adapts to the demands placed on it. When you stop challenging your body beyond its current capacity, adaptation stops. This is progressive overload — the single most important concept in exercise science.",
+        "p2": "Overload does not mean adding weight every session. You can progressively overload by adding reps, adding sets, reducing rest time, slowing the eccentric phase, or improving technique quality. A technique score rising from 70% to 90% is progressive overload.",
+        "p3": "A common mistake is trying to overload too fast. For most people, aim to increase training load by 2.5–5% per week. Track your sessions, scores, and rep counts. The platform records all of this automatically so you can see your trend over time."
+      },
+      "setsAndReps": {
+        "title": "Sets and Reps: How to Structure Your Training",
+        "summary": "How rep ranges drive different adaptations, how to choose set counts, and why weekly volume matters more than single-session intensity.",
+        "p1": "Rep ranges drive different adaptations. 1–5 reps builds maximal strength. 6–12 reps builds hypertrophy (muscle size). 12–20+ reps builds muscular endurance. For general fitness, 8–12 reps per set across 3–4 sets is a practical starting point.",
+        "p2": "Rest periods matter as much as rep ranges. Short rests (30–60 seconds) maximize metabolic stress for endurance and fat loss. Longer rests (2–5 minutes) allow fuller recovery for strength work. For hypertrophy, 60–90 seconds is the sweet spot.",
+        "p3": "Weekly volume (total sets per muscle group) is what drives growth, not single-workout intensity. Research suggests 10–20 sets per muscle per week for intermediate lifters, distributed across 2–3 sessions. This is exactly how the programs in AI Fitness Coach are structured."
+      },
+      "warmupCooldown": {
+        "title": "Why Your Warm-Up and Cool-Down Actually Matter",
+        "summary": "The science behind warming up, what a proper warm-up includes, and why the cool-down is not just tradition.",
+        "p1": "A proper warm-up raises core body temperature, increases blood flow to working muscles, and rehearses the movement patterns you are about to perform under load. Skipping it significantly increases injury risk and reduces performance.",
+        "p2": "An effective warm-up takes 5–10 minutes: 3–5 minutes of light cardio to raise temperature, then dynamic mobility work targeting the joints you will use, then 1–2 warm-up sets of the first exercise at 40–60% of working weight.",
+        "p3": "The cool-down transitions your nervous system from high-performance to recovery mode. 5 minutes of slow walking followed by static stretches held 30–60 seconds on the muscles you worked. This is not just comfort — it improves next-session readiness."
+      },
+      "restDays": {
+        "title": "Rest Days Are Not Optional — They Are Where You Grow",
+        "summary": "How supercompensation works, why muscle growth happens during recovery not training, and how to spot signs of under-recovery.",
+        "p1": "Muscle growth does not happen during a workout. It happens during recovery. When you train, you create micro-tears in muscle fibers and deplete glycogen stores. Rest days are when your body rebuilds those fibers stronger — this is called supercompensation.",
+        "p2": "Beginners need more recovery (48–72 hours between training the same muscle). Signs you need more rest: persistent soreness, declining performance, disrupted sleep, elevated resting heart rate, and loss of motivation.",
+        "p3": "Rest does not mean sedentary. Active recovery — a 20-minute walk, light yoga, swimming — enhances recovery by increasing blood flow to sore muscles without adding training stress. The programs in AI Fitness Coach include planned rest and active recovery days for exactly this reason."
+      },
+      "managingDoms": {
+        "title": "DOMS: What It Is and How to Manage It",
+        "summary": "What delayed onset muscle soreness actually is, what causes it, what helps, and why soreness is not a reliable indicator of workout quality.",
+        "p1": "DOMS (Delayed Onset Muscle Soreness) is the stiffness and tenderness you feel 24–72 hours after unfamiliar or intense exercise. It is caused by micro-damage and inflammation in muscle tissue — not lactic acid buildup, which is the old myth.",
+        "p2": "What helps: light movement (increases blood flow), hydration, adequate protein intake (1.6–2.2 g/kg body weight), contrast showers, and sleep. What does not help: complete rest or pushing through extreme soreness with another heavy session.",
+        "p3": "DOMS is not a good indicator of training quality. You can have an effective workout without being sore, and you can be very sore from a mediocre workout. As you adapt to training, DOMS becomes less frequent — this is a sign of progress, not stagnation."
+      },
+      "sleepMuscle": {
+        "title": "Sleep and Muscle Growth: The Missing Recovery Tool",
+        "summary": "Why sleep is the most underrated performance tool, how sleep deprivation tanks hormones and strength, and how to improve sleep quality.",
+        "p1": "95% of growth hormone is secreted during deep sleep. Growth hormone is the primary driver of muscle protein synthesis, fat metabolism, and tissue repair after training. If you sleep 5–6 hours per night, you are shortchanging your recovery regardless of how perfect your nutrition and training are.",
+        "p2": "Aim for 7–9 hours of sleep per night on training days. Sleep quality matters as much as quantity: consistent bedtime, a cool dark room, no screens 60 minutes before bed, and minimal caffeine after 2 pm dramatically improve sleep quality.",
+        "p3": "Research shows that sleeping less than 6 hours per night reduces testosterone by 10–15%, increases cortisol (a muscle-wasting hormone), and reduces coordination — all critical for quality training. Prioritizing sleep is one of the highest-return investments you can make in your fitness progress."
+      },
+      "startingFitness": {
+        "title": "Starting Your Fitness Journey: A Beginner's Complete Roadmap",
+        "summary": "How to avoid the most common beginner mistakes, where to start, and how to build a sustainable foundation in your first four weeks.",
+        "p1": "The biggest mistake beginners make is doing too much, too soon. The enthusiasm of starting a new program often leads to training 6 days per week, maximum effort, and severe soreness — followed by burnout and quitting in week 3. The most effective first 4 weeks are often the most conservative ones.",
+        "p2": "For the first month, focus on three things: learning the movement patterns (squat, hinge, push, pull), building the habit of showing up consistently, and figuring out your schedule — what days and times are you most likely to actually train.",
+        "p3": "Start with compound movements that train multiple muscle groups simultaneously (squats, push-ups, lunges, planks). They give you the best return on time invested and improve functional movement quality.",
+        "p4": "Expect to feel awkward for the first few weeks. Your nervous system is learning new movement patterns. The AI feedback will guide your technique so you do not develop bad habits during this critical learning phase. Trust the process — you will feel the difference within 4 weeks."
+      },
+      "buildingHabit": {
+        "title": "How to Build a Training Habit That Actually Sticks",
+        "summary": "Why motivation is unreliable, how the habit loop works, and which strategies actually keep people training long-term.",
+        "p1": "Motivation is unreliable. It spikes when you first start and fades within weeks. Habits do not rely on motivation — they are automatic responses to cues. The science of habit formation shows that the cue → routine → reward loop is what makes behaviors stick long term.",
+        "p2": "Design your training environment to make the right choice the easy choice. Lay out your workout clothes the night before. Schedule training like a meeting — in your calendar, at a fixed time. Know exactly what workout you are doing before you start. The programs in this app remove that friction entirely.",
+        "p3": "Track your streak. The psychological power of 'I have trained 7 days in a row and I do not want to break that streak' is remarkably effective. It shifts motivation from external (results, which are slow) to internal (identity — 'I am someone who trains consistently'). Your streak is visible on the dashboard. Protect it."
+      }
+    }
   }
 }

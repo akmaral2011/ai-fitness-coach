@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Fitness Coach</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme-preference');
+          var theme = stored ? JSON.parse(stored).state.theme : 'dark';
+          if (theme === 'dark') document.documentElement.classList.add('dark');
+        } catch (_) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
 </head>
 <body>
     <div id="react-root"></div>

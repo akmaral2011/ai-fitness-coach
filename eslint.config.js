@@ -15,13 +15,30 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: { window: 'readonly', document: 'readonly' },
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
+        localStorage: 'readonly',
+        HTMLDivElement: 'readonly',
+        HTMLElement: 'readonly',
+        MouseEvent: 'readonly',
+        KeyboardEvent: 'readonly',
+        Node: 'readonly',
+        atob: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+      },
       parserOptions: { jsx: true },
     },
     plugins: { react, 'react-hooks': reactHooks, '@typescript-eslint': tsPlugin, prettier },
     settings: { react: { version: '19.0.0' } },
     rules: {
       'prettier/prettier': 'warn',
+
+      // TypeScript already catches undefined references; no-undef produces
+      // false positives for DOM types, Web APIs, and type-only identifiers.
+      'no-undef': 'off',
 
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
@@ -62,9 +79,9 @@ export default tseslint.config(
       '@typescript-eslint/naming-convention': [
         'error',
         {
+          // Custom hooks: useXxx — already camelCase, no prefix stripping needed
           selector: 'function',
           format: ['camelCase'],
-          prefix: ['use'],
           filter: { regex: '^use[A-Z]', match: true },
         },
         {
@@ -72,9 +89,10 @@ export default tseslint.config(
           format: ['PascalCase'],
         },
         {
+          // Module-level const: allow PascalCase (components) and UPPER_CASE (constants)
           selector: 'variable',
           modifiers: ['const'],
-          format: ['PascalCase'],
+          format: ['PascalCase', 'UPPER_CASE'],
           filter: { regex: '^(use|[a-z])', match: false },
         },
       ],
