@@ -1,12 +1,13 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import AppLayout from '@/components/app/AppLayout';
 import ProtectedRoute from '@/features/auth/ProtectedRoute';
+import { useAuthStore } from '@/features/auth/authStore';
 
 import './i18n';
 import './index.css';
@@ -36,11 +37,42 @@ function Spinner() {
   );
 }
 
+function GoogleRedirectHandler() {
+  const navigate = useNavigate();
+  const { setUser } = useAuthStore();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    const accessToken = params.get('access_token');
+    if (!accessToken) return;
+
+    window.history.replaceState(null, '', window.location.pathname);
+
+    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then(r => r.json())
+      .then((data: { sub: string; name?: string; email: string; picture?: string }) => {
+        setUser({
+          id: data.sub,
+          name: data.name ?? data.email,
+          email: data.email,
+          picture: data.picture,
+        });
+        navigate('/app/dashboard', { replace: true });
+      })
+      .catch(() => console.error('Failed to fetch Google user info'));
+  }, [navigate, setUser]);
+
+  return null;
+}
+
 function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
+          <GoogleRedirectHandler />
           <Suspense fallback={<Spinner />}>
             <Routes>
               <Route path="/" element={<Home />} />

@@ -1,26 +1,37 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 
-import { type CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { Shield, X, Zap } from 'lucide-react';
 
-import { type AuthUser, useAuthStore } from '@/features/auth/authStore';
+import { useAuthStore } from '@/features/auth/authStore';
 
-function decodeGoogleJwt(credential: string): AuthUser {
-  const payload = JSON.parse(atob(credential.split('.')[1]));
-  return {
-    id: payload.sub as string,
-    name: (payload.name ?? payload.email) as string,
-    email: payload.email as string,
-    picture: payload.picture as string | undefined,
-  };
+function GoogleIcon() {
+  return (
+    <svg viewBox="0 0 48 48" width="18" height="18">
+      <path
+        fill="#EA4335"
+        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+      />
+      <path
+        fill="#4285F4"
+        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+      />
+      <path
+        fill="#34A853"
+        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+      />
+    </svg>
+  );
 }
 
 export default function AuthModal() {
   const { t } = useTranslation();
-  const { setUser, closeAuthModal } = useAuthStore();
-  const navigate = useNavigate();
+  const { closeAuthModal } = useAuthStore();
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,17 +46,16 @@ export default function AuthModal() {
     };
   }, [closeAuthModal]);
 
-  const handleSuccess = (response: CredentialResponse) => {
-    if (!response.credential) return;
-    setUser(decodeGoogleJwt(response.credential));
-    closeAuthModal();
-    navigate('/app/dashboard');
-  };
+  const login = useGoogleLogin({
+    ux_mode: 'redirect',
+    onSuccess: () => {},
+    onError: () => console.error('Google sign-in failed'),
+  });
 
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-100 flex items-center justify-center p-4"
       role="presentation"
       onClick={e => {
         if (e.target === overlayRef.current) closeAuthModal();
@@ -76,16 +86,14 @@ export default function AuthModal() {
           {t('auth.subtitle', 'Track your workouts, save your progress, and unlock AI coaching.')}
         </p>
 
-        <div className="w-full flex justify-center mb-6">
-          <GoogleLogin
-            onSuccess={handleSuccess}
-            onError={() => console.error('Google sign-in failed')}
-            useOneTap={false}
-            shape="rectangular"
-            size="large"
-            width="280"
-            theme="outline"
-          />
+        <div className="w-full mb-6">
+          <button
+            onClick={() => login()}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 transition-colors shadow-sm"
+          >
+            <GoogleIcon />
+            Sign in with Google
+          </button>
         </div>
 
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
