@@ -7,10 +7,11 @@ import { DIFFICULTY_COLOR } from '@/features/programs/types';
 import type { Program, ProgramDifficulty } from '@/features/programs/types';
 
 export function DifficultyBadge({ difficulty }: { difficulty: ProgramDifficulty }) {
+  const { t } = useTranslation();
   const colorClass = DIFFICULTY_COLOR[difficulty] ?? 'bg-muted text-muted-foreground';
   return (
     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full capitalize ${colorClass}`}>
-      {difficulty}
+      {t(`catalog.difficulty.${difficulty}`)}
     </span>
   );
 }

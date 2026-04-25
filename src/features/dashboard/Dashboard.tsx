@@ -6,6 +6,7 @@ import { EXERCISES } from '@/features/exercises/data';
 import { PROGRAMS } from '@/features/programs/data';
 import { useProgramStore } from '@/features/programs/programStore';
 import { useProgressStore } from '@/features/progress/progressStore';
+import { formatDuration } from '@/lib/utils';
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
@@ -33,12 +34,6 @@ export default function Dashboard() {
     : t('dashboard.greetingDefault');
 
   const quickStart = EXERCISES.slice(0, 4);
-
-  function formatDuration(seconds: number) {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return m > 0 ? `${m}${t('common.min')}` : `${s}${t('common.sec')}`;
-  }
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
@@ -148,7 +143,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {session.repCount} {t('dashboard.reps')} ·{' '}
-                      {formatDuration(session.durationSeconds)}
+                      {formatDuration(session.durationSeconds, t)}
                     </p>
                   </div>
                   <div className="text-right">

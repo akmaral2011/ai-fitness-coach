@@ -237,7 +237,7 @@ export default function ProgramDetail() {
 
           <div className="mb-5">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-              Goals
+              {t('programs.goals')}
             </p>
             <ul className="flex flex-col gap-1.5">
               {program.goalKeys.map(key => (

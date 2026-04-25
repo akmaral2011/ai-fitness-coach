@@ -9,14 +9,14 @@ import type { Category, Difficulty } from '@/features/exercises/types';
 
 type Filter = { category: Category | 'all'; difficulty: Difficulty | 'all' };
 
+const CATEGORIES: Array<Category | 'all'> = ['all', 'strength', 'cardio', 'hiit', 'mobility'];
+const DIFFICULTIES: Array<Difficulty | 'all'> = ['all', 'beginner', 'intermediate', 'advanced'];
+
 export default function ExerciseCatalog() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Filter>({ category: 'all', difficulty: 'all' });
-
-  const categories: Array<Category | 'all'> = ['all', 'strength', 'cardio', 'hiit', 'mobility'];
-  const difficulties: Array<Difficulty | 'all'> = ['all', 'beginner', 'intermediate', 'advanced'];
 
   const filtered = useMemo(() => {
     return EXERCISES.filter(ex => {
@@ -46,7 +46,7 @@ export default function ExerciseCatalog() {
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1 mb-3 scrollbar-hide">
-        {categories.map(cat => (
+        {CATEGORIES.map(cat => (
           <button
             key={cat}
             onClick={() => setFilter(f => ({ ...f, category: cat }))}
@@ -56,13 +56,13 @@ export default function ExerciseCatalog() {
                 : 'bg-muted text-muted-foreground hover:text-foreground'
             }`}
           >
-            {cat === 'all' ? t('catalog.all') : t(`catalog.categories.${cat}`)}
+            {cat === 'all' ? t('catalog.all') : t(`catalog.CATEGORIES.${cat}`)}
           </button>
         ))}
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1 mb-5 scrollbar-hide">
-        {difficulties.map(diff => (
+        {DIFFICULTIES.map(diff => (
           <button
             key={diff}
             onClick={() => setFilter(f => ({ ...f, difficulty: diff }))}

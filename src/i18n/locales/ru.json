@@ -612,6 +612,7 @@
     "dayLabel": "День {{n}}",
     "enrollConfirm": "Начать эту программу?",
     "unenrollConfirm": "Покинуть программу? Прогресс будет потерян.",
+    "goals": "Цели",
     "leaveProgram": "Покинуть программу",
     "durationWeeks": "{{n}} недели",
     "sessionsPerWeek": "{{n}}×/нед",

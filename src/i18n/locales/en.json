@@ -616,6 +616,7 @@
     "dayLabel": "Day {{n}}",
     "enrollConfirm": "Start this program?",
     "unenrollConfirm": "Leave this program? Progress will be lost.",
+    "goals": "Goals",
     "leaveProgram": "Leave Program",
     "durationWeeks": "{{n}} weeks",
     "sessionsPerWeek": "{{n}}×/week",

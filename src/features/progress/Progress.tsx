@@ -11,6 +11,7 @@ import TrophyIcon from '@/components/icons/TrophyIcon';
 import { EXERCISES } from '@/features/exercises/data';
 import { useProgressStore } from '@/features/progress/progressStore';
 import type { CompletedSession } from '@/features/workout/types';
+import { formatDuration } from '@/lib/utils';
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
@@ -110,11 +111,6 @@ function calcMuscleIntensity(sessions: CompletedSession[]): MuscleIntensities {
   }
   const max = Math.max(...Object.values(raw), 1);
   return Object.fromEntries(Object.entries(raw).map(([id, v]) => [id, v / max]));
-}
-
-function formatDuration(seconds: number, t: (k: string) => string): string {
-  const m = Math.floor(seconds / 60);
-  return m > 0 ? `${m}${t('common.min')}` : `${seconds}${t('common.sec')}`;
 }
 
 function scoreColor(score: number): string {

@@ -16,7 +16,7 @@ type NavItem = {
   icon: ReactNode;
 };
 
-const NavItems: NavItem[] = [
+const NAV_ITEMS: NavItem[] = [
   { to: '/app/dashboard', labelKey: 'nav.dashboard', icon: <HomeIcon size={22} /> },
   { to: '/app/catalog', labelKey: 'nav.catalog', icon: <DumbbellIcon size={22} /> },
   { to: '/app/programs', labelKey: 'nav.programs', icon: <ListIcon size={22} /> },
@@ -39,7 +39,7 @@ export default function AppLayout({ children }: Props) {
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border">
         <div className="flex items-stretch h-16 max-w-lg mx-auto">
-          {NavItems.map(item => (
+          {NAV_ITEMS.map(item => (
             <NavLink
               key={item.to}
               to={item.to}

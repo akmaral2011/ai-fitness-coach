@@ -612,6 +612,7 @@
     "dayLabel": "{{n}} күн",
     "enrollConfirm": "Бул программаны баштоо?",
     "unenrollConfirm": "Программадан чыгуу? Прогресс жоголот.",
+    "goals": "Максаттар",
     "leaveProgram": "Программадан чыгуу",
     "durationWeeks": "{{n}} жума",
     "sessionsPerWeek": "{{n}}×/жума",
