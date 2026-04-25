@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useGoogleLogin } from '@react-oauth/google';
 import { Shield, X, Zap } from 'lucide-react';
 
 import { useAuthStore } from '@/features/auth/authStore';
@@ -29,6 +28,18 @@ function GoogleIcon() {
   );
 }
 
+function buildGoogleOAuthUrl(): string {
+  const params = new URLSearchParams({
+    client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
+    redirect_uri: window.location.origin + '/',
+    response_type: 'token',
+    scope: 'openid profile email',
+    prompt: 'select_account',
+  });
+
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+
 export default function AuthModal() {
   const { t } = useTranslation();
   const { closeAuthModal } = useAuthStore();
@@ -45,12 +56,6 @@ export default function AuthModal() {
       document.body.style.overflow = '';
     };
   }, [closeAuthModal]);
-
-  const login = useGoogleLogin({
-    ux_mode: 'redirect',
-    onSuccess: () => {},
-    onError: () => console.error('Google sign-in failed'),
-  });
 
   return (
     <div
@@ -87,13 +92,13 @@ export default function AuthModal() {
         </p>
 
         <div className="w-full mb-6">
-          <button
-            onClick={() => login()}
+          <a
+            href={buildGoogleOAuthUrl()}
             className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 transition-colors shadow-sm"
           >
             <GoogleIcon />
             Sign in with Google
-          </button>
+          </a>
         </div>
 
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
