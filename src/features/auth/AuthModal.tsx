@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import { Shield, X, Zap } from 'lucide-react';
 
@@ -28,21 +29,10 @@ function GoogleIcon() {
   );
 }
 
-function buildGoogleOAuthUrl(): string {
-  const params = new URLSearchParams({
-    client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
-    redirect_uri: window.location.origin + '/',
-    response_type: 'token',
-    scope: 'openid profile email',
-    prompt: 'select_account',
-  });
-
-  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-}
-
 export default function AuthModal() {
   const { t } = useTranslation();
-  const { closeAuthModal } = useAuthStore();
+  const { closeAuthModal, setUser } = useAuthStore();
+  const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,6 +46,43 @@ export default function AuthModal() {
       document.body.style.overflow = '';
     };
   }, [closeAuthModal]);
+
+  function handleGoogleSignIn() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const google = (window as any).google;
+    if (!google?.accounts?.oauth2) {
+      console.error('Google GSI script not loaded yet');
+      return;
+    }
+
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
+      scope: 'openid profile email',
+      callback: (response: { access_token?: string; error?: string }) => {
+        if (response.error || !response.access_token) {
+          console.error('Google sign-in failed:', response.error);
+          return;
+        }
+        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${response.access_token}` },
+        })
+          .then(r => r.json())
+          .then((data: { sub: string; name?: string; email: string; picture?: string }) => {
+            setUser({
+              id: data.sub,
+              name: data.name ?? data.email,
+              email: data.email,
+              picture: data.picture,
+            });
+            closeAuthModal();
+            navigate('/app/dashboard');
+          })
+          .catch(() => console.error('Failed to fetch Google user info'));
+      },
+    });
+
+    client.requestAccessToken();
+  }
 
   return (
     <div
@@ -92,13 +119,13 @@ export default function AuthModal() {
         </p>
 
         <div className="w-full mb-6">
-          <a
-            href={buildGoogleOAuthUrl()}
+          <button
+            onClick={handleGoogleSignIn}
             className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 transition-colors shadow-sm"
           >
             <GoogleIcon />
             Sign in with Google
-          </a>
+          </button>
         </div>
 
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
