@@ -2,7 +2,6 @@ import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import AppLayout from '@/components/app/AppLayout';
@@ -26,7 +25,6 @@ const LearnPage = lazy(() => import('./features/learn/Learn'));
 const ArticleDetailPage = lazy(() => import('./features/learn/ArticleDetail'));
 
 const queryClient = new QueryClient();
-const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function Spinner() {
   return (
@@ -38,133 +36,129 @@ function Spinner() {
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId={googleClientId}>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Suspense fallback={<Spinner />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-              <Route
-                path="/onboarding"
-                element={
-                  <ProtectedRoute requireProfile={false}>
-                    <Onboarding />
-                  </ProtectedRoute>
-                }
-              />
+            <Route
+              path="/onboarding"
+              element={
+                <ProtectedRoute requireProfile={false}>
+                  <Onboarding />
+                </ProtectedRoute>
+              }
+            />
 
-              <Route
-                path="/app"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Dashboard />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Dashboard />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/catalog"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <ExerciseCatalog />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/exercise/:id"
-                element={
-                  <ProtectedRoute>
-                    <ExerciseDetail />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/workout/:id"
-                element={
-                  <ProtectedRoute>
-                    <WorkoutMode />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/progress"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <ProgressPage />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/profile"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <ProfilePage />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
+            <Route
+              path="/app"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Dashboard />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Dashboard />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/catalog"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <ExerciseCatalog />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/exercise/:id"
+              element={
+                <ProtectedRoute>
+                  <ExerciseDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/workout/:id"
+              element={
+                <ProtectedRoute>
+                  <WorkoutMode />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/progress"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <ProgressPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/profile"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <ProfilePage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/programs"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <ProgramsPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/programs/:id"
+              element={
+                <ProtectedRoute>
+                  <ProgramDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/learn"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <LearnPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/learn/:id"
+              element={
+                <ProtectedRoute>
+                  <ArticleDetailPage />
+                </ProtectedRoute>
+              }
+            />
 
-              <Route
-                path="/app/programs"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <ProgramsPage />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/programs/:id"
-                element={
-                  <ProtectedRoute>
-                    <ProgramDetailPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/app/learn"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <LearnPage />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/app/learn/:id"
-                element={
-                  <ProtectedRoute>
-                    <ArticleDetailPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </GoogleOAuthProvider>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 
