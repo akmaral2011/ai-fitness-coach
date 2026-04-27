@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import ErrorBoundary from '@/components/ErrorBoundary';
 import AppLayout from '@/components/app/AppLayout';
 import ProtectedRoute from '@/features/auth/ProtectedRoute';
 
@@ -164,4 +165,8 @@ function App() {
 
 const container = document.getElementById('react-root');
 if (!container) throw new Error('Root element #react-root not found');
-createRoot(container).render(<App />);
+createRoot(container).render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
