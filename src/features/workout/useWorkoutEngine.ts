@@ -4,8 +4,11 @@ import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
 
 import type { Exercise } from '@/features/exercises/types';
 import type { RepPhase } from '@/features/exercises/types';
-import { calculateAngle, calculateRepScore } from '@/features/workout/angles';
+import { calculateAngle, calculateRepScore, smoothAngle } from '@/features/workout/angles';
 import { useWorkoutStore } from '@/features/workout/workoutStore';
+
+// Minimum ms to stay in a phase before switching — prevents jitter-triggered reps
+const MIN_PHASE_MS = 400;
 
 type UseWorkoutEngineReturn = {
   processFrame: (landmarks: NormalizedLandmark[]) => void;
@@ -27,6 +30,8 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
   const phaseRef = useRef<RepPhase>(phase);
   const isRunningRef = useRef(isRunning);
   const repCountRef = useRef(repCount);
+  const angleHistoryRef = useRef<number[]>([]);
+  const lastPhaseSwitchRef = useRef<number>(0);
 
   useEffect(() => {
     phaseRef.current = phase;
@@ -44,26 +49,36 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
       if (repCountRef.current >= targetReps && targetReps > 0) return;
 
       const currentPhase = phaseRef.current;
+      const { down: downThresh, up: upThresh } = exercise.repPhaseThreshold;
+      const { a: repAIndex, vertex: repVertexIndex, b: repBIndex } = exercise.repAngleLandmarks;
 
-      {
-        const { down: downThresh, up: upThresh } = exercise.repPhaseThreshold;
-        const { a: repAIndex, vertex: repVertexIndex, b: repBIndex } = exercise.repAngleLandmarks;
-        const a = landmarks[repAIndex];
-        const vertex = landmarks[repVertexIndex];
-        const b = landmarks[repBIndex];
+      const a = landmarks[repAIndex];
+      const vertex = landmarks[repVertexIndex];
+      const b = landmarks[repBIndex];
 
-        if (!a || !vertex || !b) return;
+      if (!a || !vertex || !b) return;
 
-        const repAngle = calculateAngle(a, vertex, b);
+      // Smooth raw angle to reduce jitter
+      const rawAngle = calculateAngle(a, vertex, b);
+      const smoothed = smoothAngle(angleHistoryRef.current, rawAngle);
+      angleHistoryRef.current = [...angleHistoryRef.current.slice(-5), smoothed];
+      const repAngle = smoothed;
 
+      const now = performance.now();
+      const canSwitch = now - lastPhaseSwitchRef.current > MIN_PHASE_MS;
+
+      if (canSwitch) {
         if (currentPhase === 'down' && repAngle > upThresh) {
           setPhase('up');
+          lastPhaseSwitchRef.current = now;
         } else if (currentPhase === 'up' && repAngle < downThresh) {
           setPhase('down');
+          lastPhaseSwitchRef.current = now;
           incrementRep();
         }
       }
 
+      // Form checks
       const violatedErrors: string[] = [];
       const violatedWarns: string[] = [];
 

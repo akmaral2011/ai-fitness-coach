@@ -21,3 +21,9 @@ export function rollingAverage(history: number[], alpha = 0.3): number {
   if (history.length === 0) return 100;
   return history.reduce((ema, val) => ema * (1 - alpha) + val * alpha, history[0]);
 }
+
+// EMA smoothing to reduce MediaPipe landmark jitter
+export function smoothAngle(history: number[], newVal: number, alpha = 0.35): number {
+  if (history.length === 0) return newVal;
+  return history[history.length - 1] * (1 - alpha) + newVal * alpha;
+}
