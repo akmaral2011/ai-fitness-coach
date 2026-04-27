@@ -4,12 +4,22 @@ import { useTranslation } from 'react-i18next';
 import { Globe } from 'lucide-react';
 
 const LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'ru', label: 'Русский' },
-  { code: 'ky', label: 'Кыргызча' },
+  { code: 'en', label: 'EN' },
+  { code: 'ru', label: 'RU' },
+  { code: 'ky', label: 'KY' },
 ];
 
-export default function LanguageSwitcher() {
+const LANGUAGE_LABELS: Record<string, string> = {
+  en: 'English',
+  ru: 'Русский',
+  ky: 'Кыргызча',
+};
+
+type Props = {
+  inline?: boolean;
+};
+
+export default function LanguageSwitcher({ inline = false }: Props) {
   const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -21,6 +31,27 @@ export default function LanguageSwitcher() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  if (inline) {
+    return (
+      <div className="flex items-center gap-1">
+        <Globe className="w-4 h-4 text-muted-foreground mr-1" />
+        {LANGUAGES.map(({ code, label }) => (
+          <button
+            key={code}
+            onClick={() => i18n.changeLanguage(code)}
+            className={`px-2.5 py-1 rounded-lg text-sm font-medium transition-colors ${
+              i18n.language === code
+                ? 'bg-emerald-500/15 text-emerald-500 font-semibold'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    );
+  }
 
   const current = LANGUAGES.find(l => l.code === i18n.language) ?? LANGUAGES[0];
 
@@ -37,7 +68,7 @@ export default function LanguageSwitcher() {
 
       {open && (
         <div className="absolute right-0 top-full mt-1.5 w-36 bg-card border border-border rounded-xl shadow-xl overflow-hidden z-50">
-          {LANGUAGES.map(({ code, label }) => (
+          {LANGUAGES.map(({ code }) => (
             <button
               key={code}
               onClick={() => {
@@ -50,7 +81,7 @@ export default function LanguageSwitcher() {
                   : 'text-foreground hover:bg-muted'
               }`}
             >
-              {label}
+              {LANGUAGE_LABELS[code]}
             </button>
           ))}
         </div>
