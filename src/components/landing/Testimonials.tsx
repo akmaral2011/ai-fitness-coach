@@ -12,7 +12,7 @@ export default function Testimonials() {
   const items = [1, 2, 3] as const;
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden">
+    <section className="py-16 sm:py-24 bg-background relative overflow-hidden">
       <div
         className="absolute inset-0 opacity-30"
         style={{
@@ -21,15 +21,15 @@ export default function Testimonials() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.testimonials.badge')}</SectionBadge>
-          <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.testimonials.title')}
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
           {items.map((i, idx) => {
             const name = t(`landing.testimonials.items.${i}.name`);
             const initial = name.charAt(0);
@@ -37,7 +37,7 @@ export default function Testimonials() {
             return (
               <div
                 key={i}
-                className="p-8 rounded-2xl bg-card border border-border hover:border-border/80 transition-colors flex flex-col gap-6"
+                className="p-5 sm:p-8 rounded-2xl bg-card border border-border hover:border-border/80 transition-colors flex flex-col gap-4 sm:gap-6"
               >
                 <div className="flex gap-1">
                   {Array.from({ length: 5 }).map((_, s) => (

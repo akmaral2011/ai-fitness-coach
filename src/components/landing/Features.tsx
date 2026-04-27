@@ -38,7 +38,7 @@ export default function Features() {
   const { t } = useTranslation();
 
   return (
-    <section id="features" className="py-24 bg-muted/30 relative overflow-hidden">
+    <section id="features" className="py-16 sm:py-24 bg-muted/30 relative overflow-hidden">
       <div
         className="absolute inset-0 opacity-40"
         style={{
@@ -47,31 +47,31 @@ export default function Features() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.features.badge')}</SectionBadge>
-          <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.features.title')}
           </h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
           {features.map(({ key, icon: Icon, accent }) => {
             const colors = accentMap[accent];
             return (
               <div
                 key={key}
-                className={`group p-8 rounded-2xl bg-card border ${colors.cardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}
+                className={`group p-5 sm:p-8 rounded-2xl bg-card border ${colors.cardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}
               >
                 <div
-                  className={`w-12 h-12 rounded-xl ${colors.iconBg} border flex items-center justify-center mb-6`}
+                  className={`w-11 h-11 rounded-xl ${colors.iconBg} border flex items-center justify-center mb-4 sm:mb-6`}
                 >
-                  <Icon className={`w-6 h-6 ${colors.icon}`} />
+                  <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${colors.icon}`} />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2 sm:mb-3">
                   {t(`landing.features.${key}.title`)}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                   {t(`landing.features.${key}.description`)}
                 </p>
               </div>

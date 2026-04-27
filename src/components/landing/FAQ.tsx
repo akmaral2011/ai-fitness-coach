@@ -13,16 +13,16 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-24 bg-muted/30 relative">
-      <div className="max-w-3xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section className="py-16 sm:py-24 bg-muted/30 relative">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.faq.badge')}</SectionBadge>
-          <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.faq.title')}
           </h2>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2 sm:gap-3">
           {faqKeys.map(key => {
             const isOpen = openIndex === key;
             return (
@@ -36,11 +36,11 @@ export default function FAQ() {
                 )}
               >
                 <button
-                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
+                  className="w-full flex items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5 text-left"
                   onClick={() => setOpenIndex(isOpen ? null : key)}
                   aria-expanded={isOpen}
                 >
-                  <span className="text-foreground font-semibold text-base leading-snug">
+                  <span className="text-foreground font-semibold text-sm sm:text-base leading-snug">
                     {t(`landing.faq.items.${key}.q`)}
                   </span>
                   <ChevronDown
@@ -52,8 +52,8 @@ export default function FAQ() {
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-5">
-                    <p className="text-muted-foreground leading-relaxed">
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-5">
+                    <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                       {t(`landing.faq.items.${key}.a`)}
                     </p>
                   </div>

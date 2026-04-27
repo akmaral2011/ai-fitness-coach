@@ -18,7 +18,7 @@ export default function Pricing() {
   };
 
   return (
-    <section id="pricing" className="py-24 bg-muted/30 relative overflow-hidden">
+    <section id="pricing" className="py-16 sm:py-24 bg-muted/30 relative overflow-hidden">
       <div
         className="absolute inset-0 opacity-40"
         style={{
@@ -27,15 +27,15 @@ export default function Pricing() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.pricing.badge')}</SectionBadge>
-          <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.pricing.title')}
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 items-stretch">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6 items-stretch">
           {tiers.map(tier => {
             const isPremium = tier === 'premium';
             const features = t(`landing.pricing.${tier}.features`, {
@@ -45,7 +45,7 @@ export default function Pricing() {
             return (
               <div
                 key={tier}
-                className={`relative flex flex-col rounded-2xl p-8 ${
+                className={`relative flex flex-col rounded-2xl p-5 sm:p-8 ${
                   isPremium
                     ? 'bg-card border-2 border-emerald-500/60 shadow-2xl shadow-emerald-500/10'
                     : 'bg-card border border-border'
@@ -59,7 +59,7 @@ export default function Pricing() {
                   </div>
                 )}
 
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                   <h3 className="text-lg font-bold text-foreground mb-1">
                     {t(`landing.pricing.${tier}.name`)}
                   </h3>
@@ -68,10 +68,10 @@ export default function Pricing() {
                   </p>
                 </div>
 
-                <div className="mb-8">
+                <div className="mb-5 sm:mb-8">
                   <div className="flex items-end gap-1">
                     <span
-                      className={`text-5xl font-bold ${isPremium ? 'text-emerald-500' : 'text-foreground'}`}
+                      className={`text-4xl sm:text-5xl font-bold ${isPremium ? 'text-emerald-500' : 'text-foreground'}`}
                     >
                       {t(`landing.pricing.${tier}.price`)}
                     </span>
@@ -81,7 +81,7 @@ export default function Pricing() {
                   </div>
                 </div>
 
-                <ul className="flex flex-col gap-3 mb-8 flex-1">
+                <ul className="flex flex-col gap-2 sm:gap-3 mb-5 sm:mb-8 flex-1">
                   {features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <div

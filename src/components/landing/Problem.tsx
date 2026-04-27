@@ -15,7 +15,7 @@ export default function Problem() {
   ] as const;
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden">
+    <section className="py-16 sm:py-24 bg-background relative overflow-hidden">
       <div
         className="absolute inset-0 opacity-30"
         style={{
@@ -24,30 +24,30 @@ export default function Problem() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="order-2 lg:order-1">
-            <SectionBadge variant="red" className="mb-6">
+            <SectionBadge variant="red" className="mb-5 sm:mb-6">
               <AlertCircle className="w-3.5 h-3.5" />
               {t('landing.problem.badge')}
             </SectionBadge>
 
-            <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-3 sm:mb-4">
               {t('landing.problem.title')}
             </h2>
-            <p className="text-muted-foreground text-sm mb-8 italic">
+            <p className="text-muted-foreground text-sm mb-5 sm:mb-8 italic">
               {t('landing.problem.source')}
             </p>
 
-            <p className="text-muted-foreground text-lg leading-relaxed mb-10">
+            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-7 sm:mb-10">
               {t('landing.problem.description')}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {points.map(({ icon: Icon, key }) => (
                 <div
                   key={key}
-                  className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border hover:border-border/80 transition-colors"
+                  className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-card border border-border hover:border-border/80 transition-colors"
                 >
                   <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 mt-0.5">
                     <Icon className="w-4 h-4 text-red-500" />
@@ -61,7 +61,7 @@ export default function Problem() {
           </div>
 
           <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
-            <div className="relative w-72 h-72">
+            <div className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
               <div
                 className="absolute inset-0 rounded-full bg-red-500/5 border border-red-500/10"
                 style={{ animation: 'ping 3s cubic-bezier(0,0,0.2,1) infinite' }}
@@ -69,9 +69,13 @@ export default function Problem() {
               <div className="absolute inset-4 rounded-full bg-red-500/8 border border-red-500/15" />
               <div className="absolute inset-8 rounded-full bg-red-500/10 border border-red-500/20" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-8xl font-bold text-foreground leading-none">73%</span>
-                <span className="text-red-500 text-lg font-medium mt-2">wrong form</span>
-                <span className="text-muted-foreground text-sm mt-1">during self-training</span>
+                <span className="text-6xl sm:text-7xl lg:text-8xl font-bold text-foreground leading-none">
+                  73%
+                </span>
+                <span className="text-red-500 text-sm sm:text-lg font-medium mt-2">wrong form</span>
+                <span className="text-muted-foreground text-xs sm:text-sm mt-1">
+                  during self-training
+                </span>
               </div>
             </div>
           </div>

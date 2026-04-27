@@ -134,7 +134,7 @@ export default function Hero() {
   const { user, openAuthModal } = useAuthStore();
 
   return (
-    <section className="relative min-h-screen flex items-center pt-16 pb-16 overflow-hidden">
+    <section className="relative min-h-screen flex items-center pt-16 pb-10 sm:pb-16 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/20" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
       <div
@@ -146,35 +146,35 @@ export default function Hero() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div>
             <SectionBadge className="mb-8">
               <Zap className="w-3.5 h-3.5" />
               {t('landing.hero.badge')}
             </SectionBadge>
 
-            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.08] tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.08] tracking-tight mb-5 sm:mb-6">
               {t('landing.hero.title')}{' '}
               <span className="bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
                 {t('landing.hero.titleHighlight')}
               </span>
             </h1>
 
-            <p className="text-xl text-muted-foreground leading-relaxed mb-10 max-w-lg">
+            <p className="text-base sm:text-xl text-muted-foreground leading-relaxed mb-8 sm:mb-10 max-w-lg">
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
               <button
                 onClick={() => (user ? navigate('/app/dashboard') : openAuthModal())}
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-200 text-base shadow-xl shadow-emerald-500/25 hover:shadow-emerald-400/30 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-200 text-base shadow-xl shadow-emerald-500/25 hover:shadow-emerald-400/30 hover:-translate-y-0.5"
               >
                 {t('landing.hero.ctaPrimary')}
                 <Zap className="w-4 h-4" />
               </button>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 hover:border-foreground/20 text-foreground font-medium rounded-xl transition-all duration-200 text-base"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 hover:border-foreground/20 text-foreground font-medium rounded-xl transition-all duration-200 text-base"
               >
                 <Play className="w-4 h-4" />
                 {t('landing.hero.ctaSecondary')}
