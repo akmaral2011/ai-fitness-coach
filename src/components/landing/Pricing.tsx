@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Check } from 'lucide-react';
 
+import SectionBadge from '@/components/landing/SectionBadge';
 import { useAuthStore } from '@/features/auth/authStore';
 
 const tiers = ['free', 'premium', 'team'] as const;
@@ -28,9 +29,7 @@ export default function Pricing() {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-4">
-            {t('landing.pricing.badge')}
-          </div>
+          <SectionBadge>{t('landing.pricing.badge')}</SectionBadge>
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.pricing.title')}
           </h2>

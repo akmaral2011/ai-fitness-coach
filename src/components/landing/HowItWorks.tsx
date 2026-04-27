@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Camera, Cpu, Zap } from 'lucide-react';
 
+import SectionBadge from '@/components/landing/SectionBadge';
+
 const steps = [
   { num: 1, icon: Camera },
   { num: 2, icon: Cpu },
@@ -23,9 +25,7 @@ export default function HowItWorks() {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-4">
-            {t('landing.howItWorks.badge')}
-          </div>
+          <SectionBadge>{t('landing.howItWorks.badge')}</SectionBadge>
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.howItWorks.title')}
           </h2>

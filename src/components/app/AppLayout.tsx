@@ -1,7 +1,8 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
+import OnboardingTour, { useTourDone } from '@/components/OnboardingTour';
 import { useThemeSync } from '@/components/ThemeToggle';
 import BookIcon from '@/components/icons/BookIcon';
 import ChartIcon from '@/components/icons/ChartIcon';
@@ -9,6 +10,7 @@ import DumbbellIcon from '@/components/icons/DumbbellIcon';
 import HomeIcon from '@/components/icons/HomeIcon';
 import ListIcon from '@/components/icons/ListIcon';
 import UserIcon from '@/components/icons/UserIcon';
+import { useWorkoutReminder } from '@/features/notifications/useWorkoutReminder';
 
 type NavItem = {
   to: string;
@@ -31,11 +33,19 @@ type Props = {
 
 export default function AppLayout({ children }: Props) {
   useThemeSync();
+  useWorkoutReminder();
   const { t } = useTranslation();
+  const location = useLocation();
+  const [tourVisible, setTourVisible] = useState(!useTourDone());
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <main className="flex-1 pb-20 overflow-y-auto">{children}</main>
+      <main
+        key={location.pathname}
+        className="flex-1 pb-20 overflow-y-auto animate-in fade-in duration-200"
+      >
+        {children}
+      </main>
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border">
         <div className="flex items-stretch h-16 max-w-lg mx-auto">
@@ -55,6 +65,8 @@ export default function AppLayout({ children }: Props) {
           ))}
         </div>
       </nav>
+
+      {tourVisible && <OnboardingTour onDone={() => setTourVisible(false)} />}
     </div>
   );
 }

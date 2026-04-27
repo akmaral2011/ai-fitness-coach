@@ -39,10 +39,8 @@ export default function NotFound() {
           4
         </div>
 
-        <h1 className="text-2xl font-semibold text-foreground mt-6 mb-3">Page not found</h1>
-        <p className="text-muted-foreground leading-relaxed mb-10">
-          Looks like this page skipped leg day — it does not exist. Head back and keep training.
-        </p>
+        <h1 className="text-2xl font-semibold text-foreground mt-6 mb-3">{t('notFound.title')}</h1>
+        <p className="text-muted-foreground leading-relaxed mb-10">{t('notFound.message')}</p>
 
         <button
           onClick={() => navigate('/')}

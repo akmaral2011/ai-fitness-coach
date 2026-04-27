@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 
 import { AlertCircle, DollarSign, EyeOff, TrendingDown } from 'lucide-react';
 
+import SectionBadge from '@/components/landing/SectionBadge';
+
 export default function Problem() {
   const { t } = useTranslation();
 
@@ -25,10 +27,10 @@ export default function Problem() {
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="order-2 lg:order-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-medium mb-6">
+            <SectionBadge variant="red" className="mb-6">
               <AlertCircle className="w-3.5 h-3.5" />
               {t('landing.problem.badge')}
-            </div>
+            </SectionBadge>
 
             <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-4">
               {t('landing.problem.title')}

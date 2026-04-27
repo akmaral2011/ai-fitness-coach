@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ChevronDown } from 'lucide-react';
 
+import SectionBadge from '@/components/landing/SectionBadge';
 import { cn } from '@/lib/utils';
 
 const faqKeys = [1, 2, 3, 4, 5] as const;
@@ -15,9 +16,7 @@ export default function FAQ() {
     <section className="py-24 bg-muted/30 relative">
       <div className="max-w-3xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-4">
-            {t('landing.faq.badge')}
-          </div>
+          <SectionBadge>{t('landing.faq.badge')}</SectionBadge>
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.faq.title')}
           </h2>

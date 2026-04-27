@@ -23,13 +23,20 @@ export default defineConfig(({ mode }) => ({
     mode === 'production' && compression(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'AI Fitness Coach',
         short_name: 'FitCoach',
-        theme_color: '#000000',
+        description: 'AI-powered fitness coaching with real-time form analysis',
+        theme_color: '#10b981',
+        background_color: '#0d0d14',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/app/dashboard',
+        scope: '/',
         icons: [
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
         ],
       },
     }),

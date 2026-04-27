@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Star } from 'lucide-react';
 
+import SectionBadge from '@/components/landing/SectionBadge';
+
 const avatarColors = ['bg-emerald-500', 'bg-cyan-500', 'bg-violet-500'] as const;
 
 export default function Testimonials() {
@@ -21,9 +23,7 @@ export default function Testimonials() {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-4">
-            {t('landing.testimonials.badge')}
-          </div>
+          <SectionBadge>{t('landing.testimonials.badge')}</SectionBadge>
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             {t('landing.testimonials.title')}
           </h2>

@@ -20,6 +20,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "catalog": "Exercises",
+    "programs": "Programs",
     "learn": "Learn",
     "progress": "Progress",
     "profile": "Profile"
@@ -128,6 +129,13 @@
     "squat": {
       "name": "Squat",
       "description": "Fundamental lower body movement for strength and muscle mass",
+      "steps": [
+        "Stand with feet shoulder-width apart, toes slightly turned out",
+        "Brace your core and keep your chest tall",
+        "Push hips back and bend knees until thighs are parallel to the floor",
+        "Keep knees tracking over toes — don't let them cave inward",
+        "Drive through your heels to stand back up"
+      ],
       "errors": {
         "knees": "Knees caving inward",
         "back": "Back rounding",
@@ -141,6 +149,13 @@
     "pushup": {
       "name": "Push-Up",
       "description": "Upper body pushing movement for chest, shoulders and triceps",
+      "steps": [
+        "Place hands just outside shoulder-width, fingers pointing forward",
+        "Extend legs back — body forms a straight line from head to heels",
+        "Brace your core and squeeze your glutes before each rep",
+        "Lower chest toward the floor, elbows at 45° from your torso",
+        "Push the floor away to fully extend your arms"
+      ],
       "errors": {
         "hips": "Hips sagging or raised",
         "elbows": "Elbows flaring too wide",
@@ -154,6 +169,13 @@
     "plank": {
       "name": "Plank",
       "description": "Core stability hold targeting the entire midsection",
+      "steps": [
+        "Place forearms on the ground, elbows directly under shoulders",
+        "Extend legs fully behind you and raise your hips off the floor",
+        "Your body should form a straight line from head to heels",
+        "Brace your core, squeeze your glutes — keep hips level with shoulders",
+        "Hold without letting hips sag or pike up"
+      ],
       "errors": {
         "hips": "Hips not level with shoulders",
         "neck": "Head dropping or raised"
@@ -166,6 +188,13 @@
     "lunge": {
       "name": "Lunge",
       "description": "Unilateral lower body exercise for legs and glutes",
+      "steps": [
+        "Stand tall with feet hip-width apart",
+        "Step one foot forward about two feet",
+        "Lower your back knee toward the floor — front shin stays vertical",
+        "Push through your front heel to return to standing",
+        "Alternate legs each rep or complete all reps on one side"
+      ],
       "errors": {
         "knee": "Front knee going past toes",
         "torso": "Torso leaning forward"
@@ -178,6 +207,13 @@
     "shoulderPress": {
       "name": "Shoulder Press",
       "description": "Overhead pressing movement for shoulder strength",
+      "steps": [
+        "Stand with feet shoulder-width apart, core braced",
+        "Hold weights at shoulder height, elbows at 90°, palms facing forward",
+        "Press the weights directly overhead until arms are fully extended",
+        "Avoid arching your lower back — keep your ribs down",
+        "Lower weights back to shoulder height with control"
+      ],
       "errors": {
         "arch": "Lower back arching",
         "lockout": "Not locking out at top"
@@ -190,6 +226,13 @@
     "bicepCurl": {
       "name": "Bicep Curl",
       "description": "Isolation movement for bicep strength and definition",
+      "steps": [
+        "Stand holding weights at your sides, palms facing forward",
+        "Keep your elbows pinned to your sides throughout",
+        "Curl the weights up toward your shoulders by bending at the elbows",
+        "Squeeze your biceps at the top — hold for a moment",
+        "Lower slowly back to starting position"
+      ],
       "errors": {
         "swing": "Swinging body for momentum",
         "range": "Not curling to full contraction"
@@ -202,6 +245,13 @@
     "gluteBridge": {
       "name": "Glute Bridge",
       "description": "Posterior chain exercise targeting glutes and hamstrings",
+      "steps": [
+        "Lie on your back, knees bent, feet flat on the floor hip-width apart",
+        "Place arms at your sides, palms facing down",
+        "Squeeze your glutes and drive your hips toward the ceiling",
+        "Your body forms a straight line from shoulders to knees at the top",
+        "Lower your hips with control and repeat"
+      ],
       "errors": {
         "height": "Not extending hips high enough",
         "squeeze": "Not squeezing glutes at top"
@@ -214,6 +264,13 @@
     "mountainClimber": {
       "name": "Mountain Climber",
       "description": "Dynamic full-body cardio and core exercise",
+      "steps": [
+        "Start in a high plank with hands under shoulders, body straight",
+        "Brace your core and keep hips level with shoulders",
+        "Drive one knee toward your chest",
+        "Quickly switch legs, driving the other knee in",
+        "Maintain a steady rhythm — don't let hips rise"
+      ],
       "errors": {
         "hips": "Hips rising too high",
         "pace": "Moving too slowly to get cardio benefit"
@@ -226,6 +283,13 @@
     "deadlift": {
       "name": "Deadlift",
       "description": "Full-body posterior chain strength movement",
+      "steps": [
+        "Stand with feet hip-width apart, a slight bend in the knees",
+        "Hinge at the hips — push them back as you lower the weight",
+        "Keep your back flat and chest tall — do not round your spine",
+        "Once the weight reaches mid-shin, squeeze glutes to stand up",
+        "Lock hips out at the top — do not hyperextend"
+      ],
       "errors": {
         "back": "Back rounding under load",
         "hinge": "Not hinging at hips properly"
@@ -238,6 +302,13 @@
     "jumpingJack": {
       "name": "Jumping Jack",
       "description": "Full-body cardio warm-up exercise",
+      "steps": [
+        "Stand with feet together and arms at your sides",
+        "Jump and simultaneously spread your feet to shoulder-width",
+        "Raise your arms overhead in an arc as you jump out",
+        "Jump back to starting position, bringing feet together and arms down",
+        "Land softly on the balls of your feet"
+      ],
       "errors": {
         "arms": "Arms not reaching overhead",
         "landing": "Landing flat-footed"
@@ -250,6 +321,13 @@
     "tricepDip": {
       "name": "Tricep Dip",
       "description": "Bodyweight pushing movement targeting the triceps using a chair or bench",
+      "steps": [
+        "Sit on the edge of a chair, hands gripping the edge beside your hips",
+        "Slide your hips off the chair with legs extended in front of you",
+        "Bend your elbows to lower your body toward the floor",
+        "Stop when upper arms are parallel to the floor — don't go lower",
+        "Push through your palms to fully extend your arms"
+      ],
       "errors": {
         "flare": "Elbows flaring out to the sides",
         "depth": "Not dipping deep enough — upper arm should reach parallel",
@@ -263,6 +341,13 @@
     "calfRaise": {
       "name": "Calf Raise",
       "description": "Isolation movement for the gastrocnemius and soleus muscles",
+      "steps": [
+        "Stand with feet hip-width apart, toes pointing forward",
+        "Hold a wall or chair for balance if needed",
+        "Rise onto the balls of your feet as high as possible",
+        "Pause at the top and squeeze your calves",
+        "Lower your heels slowly — do not bounce at the bottom"
+      ],
       "errors": {
         "knee": "Bending the knees — keep legs straight",
         "bounce": "Bouncing at the bottom — control the descent"
@@ -275,6 +360,13 @@
     "sideLunge": {
       "name": "Side Lunge",
       "description": "Lateral lower body movement targeting inner thighs and glutes",
+      "steps": [
+        "Stand with feet together, core braced",
+        "Take a wide step to one side",
+        "Bend that knee and push hips back — keep the other leg straight",
+        "Lower until your thigh is parallel to the floor",
+        "Push through your bent-leg heel to return to center"
+      ],
       "errors": {
         "knee": "Knee caving inward over the foot",
         "torso": "Torso leaning too far forward",
@@ -288,6 +380,13 @@
     "superman": {
       "name": "Superman",
       "description": "Prone back extension to strengthen the erector spinae and glutes",
+      "steps": [
+        "Lie face down, arms extended overhead, legs together",
+        "Simultaneously lift your arms, chest, and legs off the floor",
+        "Squeeze your glutes and lower back muscles at the top",
+        "Hold the top position for 1–2 seconds",
+        "Lower everything back to the floor with control"
+      ],
       "errors": {
         "neck": "Straining the neck — keep it neutral",
         "hold": "Not pausing at the top for 1–2 seconds",
@@ -301,6 +400,13 @@
     "burpee": {
       "name": "Burpee",
       "description": "High-intensity full-body movement combining a squat, plank and jump",
+      "steps": [
+        "Stand with feet shoulder-width apart",
+        "Squat down and place hands on the floor in front of you",
+        "Jump or step feet back into a high plank position",
+        "Perform a push-up (optional), then jump or step feet forward to your hands",
+        "Explosively jump up, reaching arms fully overhead"
+      ],
       "errors": {
         "hips": "Hips sagging in the plank position",
         "jump": "Not fully extending at the jump — arms overhead",
@@ -314,6 +420,13 @@
     "highKnees": {
       "name": "High Knees",
       "description": "Running in place with exaggerated knee drive for cardio and core",
+      "steps": [
+        "Stand with feet hip-width apart, arms bent at 90°",
+        "Drive your right knee up to hip height while pumping your left arm forward",
+        "Quickly switch — drive left knee up, right arm forward",
+        "Keep your torso upright — don't lean back",
+        "Maintain a fast, rhythmic pace"
+      ],
       "errors": {
         "height": "Knees not reaching hip height",
         "torso": "Leaning back — keep core tight and chest up",
@@ -327,6 +440,13 @@
     "lateralRaise": {
       "name": "Lateral Raise",
       "description": "Shoulder isolation movement targeting the medial deltoid",
+      "steps": [
+        "Stand with feet shoulder-width apart, weights at your sides",
+        "Keep a slight bend in your elbows throughout",
+        "Raise both arms out to the sides until they reach shoulder height",
+        "Keep shoulders down — don't shrug",
+        "Lower arms slowly back to your sides"
+      ],
       "errors": {
         "height": "Arms not reaching shoulder height at the top",
         "shrug": "Traps taking over — shrugging shoulders up",
@@ -340,6 +460,13 @@
     "tricepExtension": {
       "name": "Tricep Extension",
       "description": "Overhead isolation movement for full tricep length under stretch",
+      "steps": [
+        "Stand holding a weight overhead with both hands, arms fully extended",
+        "Brace your core and keep elbows close to your head",
+        "Slowly lower the weight behind your head by bending at the elbows",
+        "Lower until forearms are parallel to the floor — full stretch",
+        "Extend arms back up, squeezing your triceps at the top"
+      ],
       "errors": {
         "elbow": "Elbows flaring out — keep them close to the head",
         "range": "Not lowering fully — full stretch at the bottom",
@@ -353,6 +480,13 @@
     "reverseLunge": {
       "name": "Reverse Lunge",
       "description": "Backward stepping lunge with less knee stress than forward lunge",
+      "steps": [
+        "Stand tall with feet hip-width apart",
+        "Step one foot backward about two feet",
+        "Bend both knees to 90° — back knee hovers just above the floor",
+        "Keep your front shin vertical and chest upright",
+        "Push through your front heel to return to standing"
+      ],
       "errors": {
         "knee": "Front knee tracking past toes",
         "torso": "Torso collapsing forward",
@@ -366,6 +500,13 @@
     "wallSit": {
       "name": "Wall Sit",
       "description": "Isometric quad hold against the wall — builds endurance and strength",
+      "steps": [
+        "Stand with your back flat against a wall, feet shoulder-width apart",
+        "Slide down until your thighs are parallel to the floor",
+        "Keep your back pressed against the wall at all times",
+        "Rest your hands on your thighs — don't push off with them",
+        "Hold for the prescribed time, breathing steadily"
+      ],
       "errors": {
         "angle": "Thighs not parallel to the floor — slide down more",
         "heels": "Heels rising off the floor",
@@ -473,6 +614,7 @@
       "setBreakdown": "Set Breakdown",
       "save": "Save & Continue",
       "tryAgain": "Try Again",
+      "shareText": "{{name}}: {{score}}% form, {{reps}} reps 💪",
       "backToExercises": "Back to Exercises",
       "message": {
         "excellent": "Outstanding form — keep it up!",
@@ -527,6 +669,8 @@
     "detail": {
       "primaryMuscles": "Primary Muscles",
       "secondaryMuscles": "Secondary Muscles",
+      "steps": "How to Do It",
+      "aiTracking": "AI tracks joint angles in real time",
       "commonErrors": "Common Errors",
       "modifications": "Modifications",
       "estimatedTime": "Est. Time",
@@ -571,6 +715,8 @@
     "weight": "Weight",
     "age": "Age",
     "fitnessLevel": "Fitness Level",
+    "theme": "Theme",
+    "language": "Language",
     "signOut": "Sign Out",
     "achievements": "Achievements",
     "noAchievements": "Complete workouts to unlock achievements",
@@ -654,7 +800,8 @@
       "features": "Features",
       "howItWorks": "How It Works",
       "pricing": "Pricing",
-      "getStarted": "Get Started Free"
+      "getStarted": "Get Started Free",
+      "openApp": "Open App"
     },
     "hero": {
       "badge": "AI-Powered Real-Time Coaching",
@@ -849,17 +996,39 @@
       "privacyNote": "Video never leaves your device."
     }
   },
+  "notFound": {
+    "title": "Page not found",
+    "message": "Looks like this page skipped leg day — it does not exist. Head back and keep training."
+  },
+  "tour": {
+    "step1": { "title": "Welcome!", "desc": "AI Fitness Coach tracks your technique via camera and counts reps automatically." },
+    "step2": { "title": "Exercises", "desc": "Pick any exercise from the library and start a workout. AI scores your form in real time." },
+    "step3": { "title": "Progress", "desc": "The Progress tab shows charts, your streak, and a heatmap of trained muscles." },
+    "step4": { "title": "Programs", "desc": "Choose a structured program from beginner to advanced. Progress saves automatically." },
+    "back": "Back",
+    "next": "Next",
+    "start": "Start Training 🚀"
+  },
   "learn": {
     "title": "Learn",
-    "subtitle": "Articles on technique, training, and recovery",
+    "subtitle": "Video lessons and articles on technique, training, and recovery",
     "categories": {
       "all": "All",
+      "video": "Videos",
       "technique": "Technique",
       "training": "Training",
       "recovery": "Recovery",
       "beginner": "Beginner"
     },
     "readMin": "min read",
+    "videoMin": "min watch",
+    "video": "Video",
+    "keyTakeaways": "Key Takeaways",
+    "relatedExercise": "Practice Exercise",
+    "markComplete": "Mark as Complete",
+    "completed": "Completed",
+    "progress": "{{done}} of {{total}} completed",
+    "videoComingSoon": "Video coming soon",
     "back": "Back",
     "articles": {
       "formOverReps": {
@@ -948,6 +1117,64 @@
         "p2": "Design your training environment to make the right choice the easy choice. Lay out your workout clothes the night before. Schedule training like a meeting — in your calendar, at a fixed time. Know exactly what workout you are doing before you start. The programs in this app remove that friction entirely.",
         "p3": "Track your streak. The psychological power of 'I have trained 7 days in a row and I do not want to break that streak' is remarkably effective. It shifts motivation from external (results, which are slow) to internal (identity — 'I am someone who trains consistently'). Your streak is visible on the dashboard. Protect it."
       }
+    },
+    "lessons": {
+      "squatVideo": {
+        "title": "Squat Technique: Full Visual Guide",
+        "summary": "Joint-by-joint breakdown of the squat — foot position, knee tracking, hip depth, and spinal alignment — with common error demonstrations.",
+        "p1": "This visual guide walks through every major checkpoint of the squat: foot width, toe angle, knee tracking, hip depth, and spinal alignment. Watch how joint angles change through each phase and where form most commonly breaks down.",
+        "p2": "The AI module tracks the same landmarks in real time during your workout. Use this lesson as a visual reference, then practice with the camera active to receive live corrections on the same cues.",
+        "t1": "Feet hip-to-shoulder-width apart, toes turned out 15–30°",
+        "t2": "Push knees out over toes — don't let them cave inward",
+        "t3": "Chest tall, spine neutral throughout the descent",
+        "t4": "Aim for parallel thighs before increasing depth or load"
+      },
+      "pushupVideo": {
+        "title": "Perfect Push-Up Form: Visual Guide",
+        "summary": "Hand placement, elbow angle, body alignment, and the full progression ladder from wall push-ups to advanced variations.",
+        "p1": "Breakdown of push-up mechanics from hand placement through elbow angle, body alignment, and range of motion. Multiple angles show the difference between correct form and the most common errors.",
+        "p2": "Watch the full push-up progression ladder — from wall push-ups to decline variations — with clear visual cues at each level.",
+        "t1": "Hands just outside shoulder width, fingers forward or slightly out",
+        "t2": "Elbows at 45° from torso — not flared wide, not fully tucked",
+        "t3": "Rigid body from head to heels — brace core and glutes before each rep",
+        "t4": "Lower until chest is near the floor, fully extend at the top"
+      },
+      "plankVideo": {
+        "title": "Plank Mastery: Alignment & Progressions",
+        "summary": "Shoulder stacking, hip alignment, active bracing, and progressions — from standard plank to advanced variations with full technique breakdown.",
+        "p1": "The plank is often underestimated, but most people unknowingly break alignment at the hips, neck, or lower back. This video shows the correct position from multiple angles and how to cue your body into it.",
+        "p2": "Learn the difference between a passive hold and an actively braced plank. Progression variations are covered for when you're ready to advance beyond standard duration.",
+        "t1": "Shoulders directly over wrists or elbows — no forward drift",
+        "t2": "Hips level with shoulders — squeeze glutes to prevent sagging",
+        "t3": "Neutral neck — eyes at the floor, not craned forward",
+        "t4": "Increase duration before moving to harder variations"
+      },
+      "lungeVideo": {
+        "title": "Lunge Mechanics: Forward, Reverse & Walking",
+        "summary": "Visual comparison of lunge variations with knee tracking, step length, torso alignment, and progression from beginner to advanced.",
+        "p1": "Forward, reverse, and walking lunge mechanics are broken down side by side, highlighting differences in knee stress and muscle emphasis. Foot placement, step length, and torso position are demonstrated from front and side angles.",
+        "p2": "The reverse lunge is the recommended starting point for beginners due to its lower impact on the front knee. This video walks through the progression from reverse to walking to weighted lunge.",
+        "t1": "Front knee tracks over second toe — never collapses inward",
+        "t2": "Step length: front shin vertical, back knee approaches the floor",
+        "t3": "Torso upright — don't lean forward as fatigue sets in",
+        "t4": "Master reverse lunge before progressing to forward and walking variations"
+      },
+      "progressiveOverloadVideo": {
+        "title": "Progressive Overload: How to Apply It in Practice",
+        "summary": "The five ways to apply progressive overload beyond adding weight — with examples from AI Fitness Coach programs and how to read your training data.",
+        "p1": "Progressive overload is the single principle behind all training adaptations — but it's widely misunderstood as only adding weight. This video covers the five ways to apply it, with practical examples.",
+        "p2": "Learn how to read your training data to spot stagnation early, when to push load and when to deload, and how the technique score doubles as a measurable form of progressive overload.",
+        "t1": "Add reps before adding weight: 3×8 → 3×12 → increase load → 3×8 again",
+        "t2": "Technique score rising from 70% to 90% is measurable overload",
+        "t3": "Log every session — you can't manage what you don't measure",
+        "t4": "Increase load by no more than 5% per week to avoid regression"
+      }
+    }
+  },
+  "notifications": {
+    "reminder": {
+      "title": "AI Fitness Coach 💪",
+      "body": "Time to train! You haven't worked out in over 24 hours."
     }
   }
 }

@@ -45,15 +45,12 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
 
       const currentPhase = phaseRef.current;
 
-      if (exercise.repLandmark !== undefined) {
-        const lm = landmarks[exercise.repLandmark];
-        if (!lm) return;
-
+      {
         const { down: downThresh, up: upThresh } = exercise.repPhaseThreshold;
-
-        const a = landmarks[exercise.rules[0]?.landmarks.a ?? 11];
-        const vertex = landmarks[exercise.repLandmark];
-        const b = landmarks[exercise.rules[0]?.landmarks.b ?? 25];
+        const { a: repAIndex, vertex: repVertexIndex, b: repBIndex } = exercise.repAngleLandmarks;
+        const a = landmarks[repAIndex];
+        const vertex = landmarks[repVertexIndex];
+        const b = landmarks[repBIndex];
 
         if (!a || !vertex || !b) return;
 

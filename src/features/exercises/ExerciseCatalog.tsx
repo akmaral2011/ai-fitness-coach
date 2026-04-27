@@ -56,7 +56,7 @@ export default function ExerciseCatalog() {
                 : 'bg-muted text-muted-foreground hover:text-foreground'
             }`}
           >
-            {cat === 'all' ? t('catalog.all') : t(`catalog.CATEGORIES.${cat}`)}
+            {cat === 'all' ? t('catalog.all') : t(`catalog.categories.${cat}`)}
           </button>
         ))}
       </div>

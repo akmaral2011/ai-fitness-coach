@@ -43,7 +43,7 @@ export type Exercise = {
   primaryMuscles: MuscleGroup[];
   secondaryMuscles: MuscleGroup[];
   thumbnailEmoji: string;
-  repLandmark: number;
+  repAngleLandmarks: LandmarkTriplet;
   repPhaseThreshold: { down: number; up: number };
   rules: AngleRule[];
   commonErrorKeys: string[];

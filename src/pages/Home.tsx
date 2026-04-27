@@ -1,3 +1,4 @@
+import FadeIn from '@/components/FadeIn';
 import CTABanner from '@/components/landing/CTABanner';
 import FAQ from '@/components/landing/FAQ';
 import Features from '@/components/landing/Features';
@@ -19,14 +20,30 @@ export default function Home() {
     <div className="bg-background text-foreground min-h-screen antialiased" id="hero">
       <Navbar />
       <Hero />
-      <Stats />
-      <Problem />
-      <Features />
-      <HowItWorks />
-      <Pricing />
-      <Testimonials />
-      <FAQ />
-      <CTABanner />
+      <FadeIn>
+        <Stats />
+      </FadeIn>
+      <FadeIn delay={50}>
+        <Problem />
+      </FadeIn>
+      <FadeIn delay={50}>
+        <Features />
+      </FadeIn>
+      <FadeIn delay={50}>
+        <HowItWorks />
+      </FadeIn>
+      <FadeIn delay={50}>
+        <Pricing />
+      </FadeIn>
+      <FadeIn delay={50}>
+        <Testimonials />
+      </FadeIn>
+      <FadeIn delay={50}>
+        <FAQ />
+      </FadeIn>
+      <FadeIn delay={50}>
+        <CTABanner />
+      </FadeIn>
       <Footer />
       {authModalOpen && <AuthModal />}
     </div>

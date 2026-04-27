@@ -5,98 +5,10 @@ import { useNavigate, useParams } from 'react-router';
 import ChevronDownIcon from '@/components/icons/ChevronDownIcon';
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
 import PlayIcon from '@/components/icons/PlayIcon';
+import ExerciseAnimation from '@/features/exercises/ExerciseAnimation';
 import { getExercise } from '@/features/exercises/data';
 import { DIFFICULTY_COLOR } from '@/features/exercises/types';
 import type { Exercise } from '@/features/exercises/types';
-
-// ─── animated skeleton demo ──────────────────────────────────────────────────
-
-function ExerciseDemoSVG({ exercise }: { exercise: Exercise }) {
-  return (
-    <div className="relative w-full aspect-video bg-zinc-900 rounded-2xl overflow-hidden flex items-center justify-center">
-      {/* background grid */}
-      <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
-            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#6b7280" strokeWidth="0.5" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
-      </svg>
-
-      {/* stick figure */}
-      <svg viewBox="0 0 120 200" className="h-[80%] relative z-10" fill="none">
-        {/* skeleton lines */}
-        {[
-          ['60,28', '60,80'], // neck → hip center
-          ['60,40', '40,65'], // shoulder → left elbow
-          ['40,65', '32,90'], // left elbow → wrist
-          ['60,40', '80,65'], // shoulder → right elbow
-          ['80,65', '88,90'], // right elbow → wrist
-          ['60,80', '50,120'], // hip → left knee
-          ['50,120', '48,160'], // left knee → ankle
-          ['60,80', '70,120'], // hip → right knee
-          ['70,120', '72,160'], // right knee → ankle
-        ].map((pair, i) => {
-          const [from, to] = pair;
-          const [x1, y1] = from.split(',').map(Number);
-          const [x2, y2] = to.split(',').map(Number);
-          return (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke="#22c55e"
-              strokeWidth="3"
-              strokeLinecap="round"
-              opacity="0.8"
-            />
-          );
-        })}
-
-        {/* head */}
-        <circle cx="60" cy="18" r="10" stroke="#22c55e" strokeWidth="2.5" opacity="0.9" />
-
-        {/* joints */}
-        {[
-          [60, 40], // shoulders
-          [40, 65], // left elbow
-          [80, 65], // right elbow
-          [32, 90], // left wrist
-          [88, 90], // right wrist
-          [60, 80], // hips
-          [50, 120], // left knee
-          [70, 120], // right knee
-          [48, 160], // left ankle
-          [72, 160], // right ankle
-        ].map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r="4" fill="#22c55e" opacity="0.9" />
-        ))}
-      </svg>
-
-      {/* angle rule overlay badge */}
-      {exercise.rules.length > 0 && (
-        <div className="absolute bottom-3 left-3 right-3">
-          <div className="flex items-center gap-2 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-            <p className="text-xs text-white/80 leading-tight">
-              AI tracks {exercise.rules.length} angle rule{exercise.rules.length > 1 ? 's' : ''} in
-              real-time
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* play hint */}
-      <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/50 px-2.5 py-1 rounded-full">
-        <PlayIcon size={12} className="text-white opacity-70" />
-        <span className="text-white/70 text-xs">Demo</span>
-      </div>
-    </div>
-  );
-}
 
 // ─── angle rules visualization ────────────────────────────────────────────────
 
@@ -224,12 +136,33 @@ export default function ExerciseDetail() {
       </div>
 
       <div className="px-4 py-5 max-w-lg mx-auto">
-        {/* demo */}
+        {/* animated demo */}
         <div className="mb-5">
-          <ExerciseDemoSVG exercise={exercise} />
+          <ExerciseAnimation exerciseId={exercise.id} />
         </div>
 
         <p className="text-muted-foreground text-sm mb-5">{t(exercise.descriptionKey)}</p>
+
+        {/* step-by-step instructions */}
+        {(() => {
+          const baseKey = exercise.nameKey.replace('.name', '');
+          const steps = t(`${baseKey}.steps`, { returnObjects: true });
+          if (!Array.isArray(steps) || steps.length === 0) return null;
+          return (
+            <Section title={t('catalog.detail.steps')}>
+              <ol className="flex flex-col gap-2.5">
+                {(steps as string[]).map((step, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-foreground">
+                    <span className="shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-xs font-bold mt-0.5">
+                      {i + 1}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </Section>
+          );
+        })()}
 
         {/* stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">

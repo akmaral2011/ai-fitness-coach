@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { Play, Zap } from 'lucide-react';
 
+import SectionBadge from '@/components/landing/SectionBadge';
 import { useAuthStore } from '@/features/auth/authStore';
 
 function SkeletonMockup() {
@@ -147,10 +148,10 @@ export default function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-8">
+            <SectionBadge className="mb-8">
               <Zap className="w-3.5 h-3.5" />
               {t('landing.hero.badge')}
-            </div>
+            </SectionBadge>
 
             <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.08] tracking-tight mb-6">
               {t('landing.hero.title')}{' '}

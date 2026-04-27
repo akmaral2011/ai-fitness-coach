@@ -2,17 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { LogOut, Menu, User, X, Zap } from 'lucide-react';
+import { LogOut, Menu, X, Zap } from 'lucide-react';
 
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
+import UserAvatar from '@/components/UserAvatar';
 import { useAuthStore } from '@/features/auth/authStore';
 import { cn } from '@/lib/utils';
 
 function UserMenu() {
   const { t } = useTranslation();
   const { user, signOut } = useAuthStore();
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -26,8 +26,6 @@ function UserMenu() {
 
   if (!user) return null;
 
-  const initial = user.name.charAt(0).toUpperCase();
-
   return (
     <div className="relative" ref={ref}>
       <button
@@ -35,17 +33,12 @@ function UserMenu() {
         className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-muted transition-colors"
         aria-label="User menu"
       >
-        {user.picture ? (
-          <img
-            src={user.picture}
-            alt={user.name}
-            className="w-7 h-7 rounded-full object-cover ring-2 ring-emerald-500/40"
-          />
-        ) : (
-          <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">
-            {initial}
-          </div>
-        )}
+        <UserAvatar
+          picture={user.picture}
+          name={user.name}
+          className="w-7 h-7 ring-2 ring-emerald-500/40"
+          textClassName="text-xs"
+        />
         <span className="text-foreground text-sm font-medium hidden lg:block max-w-30 truncate">
           {user.name}
         </span>
@@ -58,26 +51,6 @@ function UserMenu() {
             <div className="text-muted-foreground text-xs truncate">{user.email}</div>
           </div>
           <div className="p-1">
-            <button
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              onClick={() => {
-                setOpen(false);
-                navigate('/app/dashboard');
-              }}
-            >
-              <User className="w-4 h-4" />
-              {t('nav.dashboard')}
-            </button>
-            <button
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              onClick={() => {
-                setOpen(false);
-                navigate('/app/profile');
-              }}
-            >
-              <User className="w-4 h-4" />
-              {t('nav.profile')}
-            </button>
             <button
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-500/10 transition-colors"
               onClick={() => {
@@ -98,6 +71,7 @@ function UserMenu() {
 export default function Navbar() {
   const { t } = useTranslation();
   const { user, openAuthModal } = useAuthStore();
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -146,7 +120,15 @@ export default function Navbar() {
           <LanguageSwitcher />
           <ThemeToggle />
           {user ? (
-            <UserMenu />
+            <>
+              <button
+                onClick={() => navigate('/app/dashboard')}
+                className="px-4 py-2 rounded-lg border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 text-sm font-semibold transition-colors"
+              >
+                {t('landing.nav.openApp')}
+              </button>
+              <UserMenu />
+            </>
           ) : (
             <button
               onClick={openAuthModal}
@@ -182,25 +164,39 @@ export default function Navbar() {
             <LanguageSwitcher />
             <ThemeToggle />
             {user ? (
-              <div className="flex items-center gap-2 flex-1">
-                {user.picture ? (
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    className="w-7 h-7 rounded-full object-cover"
+              <div className="flex flex-col gap-3 flex-1">
+                <div className="flex items-center gap-2 min-w-0">
+                  <UserAvatar
+                    picture={user.picture}
+                    name={user.name}
+                    className="w-7 h-7"
+                    textClassName="text-xs"
                   />
-                ) : (
-                  <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">
-                    {user.name.charAt(0)}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-foreground text-sm font-medium truncate">{user.name}</div>
+                    <div className="text-muted-foreground text-xs truncate">{user.email}</div>
                   </div>
-                )}
-                <span className="text-foreground text-sm truncate flex-1">{user.name}</span>
-                <button
-                  onClick={() => useAuthStore.getState().signOut()}
-                  className="text-red-500 text-sm hover:underline"
-                >
-                  Sign Out
-                </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      navigate('/app/dashboard');
+                    }}
+                    className="flex-1 text-center px-4 py-2 rounded-lg border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 text-sm font-semibold transition-colors"
+                  >
+                    {t('landing.nav.openApp')}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      useAuthStore.getState().signOut();
+                    }}
+                    className="text-red-500 text-sm hover:underline"
+                  >
+                    {t('profile.signOut')}
+                  </button>
+                </div>
               </div>
             ) : (
               <button
