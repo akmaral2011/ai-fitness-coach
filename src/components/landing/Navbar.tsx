@@ -160,11 +160,13 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <div className="flex items-center gap-3 pt-2 border-t border-border">
-            <LanguageSwitcher />
-            <ThemeToggle />
+          <div className="pt-2 border-t border-border flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
             {user ? (
-              <div className="flex flex-col gap-3 flex-1">
+              <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-2 min-w-0">
                   <UserAvatar
                     picture={user.picture}
@@ -204,7 +206,7 @@ export default function Navbar() {
                   setMenuOpen(false);
                   openAuthModal();
                 }}
-                className="flex-1 text-center px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-semibold transition-colors"
+                className="w-full text-center px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-semibold transition-colors"
               >
                 {t('landing.nav.getStarted')}
               </button>

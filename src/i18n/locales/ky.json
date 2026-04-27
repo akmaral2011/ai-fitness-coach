@@ -18,10 +18,10 @@
     "sec": "сек"
   },
   "nav": {
-    "dashboard": "Башкы бет",
-    "catalog": "Көнүгүүлөр",
-    "programs": "Программалар",
-    "progress": "Жетишкендиктер",
+    "dashboard": "Башкы",
+    "catalog": "Жаттыгуу",
+    "programs": "Программа",
+    "progress": "Жетишүү",
     "learn": "Окуу",
     "profile": "Профиль"
   },

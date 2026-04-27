@@ -54,13 +54,15 @@ export default function AppLayout({ children }: Props) {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center flex-1 gap-0.5 text-xs transition-colors ${
+                `flex flex-col items-center justify-center flex-1 gap-0.5 transition-colors min-w-0 px-0.5 ${
                   isActive ? 'text-emerald-500' : 'text-muted-foreground hover:text-foreground'
                 }`
               }
             >
               {item.icon}
-              <span className="leading-none">{t(item.labelKey)}</span>
+              <span className="text-[10px] leading-none truncate w-full text-center">
+                {t(item.labelKey)}
+              </span>
             </NavLink>
           ))}
         </div>
