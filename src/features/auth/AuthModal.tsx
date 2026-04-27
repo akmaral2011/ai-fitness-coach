@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { Shield, X, Zap } from 'lucide-react';
+import { Mail, Shield, X, Zap } from 'lucide-react';
 
 import { useAuthStore } from '@/features/auth/authStore';
 
@@ -12,6 +12,10 @@ export default function AuthModal() {
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLDivElement>(null);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -63,6 +67,7 @@ export default function AuthModal() {
         logo_alignment: 'center',
       });
 
+      setGoogleLoaded(true);
       return true;
     }
 
@@ -70,9 +75,36 @@ export default function AuthModal() {
       const interval = setInterval(() => {
         if (initGoogleButton()) clearInterval(interval);
       }, 100);
-      return () => clearInterval(interval);
+
+      const timeout = setTimeout(() => {
+        clearInterval(interval);
+        setShowEmail(true);
+      }, 3000);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      };
     }
   }, [closeAuthModal, navigate, setUser]);
+
+  function handleEmailSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed || !trimmed.includes('@')) {
+      setEmailError(t('auth.emailError', 'Введите корректный email'));
+      return;
+    }
+    const name = trimmed.split('@')[0];
+    setUser({
+      id: `email_${trimmed}`,
+      name,
+      email: trimmed,
+      picture: undefined,
+    });
+    closeAuthModal();
+    navigate('/app/dashboard');
+  }
 
   return (
     <div
@@ -88,7 +120,7 @@ export default function AuthModal() {
     >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-      <div className="relative z-10 w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl p-8 flex flex-col items-center text-center">
+      <div className="relative z-10 w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl p-6 sm:p-8 flex flex-col items-center text-center">
         <button
           onClick={closeAuthModal}
           aria-label="Close"
@@ -97,18 +129,73 @@ export default function AuthModal() {
           <X className="w-4 h-4" />
         </button>
 
-        <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 mb-5">
+        <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 mb-4 sm:mb-5">
           <Zap className="w-6 h-6 text-white" />
         </div>
 
-        <h2 className="text-xl font-bold text-foreground mb-2">
+        <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
           {t('auth.title', 'Sign in to AI Fitness Coach')}
         </h2>
-        <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-xs">
+        <p className="text-muted-foreground text-sm leading-relaxed mb-5 sm:mb-6 max-w-xs">
           {t('auth.subtitle', 'Track your workouts, save your progress, and unlock AI coaching.')}
         </p>
 
+        {/* Google button */}
         <div ref={btnRef} className="w-full flex justify-center min-h-11" />
+
+        {/* divider */}
+        {(googleLoaded || showEmail) && (
+          <div className="w-full flex items-center gap-3 my-4">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-muted-foreground text-xs">{t('auth.or', 'или')}</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+        )}
+
+        {/* Email form */}
+        {(googleLoaded || showEmail) && !showEmail ? (
+          <button
+            onClick={() => setShowEmail(true)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <Mail className="w-4 h-4" />
+            {t('auth.continueEmail', 'Продолжить с email')}
+          </button>
+        ) : null}
+
+        {showEmail && (
+          <form onSubmit={handleEmailSubmit} className="w-full flex flex-col gap-3">
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="email"
+                value={email}
+                onChange={e => {
+                  setEmail(e.target.value);
+                  setEmailError('');
+                }}
+                placeholder={t('auth.emailPlaceholder', 'your@email.com')}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-colors"
+              />
+            </div>
+            {emailError && <p className="text-red-500 text-xs text-left">{emailError}</p>}
+            <button
+              type="submit"
+              className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-semibold transition-colors shadow-lg shadow-emerald-500/20"
+            >
+              {t('auth.continueBtn', 'Продолжить')}
+            </button>
+            {googleLoaded && (
+              <button
+                type="button"
+                onClick={() => setShowEmail(false)}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t('auth.backToGoogle', '← Войти через Google')}
+              </button>
+            )}
+          </form>
+        )}
 
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs mt-5">
           <Shield className="w-3 h-3 text-emerald-500 shrink-0" />
