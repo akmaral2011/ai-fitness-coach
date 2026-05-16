@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 import type { FitnessProfile } from '@/features/profile/types';
 
 type ProfileDraft = Partial<Omit<FitnessProfile, 'completedAt'>>;
-type ProfilePayload = Omit<FitnessProfile, 'completedAt'>;
+type ProfilePayload = Omit<FitnessProfile, 'completedAt' | 'userId'>;
 
 type ProfileState = {
   profile: FitnessProfile | null;
@@ -12,7 +12,7 @@ type ProfileState = {
   isOnboardingComplete: boolean;
   saveDraft: (draft: ProfileDraft) => void;
   resetDraft: () => void;
-  completeOnboarding: (profile: ProfilePayload) => void;
+  completeOnboarding: (userId: string, profile: ProfilePayload) => void;
   setProfile: (profile: FitnessProfile) => void;
   updateProfile: (updates: Partial<ProfilePayload>) => void;
   clearProfile: () => void;
@@ -20,9 +20,10 @@ type ProfileState = {
 
 const EmptyDraft: ProfileDraft = {};
 
-function buildProfile(profile: ProfilePayload): FitnessProfile {
+function buildProfile(userId: string, profile: ProfilePayload): FitnessProfile {
   return {
     ...profile,
+    userId,
     completedAt: new Date().toISOString(),
   };
 }
@@ -41,9 +42,9 @@ export const useProfileStore = create<ProfileState>()(
           },
         })),
       resetDraft: () => set({ onboardingDraft: EmptyDraft }),
-      completeOnboarding: profile =>
+      completeOnboarding: (userId, profile) =>
         set({
-          profile: buildProfile(profile),
+          profile: buildProfile(userId, profile),
           onboardingDraft: EmptyDraft,
           isOnboardingComplete: true,
         }),

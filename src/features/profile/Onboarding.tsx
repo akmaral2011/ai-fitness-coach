@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { useThemeSync } from '@/components/ThemeToggle';
+import { useAuthStore } from '@/features/auth/authStore';
 import {
   type CameraChecks,
   type FrameAnalysis,
@@ -37,6 +38,7 @@ export default function Onboarding() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { saveDraft, completeOnboarding, onboardingDraft } = useProfileStore();
+  const user = useAuthStore(s => s.user);
 
   const [step, setStep] = useState(1);
 
@@ -177,8 +179,8 @@ export default function Onboarding() {
         setStep(8);
         break;
       case 8:
-        if (goal && gender && height && weight && age && activityLevel && fitnessLevel) {
-          completeOnboarding({
+        if (goal && gender && height && weight && age && activityLevel && fitnessLevel && user) {
+          completeOnboarding(user.id, {
             goal,
             gender,
             heightCm: parseFloat(height),

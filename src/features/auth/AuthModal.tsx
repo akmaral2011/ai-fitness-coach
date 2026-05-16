@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { Shield, X, Zap } from 'lucide-react';
 
 import { useAuthStore } from '@/features/auth/authStore';
+import { useProfileStore } from '@/features/profile/profileStore';
 
 export default function AuthModal() {
   const { t } = useTranslation();
@@ -37,8 +38,11 @@ export default function AuthModal() {
           try {
             const b64 = response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
             const payload = JSON.parse(atob(b64));
+            const userId = payload.sub as string;
+            const { profile, clearProfile } = useProfileStore.getState();
+            if (profile?.userId !== userId) clearProfile();
             setUser({
-              id: payload.sub as string,
+              id: userId,
               name: (payload.name ?? payload.email) as string,
               email: payload.email as string,
               picture: payload.picture as string | undefined,

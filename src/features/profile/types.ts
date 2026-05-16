@@ -18,6 +18,7 @@ export type InjuryType =
   | 'none';
 
 export type FitnessProfile = {
+  userId: string;
   heightCm: number;
   weightKg: number;
   ageYears: number;
