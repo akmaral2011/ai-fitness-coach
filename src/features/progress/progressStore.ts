@@ -16,12 +16,40 @@ type ProgressSummary = {
   currentStreak: number;
 };
 
+type XPData = {
+  totalXP: number;
+  level: number;
+  xpInCurrentLevel: number;
+  xpPerLevel: number;
+  progressPercent: number;
+};
+
+const XP_PER_LEVEL = 300;
+
+function sessionXP(session: CompletedSession): number {
+  return session.repCount * 2 + Math.round(session.averageScore / 5);
+}
+
+function calculateXP(sessions: CompletedSession[]): XPData {
+  const totalXP = sessions.reduce((sum, s) => sum + sessionXP(s), 0);
+  const level = Math.floor(totalXP / XP_PER_LEVEL) + 1;
+  const xpInCurrentLevel = totalXP % XP_PER_LEVEL;
+  return {
+    totalXP,
+    level,
+    xpInCurrentLevel,
+    xpPerLevel: XP_PER_LEVEL,
+    progressPercent: Math.round((xpInCurrentLevel / XP_PER_LEVEL) * 100),
+  };
+}
+
 type ProgressState = {
   sessions: CompletedSession[];
   addSession: (session: SessionPayload | CompletedSession) => CompletedSession;
   removeSession: (sessionId: string) => void;
   clearSessions: () => void;
   getSummary: () => ProgressSummary;
+  getXPData: () => XPData;
   getRecentSessions: (limit?: number) => CompletedSession[];
   getSessionsByExercise: (exerciseId: string) => CompletedSession[];
   getExercisePersonalBest: (exerciseId: string) => CompletedSession | null;
@@ -106,6 +134,7 @@ export const useProgressStore = create<ProgressState>()(
         })),
       clearSessions: () => set({ sessions: [] }),
       getSummary: () => calculateSummary(get().sessions),
+      getXPData: () => calculateXP(get().sessions),
       getRecentSessions: (limit = 7) => get().sessions.slice(0, limit),
       getSessionsByExercise: exerciseId =>
         get().sessions.filter(session => session.exerciseId === exerciseId),

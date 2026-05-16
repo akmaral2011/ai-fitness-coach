@@ -638,7 +638,9 @@
     "recentActivity": "Recent Activity",
     "noActivity": "No workouts yet — start your first!",
     "reps": "reps",
-    "score": "score"
+    "score": "score",
+    "level": "Level {{level}}",
+    "xpToNext": "{{xp}} XP to Level {{next}}"
   },
   "catalog": {
     "title": "Exercise Library",

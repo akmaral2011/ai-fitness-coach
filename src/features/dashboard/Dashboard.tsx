@@ -33,9 +33,10 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const user = useAuthStore(s => s.user);
-  const { getSummary, getRecentSessions } = useProgressStore();
+  const { getSummary, getXPData, getRecentSessions } = useProgressStore();
 
   const summary = getSummary();
+  const xp = getXPData();
   const recent = getRecentSessions(5);
   const { getEnrollment, getCompletedCount } = useProgramStore();
   const enrolledPrograms = PROGRAMS.filter(p => getEnrollment(p.id));
@@ -59,6 +60,26 @@ export default function Dashboard() {
         <div>
           <h1 className="text-xl font-bold text-foreground">{greeting}</h1>
         </div>
+      </div>
+
+      <div className="mb-5 p-4 bg-card border border-border rounded-2xl">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-bold text-foreground">
+            {t('dashboard.level', { level: xp.level })}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {xp.xpInCurrentLevel} / {xp.xpPerLevel} XP
+          </span>
+        </div>
+        <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+            style={{ width: `${xp.progressPercent}%` }}
+          />
+        </div>
+        <p className="text-xs text-muted-foreground mt-1.5">
+          {t('dashboard.xpToNext', { xp: xp.xpPerLevel - xp.xpInCurrentLevel, next: xp.level + 1 })}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-6">
