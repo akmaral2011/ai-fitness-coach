@@ -29,7 +29,9 @@
     "title": "Sign in to AI Fitness Coach",
     "subtitle": "Track your progress and get personalized coaching",
     "privacy": "Your video never leaves your device",
-    "signInWithGoogle": "Continue with Google"
+    "signInWithGoogle": "Continue with Google",
+    "or": "or",
+    "demoUser": "Continue as demo user"
   },
   "onboarding": {
     "stepOf": "Step {{current}} of {{total}}",

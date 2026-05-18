@@ -29,7 +29,9 @@
     "title": "Войти в AI Fitness Coach",
     "subtitle": "Отслеживайте прогресс и получайте персональные тренировки",
     "privacy": "Видео никогда не покидает ваше устройство",
-    "signInWithGoogle": "Войти через Google"
+    "signInWithGoogle": "Войти через Google",
+    "or": "или",
+    "demoUser": "Продолжить как демо-пользователь"
   },
   "onboarding": {
     "stepOf": "Шаг {{current}} из {{total}}",

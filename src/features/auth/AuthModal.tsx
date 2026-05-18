@@ -6,6 +6,20 @@ import { Shield, X, Zap } from 'lucide-react';
 
 import { useAuthStore } from '@/features/auth/authStore';
 import { useProfileStore } from '@/features/profile/profileStore';
+import { useProgramStore } from '@/features/programs/programStore';
+import { useProgressStore } from '@/features/progress/progressStore';
+
+const DemoUser = {
+  id: 'demo-user',
+  name: 'Demo User',
+  email: 'demo@fitcoach.app',
+};
+
+function clearUserData() {
+  useProfileStore.getState().clearProfile();
+  useProgressStore.getState().clearSessions();
+  useProgramStore.getState().clearEnrollments();
+}
 
 export default function AuthModal() {
   const { t } = useTranslation();
@@ -39,8 +53,11 @@ export default function AuthModal() {
             const b64 = response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
             const payload = JSON.parse(atob(b64));
             const userId = payload.sub as string;
-            const { profile, clearProfile } = useProfileStore.getState();
-            if (profile?.userId !== userId) clearProfile();
+            const currentUser = useAuthStore.getState().user;
+            const { profile } = useProfileStore.getState();
+            const isDifferentStoredUser = currentUser !== null && currentUser.id !== userId;
+            const isDifferentProfile = profile !== null && profile.userId !== userId;
+            if (isDifferentStoredUser || isDifferentProfile) clearUserData();
             setUser({
               id: userId,
               name: (payload.name ?? payload.email) as string,
@@ -78,6 +95,13 @@ export default function AuthModal() {
     }
   }, [closeAuthModal, navigate, setUser]);
 
+  function continueAsDemoUser() {
+    clearUserData();
+    setUser(DemoUser);
+    closeAuthModal();
+    navigate('/onboarding');
+  }
+
   return (
     <div
       ref={overlayRef}
@@ -113,6 +137,20 @@ export default function AuthModal() {
         </p>
 
         <div ref={btnRef} className="w-full flex justify-center min-h-11" />
+
+        <div className="flex items-center gap-3 w-full my-5">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-xs text-muted-foreground">{t('auth.or', 'or')}</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <button
+          type="button"
+          onClick={continueAsDemoUser}
+          className="w-full h-11 rounded-xl border border-emerald-500/40 text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 font-semibold text-sm transition-colors"
+        >
+          {t('auth.demoUser', 'Continue as demo user')}
+        </button>
 
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs mt-5">
           <Shield className="w-3 h-3 text-emerald-500 shrink-0" />

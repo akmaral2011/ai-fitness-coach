@@ -29,7 +29,9 @@
     "title": "AI Fitness Coach кирүү",
     "subtitle": "Прогрессиңизди байкап, жекелештирилген машыгуу алыңыз",
     "privacy": "Видео түзмөгүңүздөн чыкпайт",
-    "signInWithGoogle": "Google аркылуу кирүү"
+    "signInWithGoogle": "Google аркылуу кирүү",
+    "or": "же",
+    "demoUser": "Демо колдонуучу катары улантуу"
   },
   "onboarding": {
     "stepOf": "{{current}} кадам {{total}} дан",

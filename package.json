@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write src",
-    "stylelint": "stylelint src/**/*.css"
+    "stylelint": "stylelint src/**/*.css",
+    "test": "vitest run"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
@@ -52,7 +53,8 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-mkcert": "^1.17.12",
     "vite-plugin-pwa": "^1.2.0",
-    "vite-plugin-react-click-to-component": "^4.2.1"
+    "vite-plugin-react-click-to-component": "^4.2.1",
+    "vitest": "^4.1.6"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",

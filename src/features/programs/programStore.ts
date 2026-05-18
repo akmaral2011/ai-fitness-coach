@@ -11,6 +11,7 @@ type ProgramStore = {
   enrollments: ProgramEnrollment[];
   enroll: (programId: string) => void;
   unenroll: (programId: string) => void;
+  clearEnrollments: () => void;
   markDayComplete: (programId: string, dayId: string) => void;
   getEnrollment: (programId: string) => ProgramEnrollment | undefined;
   isDayComplete: (programId: string, dayId: string) => boolean;
@@ -37,6 +38,8 @@ export const useProgramStore = create<ProgramStore>()(
         set(state => ({
           enrollments: state.enrollments.filter(e => e.programId !== programId),
         })),
+
+      clearEnrollments: () => set({ enrollments: [] }),
 
       markDayComplete: (programId, dayId) =>
         set(state => ({
