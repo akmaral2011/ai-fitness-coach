@@ -48,6 +48,7 @@ type ProgressState = {
   addSession: (session: SessionPayload | CompletedSession) => CompletedSession;
   removeSession: (sessionId: string) => void;
   clearSessions: () => void;
+  setSessions: (sessions: CompletedSession[]) => void;
   getSummary: () => ProgressSummary;
   getXPData: () => XPData;
   getRecentSessions: (limit?: number) => CompletedSession[];
@@ -133,6 +134,10 @@ export const useProgressStore = create<ProgressState>()(
           sessions: state.sessions.filter(session => session.id !== sessionId),
         })),
       clearSessions: () => set({ sessions: [] }),
+      setSessions: sessions =>
+        set({
+          sessions: [...sessions].sort((a, b) => b.date.localeCompare(a.date)),
+        }),
       getSummary: () => calculateSummary(get().sessions),
       getXPData: () => calculateXP(get().sessions),
       getRecentSessions: (limit = 7) => get().sessions.slice(0, limit),

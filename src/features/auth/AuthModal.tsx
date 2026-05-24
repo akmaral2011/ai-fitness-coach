@@ -1,32 +1,48 @@
-import { useEffect, useRef } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { Shield, X, Zap } from 'lucide-react';
+import { Eye, EyeOff, Shield, X, Zap } from 'lucide-react';
 
 import { useAuthStore } from '@/features/auth/authStore';
+import { clearSessionData } from '@/features/auth/sessionData';
 import { useProfileStore } from '@/features/profile/profileStore';
-import { useProgramStore } from '@/features/programs/programStore';
-import { useProgressStore } from '@/features/progress/progressStore';
+import { ApiError, apiRequest } from '@/lib/api';
 
-const DemoUser = {
-  id: 'demo-user',
-  name: 'Demo User',
-  email: 'demo@fitcoach.app',
+type AuthMode = 'login' | 'register' | 'forgot' | 'reset';
+
+type AuthResponse = {
+  token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    pictureUrl?: string | null;
+    emailVerified?: boolean;
+  };
+  verificationToken?: string;
 };
 
-function clearUserData() {
-  useProfileStore.getState().clearProfile();
-  useProgressStore.getState().clearSessions();
-  useProgramStore.getState().clearEnrollments();
-}
+type TokenResponse = {
+  message: string;
+  resetToken?: string;
+};
 
 export default function AuthModal() {
   const { t } = useTranslation();
-  const { closeAuthModal, setUser } = useAuthStore();
+  const { closeAuthModal, setSession } = useAuthStore();
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
-  const btnRef = useRef<HTMLDivElement>(null);
+  const [mode, setMode] = useState<AuthMode>('login');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [resetToken, setResetToken] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -40,66 +56,105 @@ export default function AuthModal() {
     };
   }, [closeAuthModal]);
 
-  useEffect(() => {
-    function initGoogleButton() {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const g = (window as any).google;
-      if (!g?.accounts?.id || !btnRef.current) return false;
+  function completeAuth(response: AuthResponse, redirectMode: AuthMode) {
+    const currentUser = useAuthStore.getState().user;
+    const { profile } = useProfileStore.getState();
+    const isDifferentStoredUser = currentUser !== null && currentUser.id !== response.user.id;
+    const isDifferentProfile = profile !== null && profile.userId !== response.user.id;
+    if (isDifferentStoredUser || isDifferentProfile) clearSessionData();
 
-      g.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
-        callback: (response: { credential: string }) => {
-          try {
-            const b64 = response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(atob(b64));
-            const userId = payload.sub as string;
-            const currentUser = useAuthStore.getState().user;
-            const { profile } = useProfileStore.getState();
-            const isDifferentStoredUser = currentUser !== null && currentUser.id !== userId;
-            const isDifferentProfile = profile !== null && profile.userId !== userId;
-            if (isDifferentStoredUser || isDifferentProfile) clearUserData();
-            setUser({
-              id: userId,
-              name: (payload.name ?? payload.email) as string,
-              email: payload.email as string,
-              picture: payload.picture as string | undefined,
-            });
-            closeAuthModal();
-            navigate('/app/dashboard');
-          } catch {
-            console.error('Failed to decode Google credential');
-          }
-        },
-        ux_mode: 'popup',
-        auto_select: false,
-        cancel_on_tap_outside: false,
-      });
-
-      g.accounts.id.renderButton(btnRef.current, {
-        type: 'standard',
-        theme: 'outline',
-        size: 'large',
-        text: 'signin_with',
-        width: btnRef.current.offsetWidth || 300,
-        logo_alignment: 'center',
-      });
-
-      return true;
-    }
-
-    if (!initGoogleButton()) {
-      const interval = setInterval(() => {
-        if (initGoogleButton()) clearInterval(interval);
-      }, 100);
-      return () => clearInterval(interval);
-    }
-  }, [closeAuthModal, navigate, setUser]);
-
-  function continueAsDemoUser() {
-    clearUserData();
-    setUser(DemoUser);
+    setSession({
+      token: response.token,
+      user: {
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email,
+        picture: response.user.pictureUrl ?? undefined,
+        emailVerified: response.user.emailVerified,
+      },
+    });
     closeAuthModal();
-    navigate('/onboarding');
+    navigate(redirectMode === 'register' ? '/onboarding' : '/app/dashboard');
+  }
+
+  async function submitEmailAuth(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setNotice(null);
+    setSubmitting(true);
+
+    try {
+      const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
+      const response = await apiRequest<AuthResponse>(endpoint, {
+        method: 'POST',
+        body: JSON.stringify({
+          ...(mode === 'register' ? { name } : {}),
+          email,
+          password,
+        }),
+      });
+
+      if (response.verificationToken) {
+        setNotice(t('auth.verifyEmailDev', { token: response.verificationToken }));
+      }
+
+      completeAuth(response, mode);
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : t('auth.networkError', 'Could not connect to the server');
+      setError(message);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function submitForgotPassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setNotice(null);
+    setSubmitting(true);
+
+    try {
+      const response = await apiRequest<TokenResponse>('/api/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+      if (response.resetToken) {
+        setResetToken(response.resetToken);
+        setNotice(t('auth.resetTokenDev', { token: response.resetToken }));
+      } else {
+        setNotice(response.message);
+      }
+      setMode('reset');
+      setPassword('');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t('auth.networkError'));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function submitResetPassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setNotice(null);
+    setSubmitting(true);
+
+    try {
+      const response = await apiRequest<TokenResponse>('/api/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ token: resetToken, password }),
+      });
+      setNotice(response.message);
+      setMode('login');
+      setPassword('');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t('auth.networkError'));
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -116,7 +171,7 @@ export default function AuthModal() {
     >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-      <div className="relative z-10 w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl p-8 flex flex-col items-center text-center">
+      <div className="app-card relative z-10 flex w-full max-w-sm flex-col items-center p-8 text-center shadow-2xl animate-in zoom-in-95 fade-in duration-200">
         <button
           onClick={closeAuthModal}
           aria-label="Close"
@@ -136,21 +191,200 @@ export default function AuthModal() {
           {t('auth.subtitle', 'Track your workouts, save your progress, and unlock AI coaching.')}
         </p>
 
-        <div ref={btnRef} className="w-full flex justify-center min-h-11" />
+        {mode !== 'forgot' && mode !== 'reset' && (
+          <div className="grid grid-cols-2 w-full p-1 bg-muted rounded-xl mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                setMode('login');
+                setError(null);
+                setNotice(null);
+              }}
+              className={`h-9 rounded-lg text-sm font-semibold transition-colors ${
+                mode === 'login'
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {t('auth.loginTab', 'Log in')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('register');
+                setError(null);
+                setNotice(null);
+              }}
+              className={`h-9 rounded-lg text-sm font-semibold transition-colors ${
+                mode === 'register'
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {t('auth.registerTab', 'Sign up')}
+            </button>
+          </div>
+        )}
 
-        <div className="flex items-center gap-3 w-full my-5">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-muted-foreground">{t('auth.or', 'or')}</span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
+        {mode !== 'forgot' && mode !== 'reset' && (
+          <form onSubmit={submitEmailAuth} className="w-full flex flex-col gap-3 text-left">
+            {mode === 'register' && (
+              <label className="flex flex-col gap-1.5">
+                <span className="text-xs font-medium text-muted-foreground">
+                  {t('auth.nameLabel', 'Name')}
+                </span>
+                <input
+                  value={name}
+                  onChange={event => setName(event.target.value)}
+                  required
+                  minLength={2}
+                  autoComplete="name"
+                  className="h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-emerald-500"
+                />
+              </label>
+            )}
 
-        <button
-          type="button"
-          onClick={continueAsDemoUser}
-          className="w-full h-11 rounded-xl border border-emerald-500/40 text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 font-semibold text-sm transition-colors"
-        >
-          {t('auth.demoUser', 'Continue as demo user')}
-        </button>
+            <EmailInput email={email} setEmail={setEmail} />
+
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                {t('auth.passwordLabel', 'Password')}
+              </span>
+              <div className="relative">
+                <input
+                  value={password}
+                  onChange={event => setPassword(event.target.value)}
+                  required
+                  minLength={mode === 'register' ? 8 : 1}
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 pr-11 text-sm text-foreground outline-none focus:border-emerald-500"
+                />
+                <PasswordToggle
+                  shown={showPassword}
+                  onClick={() => setShowPassword(value => !value)}
+                />
+              </div>
+            </label>
+
+            {mode === 'login' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('forgot');
+                  setError(null);
+                  setNotice(null);
+                }}
+                className="self-end text-xs font-semibold text-emerald-500 hover:text-emerald-400"
+              >
+                {t('auth.forgotPassword')}
+              </button>
+            )}
+
+            {notice && (
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600">
+                {notice}
+              </div>
+            )}
+
+            {error && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-500">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="app-primary-action h-11 w-full text-sm disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {submitting
+                ? t('auth.submitting', 'Please wait...')
+                : mode === 'login'
+                  ? t('auth.loginAction', 'Log in')
+                  : t('auth.registerAction', 'Create account')}
+            </button>
+          </form>
+        )}
+
+        {mode === 'forgot' && (
+          <form onSubmit={submitForgotPassword} className="w-full flex flex-col gap-3 text-left">
+            <EmailInput email={email} setEmail={setEmail} />
+            {notice && (
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600">
+                {notice}
+              </div>
+            )}
+            {error && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-500">
+                {error}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="app-primary-action h-11 w-full text-sm disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {submitting ? t('auth.submitting') : t('auth.sendReset')}
+            </button>
+            <BackToLogin setMode={setMode} setError={setError} setNotice={setNotice} />
+          </form>
+        )}
+
+        {mode === 'reset' && (
+          <form onSubmit={submitResetPassword} className="w-full flex flex-col gap-3 text-left">
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                {t('auth.resetTokenLabel')}
+              </span>
+              <input
+                value={resetToken}
+                onChange={event => setResetToken(event.target.value)}
+                required
+                autoComplete="one-time-code"
+                className="h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-emerald-500"
+              />
+            </label>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                {t('auth.newPasswordLabel')}
+              </span>
+              <div className="relative">
+                <input
+                  value={password}
+                  onChange={event => setPassword(event.target.value)}
+                  required
+                  minLength={8}
+                  type={showResetPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 pr-11 text-sm text-foreground outline-none focus:border-emerald-500"
+                />
+                <PasswordToggle
+                  shown={showResetPassword}
+                  onClick={() => setShowResetPassword(value => !value)}
+                />
+              </div>
+            </label>
+            {notice && (
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600">
+                {notice}
+              </div>
+            )}
+            {error && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-500">
+                {error}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="app-primary-action h-11 w-full text-sm disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {submitting ? t('auth.submitting') : t('auth.resetPassword')}
+            </button>
+            <BackToLogin setMode={setMode} setError={setError} setNotice={setNotice} />
+          </form>
+        )}
 
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs mt-5">
           <Shield className="w-3 h-3 text-emerald-500 shrink-0" />
@@ -158,5 +392,63 @@ export default function AuthModal() {
         </div>
       </div>
     </div>
+  );
+}
+
+function EmailInput({ email, setEmail }: { email: string; setEmail: (email: string) => void }) {
+  const { t } = useTranslation();
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="text-xs font-medium text-muted-foreground">
+        {t('auth.emailLabel', 'Email')}
+      </span>
+      <input
+        value={email}
+        onChange={event => setEmail(event.target.value)}
+        required
+        type="email"
+        autoComplete="email"
+        className="h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-emerald-500"
+      />
+    </label>
+  );
+}
+
+function PasswordToggle({ shown, onClick }: { shown: boolean; onClick: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={shown ? t('auth.hidePassword') : t('auth.showPassword')}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+    >
+      {shown ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+    </button>
+  );
+}
+
+function BackToLogin({
+  setMode,
+  setError,
+  setNotice,
+}: {
+  setMode: (mode: AuthMode) => void;
+  setError: (message: string | null) => void;
+  setNotice: (message: string | null) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        setMode('login');
+        setError(null);
+        setNotice(null);
+      }}
+      className="text-center text-xs font-semibold text-muted-foreground hover:text-foreground"
+    >
+      {t('auth.backToLogin')}
+    </button>
   );
 }

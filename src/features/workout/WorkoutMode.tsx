@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
+import { useAuthStore } from '@/features/auth/authStore';
 import { getExercise } from '@/features/exercises/data';
+import { useExerciseRules } from '@/features/exercises/useExerciseRules';
 import { recordWorkoutDone } from '@/features/notifications/useWorkoutReminder';
 import { useProgressStore } from '@/features/progress/progressStore';
 import { drawSkeleton } from '@/features/workout/skeleton';
@@ -30,12 +32,14 @@ import {
   WorkoutSummary,
 } from '@/features/workout/workoutModeSections';
 import { useWorkoutStore } from '@/features/workout/workoutStore';
+import { apiRequest } from '@/lib/api';
 
 export default function WorkoutMode() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const exercise = id ? getExercise(id) : null;
+  const localExercise = id ? (getExercise(id) ?? null) : null;
+  const { exercise } = useExerciseRules(localExercise);
 
   // store
   const {
@@ -54,6 +58,7 @@ export default function WorkoutMode() {
     buildCompletedSession,
   } = useWorkoutStore();
   const { addSession } = useProgressStore();
+  const token = useAuthStore(s => s.token);
   const { processFrame } = useWorkoutEngine(exercise ?? null);
 
   // local state
@@ -224,6 +229,28 @@ export default function WorkoutMode() {
 
   // ── handlers ──
 
+  function saveCompletedWorkout(session: NonNullable<ReturnType<typeof buildCompletedSession>>) {
+    const savedSession = addSession(session);
+    recordWorkoutDone();
+
+    if (token) {
+      void apiRequest('/api/workouts', {
+        method: 'POST',
+        token,
+        body: JSON.stringify({
+          exerciseSlug: savedSession.exerciseId,
+          repCount: savedSession.repCount,
+          averageScore: savedSession.averageScore,
+          durationSeconds: savedSession.durationSeconds,
+          scoreHistory: savedSession.scoreHistory,
+          completedAt: savedSession.date,
+        }),
+      }).catch(error => {
+        console.error('Failed to save workout to backend', error);
+      });
+    }
+  }
+
   const handleSetComplete = useCallback(() => {
     if (setCompletingRef.current) return;
     setCompletingRef.current = true;
@@ -245,7 +272,7 @@ export default function WorkoutMode() {
     if (nextSet >= totalSets) {
       // save aggregate session
       if (session) {
-        addSession({
+        saveCompletedWorkout({
           ...session,
           repCount: allSets.reduce((a, s) => a + s.repCount, 0),
           averageScore: Math.round(
@@ -253,7 +280,6 @@ export default function WorkoutMode() {
           ),
           durationSeconds: allSets.reduce((a, s) => a + s.durationSeconds, 0),
         });
-        recordWorkoutDone();
       }
       stopCamera();
       setStage('summary');
@@ -293,13 +319,12 @@ export default function WorkoutMode() {
     };
     const allSets = [...setResultsRef.current, result];
     if (session && allSets.length > 0) {
-      addSession({
+      saveCompletedWorkout({
         ...session,
         repCount: allSets.reduce((a, s) => a + s.repCount, 0),
         averageScore: Math.round(allSets.reduce((a, s) => a + s.averageScore, 0) / allSets.length),
         durationSeconds: allSets.reduce((a, s) => a + s.durationSeconds, 0),
       });
-      recordWorkoutDone();
     }
     setSetResults(allSets);
     stopCamera();

@@ -1,6 +1,7 @@
 export type WorkoutFeedback = {
   ruleId: string;
   feedbackKey: string;
+  message?: string;
   severity: 'warn' | 'error';
   timestamp: number;
 };

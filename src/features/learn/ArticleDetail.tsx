@@ -4,17 +4,22 @@ import { useNavigate, useParams } from 'react-router';
 import { ArrowRight, CheckCircle, Play } from 'lucide-react';
 
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
+import { useAuthStore } from '@/features/auth/authStore';
 import { EXERCISES } from '@/features/exercises/data';
-import { categoryColor, getLesson } from '@/features/learn/data';
+import { categoryColor } from '@/features/learn/data';
 import { useLearnStore } from '@/features/learn/learnStore';
+import { useLessons } from '@/features/learn/useLessons';
+import { apiRequest } from '@/lib/api';
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { completedIds, markComplete } = useLearnStore();
+  const token = useAuthStore(s => s.token);
+  const { lessons } = useLessons();
 
-  const lesson = id ? getLesson(id) : undefined;
+  const lesson = id ? lessons.find(item => item.id === id) : undefined;
 
   if (!lesson) {
     return (
@@ -30,7 +35,7 @@ export default function ArticleDetail() {
     : undefined;
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-10">
+    <div className="min-h-screen bg-background text-foreground pb-10 app-page-flow">
       <div className="sticky top-0 z-10 bg-background/90 backdrop-blur border-b border-border px-4 h-14 flex items-center gap-3">
         <button
           onClick={() => navigate('/app/learn')}
@@ -57,7 +62,7 @@ export default function ArticleDetail() {
                 className="w-full aspect-video rounded-xl border border-border"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                title={t(lesson.titleKey)}
+                title={lesson.remoteTitle ?? t(lesson.titleKey)}
               />
             ) : (
               <div className="w-full aspect-video rounded-xl bg-muted border border-border flex flex-col items-center justify-center gap-3">
@@ -93,25 +98,26 @@ export default function ArticleDetail() {
             </span>
           </div>
           <h1 className="text-2xl font-bold text-foreground leading-snug mb-5">
-            {t(lesson.titleKey)}
+            {lesson.remoteTitle ?? t(lesson.titleKey)}
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed italic border-l-2 border-emerald-500/50 pl-4 mb-8">
-            {t(lesson.summaryKey)}
+            {lesson.remoteSummary ?? t(lesson.summaryKey)}
           </p>
         </div>
 
-        {lesson.keyTakeawayKeys && lesson.keyTakeawayKeys.length > 0 && (
+        {((lesson.remoteKeyTakeaways?.length ?? 0) > 0 ||
+          (lesson.keyTakeawayKeys?.length ?? 0) > 0) && (
           <div className="mb-8 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
             <h2 className="text-xs font-bold text-emerald-500 mb-3 uppercase tracking-wider">
               {t('learn.keyTakeaways')}
             </h2>
             <ul className="flex flex-col gap-2.5">
-              {lesson.keyTakeawayKeys.map((key, i) => (
+              {(lesson.remoteKeyTakeaways ?? lesson.keyTakeawayKeys ?? []).map((item, i) => (
                 <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/85">
                   <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                     {i + 1}
                   </span>
-                  {t(key)}
+                  {lesson.remoteKeyTakeaways ? item : t(item)}
                 </li>
               ))}
             </ul>
@@ -119,9 +125,9 @@ export default function ArticleDetail() {
         )}
 
         <div className="flex flex-col gap-6 pb-8">
-          {lesson.bodyKeys.map((key, i) => (
+          {(lesson.remoteBody ?? lesson.bodyKeys).map((item, i) => (
             <p key={i} className="text-foreground/85 leading-relaxed text-base">
-              {t(key)}
+              {lesson.remoteBody ? item : t(item)}
             </p>
           ))}
         </div>
@@ -133,7 +139,7 @@ export default function ArticleDetail() {
             </p>
             <button
               onClick={() => navigate(`/app/exercise/${linkedExercise.id}`)}
-              className="w-full flex items-center gap-4 p-4 bg-card border border-border rounded-2xl hover:border-emerald-500/40 transition-colors text-left group"
+              className="app-card app-card-hover group flex w-full items-center gap-4 p-4 text-left"
             >
               <span className="text-3xl leading-none shrink-0">
                 {linkedExercise.thumbnailEmoji}
@@ -153,12 +159,22 @@ export default function ArticleDetail() {
 
         <div className="pb-8">
           <button
-            onClick={() => markComplete(lesson.id)}
+            onClick={() => {
+              markComplete(lesson.id);
+              if (token) {
+                void apiRequest(`/api/lessons/${lesson.id}/complete`, {
+                  method: 'POST',
+                  token,
+                }).catch(error => {
+                  console.error('Failed to mark lesson complete', error);
+                });
+              }
+            }}
             disabled={isComplete}
             className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-colors ${
               isComplete
                 ? 'bg-emerald-500/15 text-emerald-500 cursor-default'
-                : 'bg-emerald-500 hover:bg-emerald-400 text-white'
+                : 'app-primary-action'
             }`}
           >
             <CheckCircle className="w-4 h-4" />

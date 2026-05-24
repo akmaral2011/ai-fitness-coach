@@ -15,15 +15,7 @@ export default function Problem() {
   ] as const;
 
   return (
-    <section className="py-16 sm:py-24 bg-background relative overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(239,68,68,0.06) 0%, transparent 70%)',
-        }}
-      />
-
+    <section className="relative overflow-hidden bg-background py-16 sm:py-24">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="order-2 lg:order-1">
@@ -47,7 +39,7 @@ export default function Problem() {
               {points.map(({ icon: Icon, key }) => (
                 <div
                   key={key}
-                  className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-card border border-border hover:border-border/80 transition-colors"
+                  className="app-card app-card-hover flex items-start gap-3 rounded-xl p-3 sm:p-4"
                 >
                   <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 mt-0.5">
                     <Icon className="w-4 h-4 text-red-500" />
@@ -61,13 +53,10 @@ export default function Problem() {
           </div>
 
           <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
-            <div className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
-              <div
-                className="absolute inset-0 rounded-full bg-red-500/5 border border-red-500/10"
-                style={{ animation: 'ping 3s cubic-bezier(0,0,0.2,1) infinite' }}
-              />
-              <div className="absolute inset-4 rounded-full bg-red-500/8 border border-red-500/15" />
-              <div className="absolute inset-8 rounded-full bg-red-500/10 border border-red-500/20" />
+            <div className="app-card relative h-48 w-48 overflow-hidden rounded-[2rem] sm:h-64 sm:w-64 lg:h-72 lg:w-72">
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(239,68,68,0.12),rgba(16,185,129,0.06))]" />
+              <div className="absolute inset-6 rounded-[1.5rem] border border-red-500/15" />
+              <div className="absolute inset-12 rounded-[1rem] border border-red-500/20" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                 <span className="text-6xl sm:text-7xl lg:text-8xl font-bold text-foreground leading-none">
                   73%

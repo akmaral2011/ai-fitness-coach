@@ -14,15 +14,7 @@ export default function HowItWorks() {
   const { t } = useTranslation();
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-24 bg-background relative overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 80% 60% at 50% 100%, rgba(16,185,129,0.06) 0%, transparent 60%)',
-        }}
-      />
-
+    <section id="how-it-works" className="relative overflow-hidden bg-background py-16 sm:py-24">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.howItWorks.badge')}</SectionBadge>
@@ -42,7 +34,7 @@ export default function HowItWorks() {
               className="relative flex md:flex-col items-center md:items-center gap-5 md:gap-0 text-left md:text-center"
             >
               <div className="relative mb-0 md:mb-6 shrink-0">
-                <div className="w-16 h-16 md:w-24 md:h-24 rounded-2xl bg-card border border-border flex items-center justify-center shadow-xl">
+                <div className="app-card flex h-16 w-16 items-center justify-center rounded-2xl shadow-xl md:h-24 md:w-24">
                   <Icon className="w-7 h-7 md:w-10 md:h-10 text-emerald-500" />
                 </div>
                 <div className="absolute -top-2 -right-2 md:-top-3 md:-right-3 w-6 h-6 md:w-7 md:h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-emerald-500/30">

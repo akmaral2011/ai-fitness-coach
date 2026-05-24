@@ -4,11 +4,13 @@ import { useNavigate, useParams } from 'react-router';
 
 import ChevronDownIcon from '@/components/icons/ChevronDownIcon';
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
+import { useAuthStore } from '@/features/auth/authStore';
 import { EXERCISES } from '@/features/exercises/data';
 import { DifficultyBadge, ProgressBar } from '@/features/programs/Programs';
 import { getProgram } from '@/features/programs/data';
-import { useProgramStore } from '@/features/programs/programStore';
+import { type ProgramEnrollment, useProgramStore } from '@/features/programs/programStore';
 import type { ProgramDay, ProgramWeek } from '@/features/programs/types';
+import { apiRequest } from '@/lib/api';
 
 function WorkoutDayCard({
   day,
@@ -21,7 +23,8 @@ function WorkoutDayCard({
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isDayComplete, markDayComplete } = useProgramStore();
+  const { isDayComplete, markDayComplete, setEnrollment } = useProgramStore();
+  const token = useAuthStore(s => s.token);
   const complete = isDayComplete(programId, day.id);
 
   if (day.type === 'rest') {
@@ -54,7 +57,7 @@ function WorkoutDayCard({
 
   return (
     <div
-      className={`border rounded-xl overflow-hidden transition-colors ${complete ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-border bg-card'}`}
+      className={`overflow-hidden rounded-xl border transition-colors ${complete ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-border bg-card shadow-sm shadow-black/5'} app-card-hover`}
     >
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
@@ -97,8 +100,23 @@ function WorkoutDayCard({
 
         {!complete && (
           <button
-            onClick={() => markDayComplete(programId, day.id)}
-            className="w-full py-2 rounded-lg bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-600 transition-colors"
+            onClick={() => {
+              markDayComplete(programId, day.id);
+              if (token) {
+                void apiRequest<{ enrollment: ProgramEnrollment }>(
+                  `/api/programs/${programId}/days/${day.id}/complete`,
+                  {
+                    method: 'POST',
+                    token,
+                  }
+                )
+                  .then(response => setEnrollment(response.enrollment))
+                  .catch(error => {
+                    console.error('Failed to mark program day complete', error);
+                  });
+              }
+            }}
+            className="app-primary-action w-full py-2 text-sm"
           >
             {t('programs.completed')} ✓
           </button>
@@ -125,7 +143,7 @@ function WeekAccordion({
   const completedInWeek = workoutDays.filter(d => isDayComplete(programId, d.id)).length;
 
   return (
-    <div className="border border-border rounded-2xl overflow-hidden">
+    <div className="app-card overflow-hidden">
       <button
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between p-4 bg-card hover:bg-muted/40 transition-colors"
@@ -166,7 +184,8 @@ export default function ProgramDetail() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { getEnrollment, getCompletedCount, enroll, unenroll } = useProgramStore();
+  const { getEnrollment, getCompletedCount, enroll, setEnrollment, unenroll } = useProgramStore();
+  const token = useAuthStore(s => s.token);
 
   const program = id ? getProgram(id) : undefined;
 
@@ -191,15 +210,33 @@ export default function ProgramDetail() {
     if (enrollment) {
       if (window.confirm(t('programs.unenrollConfirm'))) {
         unenroll(programId);
+        if (token) {
+          void apiRequest(`/api/programs/${programId}/enroll`, {
+            method: 'DELETE',
+            token,
+          }).catch(error => {
+            console.error('Failed to leave program', error);
+          });
+        }
         navigate('/app/programs');
       }
     } else {
       enroll(programId);
+      if (token) {
+        void apiRequest<{ enrollment: ProgramEnrollment }>(`/api/programs/${programId}/enroll`, {
+          method: 'POST',
+          token,
+        })
+          .then(response => setEnrollment(response.enrollment))
+          .catch(error => {
+            console.error('Failed to enroll in program', error);
+          });
+      }
     }
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-8">
+    <div className="min-h-screen bg-background text-foreground pb-8 app-page-flow">
       <div className="sticky top-0 z-10 bg-background/90 backdrop-blur border-b border-border px-4 h-14 flex items-center gap-3">
         <button
           onClick={() => navigate('/app/programs')}
@@ -266,7 +303,7 @@ export default function ProgramDetail() {
             className={`w-full py-3 rounded-xl font-semibold transition-colors ${
               enrollment
                 ? 'bg-muted text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500'
-                : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                : 'app-primary-action'
             }`}
           >
             {enrollment ? t('programs.leaveProgram') : t('programs.startProgram')}

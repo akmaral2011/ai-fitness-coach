@@ -36,7 +36,7 @@ export function StatCard({
   color: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center bg-card border border-border rounded-2xl p-4 gap-1">
+    <div className="app-card app-card-hover flex flex-col items-center justify-center gap-1 p-4">
       <span className={`text-2xl font-bold ${color}`}>{value}</span>
       <span className="text-xs text-muted-foreground text-center leading-tight">{label}</span>
     </div>
@@ -67,7 +67,7 @@ export function PeriodSelector({
   ];
 
   return (
-    <div className="flex bg-muted rounded-xl p-1 mb-5">
+    <div className="mb-5 flex rounded-xl bg-muted p-1">
       {options.map(({ key, label }) => (
         <button
           key={key}
@@ -459,10 +459,7 @@ export function PersonalBests({
           if (!exercise || !best) return null;
 
           return (
-            <div
-              key={exerciseId}
-              className="flex items-center gap-3 p-3 bg-card border border-border rounded-xl"
-            >
+            <div key={exerciseId} className="app-card app-card-hover flex items-center gap-3 p-3">
               <span className="text-2xl">{exercise.thumbnailEmoji}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground">{t(exercise.nameKey)}</p>
@@ -504,10 +501,7 @@ export function SessionHistory({ sessions }: { sessions: CompletedSession[] }) {
           });
 
           return (
-            <div
-              key={session.id}
-              className="flex items-center gap-3 p-3 bg-card border border-border rounded-xl"
-            >
+            <div key={session.id} className="app-card flex items-center gap-3 p-3">
               <span className="text-xl">{exercise?.thumbnailEmoji ?? '🏋️'}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">

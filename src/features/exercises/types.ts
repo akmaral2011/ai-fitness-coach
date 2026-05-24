@@ -30,6 +30,7 @@ export type AngleRule = {
   minAngle: number;
   maxAngle: number;
   feedbackKey: string;
+  feedback?: string;
   severity: 'warn' | 'error';
 };
 

@@ -33,12 +33,15 @@ export default function Stats() {
   ];
 
   return (
-    <section className="bg-muted/30 border-y border-border/60 py-12">
+    <section className="border-y border-border/60 bg-muted/20 py-10 sm:py-12">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {items.map(({ icon: Icon, value, label, color }) => (
-            <div key={label} className="flex flex-col items-center text-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
+            <div
+              key={label}
+              className="app-card app-card-hover flex flex-col items-center gap-3 p-5 text-center"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/80">
                 <Icon className={`w-5 h-5 ${color}`} />
               </div>
               <div>

@@ -8,6 +8,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
 import UserAvatar from '@/components/UserAvatar';
 import { useAuthStore } from '@/features/auth/authStore';
+import { clearSessionData } from '@/features/auth/sessionData';
 import { cn } from '@/lib/utils';
 
 function UserMenu() {
@@ -45,7 +46,7 @@ function UserMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-xl overflow-hidden z-50">
+        <div className="app-card absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden shadow-xl">
           <div className="px-4 py-3 border-b border-border">
             <div className="text-foreground text-sm font-semibold truncate">{user.name}</div>
             <div className="text-muted-foreground text-xs truncate">{user.email}</div>
@@ -54,6 +55,7 @@ function UserMenu() {
             <button
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-500/10 transition-colors"
               onClick={() => {
+                clearSessionData();
                 signOut();
                 setOpen(false);
               }}
@@ -84,7 +86,6 @@ export default function Navbar() {
   const links = [
     { label: t('landing.nav.features'), href: '#features' },
     { label: t('landing.nav.howItWorks'), href: '#how-it-works' },
-    { label: t('landing.nav.pricing'), href: '#pricing' },
   ];
 
   return (
@@ -123,17 +124,14 @@ export default function Navbar() {
             <>
               <button
                 onClick={() => navigate('/app/dashboard')}
-                className="px-4 py-2 rounded-lg border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 text-sm font-semibold transition-colors"
+                className="rounded-lg border border-emerald-500/30 px-4 py-2 text-sm font-semibold text-emerald-500 transition-colors hover:bg-emerald-500/10"
               >
                 {t('landing.nav.openApp')}
               </button>
               <UserMenu />
             </>
           ) : (
-            <button
-              onClick={openAuthModal}
-              className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-semibold transition-colors shadow-lg shadow-emerald-500/20"
-            >
+            <button onClick={openAuthModal} className="app-primary-action px-4 py-2 text-sm">
               {t('landing.nav.getStarted')}
             </button>
           )}
@@ -192,6 +190,7 @@ export default function Navbar() {
                   <button
                     onClick={() => {
                       setMenuOpen(false);
+                      clearSessionData();
                       useAuthStore.getState().signOut();
                     }}
                     className="text-red-500 text-sm hover:underline"
@@ -206,7 +205,7 @@ export default function Navbar() {
                   setMenuOpen(false);
                   openAuthModal();
                 }}
-                className="w-full text-center px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-semibold transition-colors"
+                className="app-primary-action w-full px-4 py-2.5 text-center text-sm"
               >
                 {t('landing.nav.getStarted')}
               </button>

@@ -13,7 +13,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-16 sm:py-24 bg-muted/30 relative">
+    <section className="relative bg-muted/20 py-16 sm:py-24">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.faq.badge')}</SectionBadge>
@@ -29,10 +29,8 @@ export default function FAQ() {
               <div
                 key={key}
                 className={cn(
-                  'rounded-xl border transition-colors duration-200',
-                  isOpen
-                    ? 'bg-card border-border'
-                    : 'bg-card/50 border-border/60 hover:border-border'
+                  'app-card rounded-xl transition-colors duration-200',
+                  isOpen ? 'border-emerald-500/25' : 'hover:border-emerald-500/25'
                 )}
               >
                 <button

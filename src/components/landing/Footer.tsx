@@ -1,90 +1,95 @@
 import { useTranslation } from 'react-i18next';
 
-import { Shield, Zap } from 'lucide-react';
+import { ArrowUp, Shield, Zap } from 'lucide-react';
 
 export default function Footer() {
   const { t } = useTranslation();
 
-  const productLinks = ['features', 'pricing', 'howItWorks', 'exercises'] as const;
+  const productLinks = [
+    { key: 'features', href: '#features' },
+    { key: 'howItWorks', href: '#how-it-works' },
+    { key: 'exercises', href: '#features' },
+  ] as const;
   const companyLinks = ['about', 'blog', 'careers', 'contact'] as const;
 
   return (
-    <footer className="bg-muted/20 border-t border-border/60">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
-          <div className="sm:col-span-2 lg:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                <Zap className="w-4 h-4 text-white" />
+    <footer className="border-t border-border/60 bg-muted/20">
+      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+        <div className="app-card overflow-hidden">
+          <div className="grid gap-10 p-6 sm:p-8 lg:grid-cols-[1.3fr_0.7fr_0.7fr] lg:gap-12">
+            <div>
+              <div className="mb-4 flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500 shadow-lg shadow-emerald-500/25">
+                  <Zap className="h-4.5 w-4.5 text-white" />
+                </div>
+                <span className="text-lg font-black tracking-tight text-foreground">
+                  AI Fitness Coach
+                </span>
               </div>
-              <span className="font-bold text-foreground text-lg tracking-tight">
-                AI Fitness Coach
-              </span>
+              <p className="mb-5 max-w-md text-sm leading-6 text-muted-foreground">
+                {t('landing.footer.tagline')}
+              </p>
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <Shield className="h-3.5 w-3.5" />
+                {t('landing.footer.privacyNote')}
+              </div>
             </div>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mb-6">
-              {t('landing.footer.tagline')}
-            </p>
-            <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <Shield className="w-3.5 h-3.5 text-emerald-500" />
-              {t('landing.footer.privacyNote')}
-            </div>
-          </div>
 
-          <div>
-            <h4 className="text-foreground font-semibold text-sm mb-4 uppercase tracking-wide">
-              {t('landing.footer.product')}
-            </h4>
-            <ul className="flex flex-col gap-3">
-              {productLinks.map(key => (
-                <li key={key}>
-                  <a
-                    href={`#${key}`}
-                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                  >
-                    {t(`landing.footer.links.${key}`)}
-                  </a>
-                </li>
+            <FooterLinks title={t('landing.footer.product')}>
+              {productLinks.map(({ key, href }) => (
+                <FooterLink key={key} href={href}>
+                  {t(`landing.footer.links.${key}`)}
+                </FooterLink>
               ))}
-            </ul>
-          </div>
+            </FooterLinks>
 
-          <div>
-            <h4 className="text-foreground font-semibold text-sm mb-4 uppercase tracking-wide">
-              {t('landing.footer.company')}
-            </h4>
-            <ul className="flex flex-col gap-3">
+            <FooterLinks title={t('landing.footer.company')}>
               {companyLinks.map(key => (
-                <li key={key}>
-                  <a
-                    href={`#${key}`}
-                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                  >
-                    {t(`landing.footer.links.${key}`)}
-                  </a>
-                </li>
+                <FooterLink key={key} href={`#${key}`}>
+                  {t(`landing.footer.links.${key}`)}
+                </FooterLink>
               ))}
-            </ul>
+            </FooterLinks>
           </div>
-        </div>
 
-        <div className="mt-16 pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-muted-foreground text-sm">{t('landing.footer.copyright')}</p>
-          <div className="flex items-center gap-6">
-            <a
-              href="#privacy"
-              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-            >
-              {t('landing.footer.legal.privacy')}
-            </a>
-            <a
-              href="#terms"
-              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-            >
-              {t('landing.footer.legal.terms')}
-            </a>
+          <div className="flex flex-col gap-4 border-t border-border px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+            <p className="text-sm text-muted-foreground">{t('landing.footer.copyright')}</p>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <FooterLink href="#privacy">{t('landing.footer.legal.privacy')}</FooterLink>
+              <FooterLink href="#terms">{t('landing.footer.legal.terms')}</FooterLink>
+              <a
+                href="#hero"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-500 transition-colors hover:text-emerald-400"
+              >
+                <ArrowUp className="h-3.5 w-3.5" />
+                Top
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterLinks({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-foreground">{title}</h4>
+      <ul className="flex flex-col gap-2.5">{children}</ul>
+    </div>
+  );
+}
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <li className="list-none">
+      <a
+        href={href}
+        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        {children}
+      </a>
+    </li>
   );
 }

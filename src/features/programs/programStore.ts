@@ -10,6 +10,8 @@ export type ProgramEnrollment = {
 type ProgramStore = {
   enrollments: ProgramEnrollment[];
   enroll: (programId: string) => void;
+  setEnrollment: (enrollment: ProgramEnrollment) => void;
+  setEnrollments: (enrollments: ProgramEnrollment[]) => void;
   unenroll: (programId: string) => void;
   clearEnrollments: () => void;
   markDayComplete: (programId: string, dayId: string) => void;
@@ -33,6 +35,14 @@ export const useProgramStore = create<ProgramStore>()(
           ],
         }));
       },
+      setEnrollment: enrollment =>
+        set(state => ({
+          enrollments: [
+            enrollment,
+            ...state.enrollments.filter(e => e.programId !== enrollment.programId),
+          ],
+        })),
+      setEnrollments: enrollments => set({ enrollments }),
 
       unenroll: programId =>
         set(state => ({

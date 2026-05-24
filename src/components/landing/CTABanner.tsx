@@ -11,15 +11,8 @@ export default function CTABanner() {
   const { user, openAuthModal } = useAuthStore();
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-emerald-500/5" />
-      <div
-        className="absolute inset-0 opacity-50"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 80% 80% at 50% 50%, rgba(16,185,129,0.08) 0%, transparent 65%)',
-        }}
-      />
+    <section className="relative overflow-hidden bg-background py-20 sm:py-24">
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(16,185,129,0.10),transparent_45%,rgba(59,130,246,0.08))]" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
       <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
@@ -32,7 +25,7 @@ export default function CTABanner() {
 
         <button
           onClick={() => (user ? navigate('/app/dashboard') : openAuthModal())}
-          className="inline-flex items-center gap-2 px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-2xl transition-all duration-200 text-lg shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-400/40 hover:-translate-y-1"
+          className="app-primary-action inline-flex items-center gap-2 px-10 py-4 text-lg font-bold"
         >
           {t('landing.cta.button')}
           <Zap className="w-5 h-5" />

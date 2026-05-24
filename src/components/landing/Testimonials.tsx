@@ -12,15 +12,7 @@ export default function Testimonials() {
   const items = [1, 2, 3] as const;
 
   return (
-    <section className="py-16 sm:py-24 bg-background relative overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 80% 50% at 50% 50%, rgba(16,185,129,0.04) 0%, transparent 70%)',
-        }}
-      />
-
+    <section className="relative overflow-hidden bg-background py-16 sm:py-24">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.testimonials.badge')}</SectionBadge>
@@ -37,7 +29,7 @@ export default function Testimonials() {
             return (
               <div
                 key={i}
-                className="p-5 sm:p-8 rounded-2xl bg-card border border-border hover:border-border/80 transition-colors flex flex-col gap-4 sm:gap-6"
+                className="app-card app-card-hover flex flex-col gap-4 p-5 sm:gap-6 sm:p-8"
               >
                 <div className="flex gap-1">
                   {Array.from({ length: 5 }).map((_, s) => (

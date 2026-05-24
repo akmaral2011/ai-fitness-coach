@@ -6,7 +6,6 @@ import Footer from '@/components/landing/Footer';
 import Hero from '@/components/landing/Hero';
 import HowItWorks from '@/components/landing/HowItWorks';
 import Navbar from '@/components/landing/Navbar';
-import Pricing from '@/components/landing/Pricing';
 import Problem from '@/components/landing/Problem';
 import Stats from '@/components/landing/Stats';
 import Testimonials from '@/components/landing/Testimonials';
@@ -31,9 +30,6 @@ export default function Home() {
       </FadeIn>
       <FadeIn delay={50}>
         <HowItWorks />
-      </FadeIn>
-      <FadeIn delay={50}>
-        <Pricing />
       </FadeIn>
       <FadeIn delay={50}>
         <Testimonials />

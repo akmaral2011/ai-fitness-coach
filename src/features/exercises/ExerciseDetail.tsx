@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
+import { Activity, AlertTriangle, Brain, CheckCircle2, Clock3, Dumbbell, Play } from 'lucide-react';
+
 import ChevronDownIcon from '@/components/icons/ChevronDownIcon';
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
-import PlayIcon from '@/components/icons/PlayIcon';
 import ExerciseAnimation from '@/features/exercises/ExerciseAnimation';
 import { getExercise } from '@/features/exercises/data';
 import { DIFFICULTY_COLOR } from '@/features/exercises/types';
 import type { Exercise } from '@/features/exercises/types';
+import { useExerciseRules } from '@/features/exercises/useExerciseRules';
 
 // ─── angle rules visualization ────────────────────────────────────────────────
 
@@ -27,57 +29,86 @@ const LANDMARK_NAMES: Record<number, string> = {
   28: 'R Ankle',
 };
 
-function AngleRulesPanel({ exercise }: { exercise: Exercise }) {
+function AngleRulesPanel({
+  exercise,
+  usingRemoteRules,
+}: {
+  exercise: Exercise;
+  usingRemoteRules: boolean;
+}) {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
-    <div className="mb-5">
+    <div className="app-card mb-5 overflow-hidden rounded-xl">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2"
+        className="flex items-center justify-between w-full p-4 text-left"
       >
-        <span>AI Angle Rules ({exercise.rules.length})</span>
-        <ChevronDownIcon size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+        <span className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-500">
+            <Brain size={20} />
+          </span>
+          <span>
+            <span className="block text-sm font-bold text-foreground">
+              {t('catalog.detail.aiRules')}
+            </span>
+            <span className="block text-xs text-muted-foreground">
+              {exercise.rules.length} {t('catalog.detail.rules')} ·{' '}
+              {usingRemoteRules ? t('catalog.detail.backendRules') : t('catalog.detail.localRules')}
+            </span>
+          </span>
+        </span>
+        <ChevronDownIcon
+          size={16}
+          className={`text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {open && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 border-t border-border p-3">
           {exercise.rules.map(rule => {
             const a = LANDMARK_NAMES[rule.landmarks.a] ?? `#${rule.landmarks.a}`;
             const v = LANDMARK_NAMES[rule.landmarks.vertex] ?? `#${rule.landmarks.vertex}`;
             const b = LANDMARK_NAMES[rule.landmarks.b] ?? `#${rule.landmarks.b}`;
             return (
-              <div key={rule.id} className="p-3 bg-card border border-border rounded-xl">
-                <div className="flex items-center justify-between mb-1.5">
+              <div key={rule.id} className="rounded-lg bg-muted/60 p-3">
+                <div className="mb-2 flex items-center justify-between gap-2">
                   <span className="text-xs font-mono text-muted-foreground">{rule.id}</span>
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                      className={`rounded px-1.5 py-0.5 text-xs font-medium ${
                         rule.severity === 'error'
                           ? 'bg-red-500/15 text-red-500'
                           : 'bg-yellow-500/15 text-yellow-500'
                       }`}
                     >
-                      {rule.severity}
+                      {t(`catalog.detail.${rule.severity}`)}
                     </span>
-                    <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
+                    <span className="rounded bg-background px-1.5 py-0.5 text-xs text-muted-foreground">
                       {rule.phase}
                     </span>
                   </div>
                 </div>
-                <p className="text-xs text-foreground mb-1">
-                  <span className="text-emerald-500">{a}</span>
-                  {' — '}
-                  <span className="text-blue-400 font-semibold">{v}</span>
-                  {' — '}
-                  <span className="text-emerald-500">{b}</span>
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Valid range:{' '}
-                  <span className="text-foreground font-medium">
-                    {rule.minAngle}° – {rule.maxAngle}°
-                  </span>
-                </p>
+                <div className="grid gap-2 text-xs">
+                  <p className="text-foreground">
+                    <span className="text-muted-foreground">{t('catalog.detail.landmarks')}: </span>
+                    <span className="text-emerald-500">{a}</span>
+                    {' - '}
+                    <span className="font-semibold text-blue-400">{v}</span>
+                    {' - '}
+                    <span className="text-emerald-500">{b}</span>
+                  </p>
+                  <p className="text-foreground">
+                    <span className="text-muted-foreground">
+                      {t('catalog.detail.validRange')}:{' '}
+                    </span>
+                    <span className="font-medium">
+                      {rule.minAngle}° - {rule.maxAngle}°
+                    </span>
+                  </p>
+                  <p className="text-muted-foreground">{rule.feedback ?? t(rule.feedbackKey)}</p>
+                </div>
               </div>
             );
           })}
@@ -93,7 +124,8 @@ export default function ExerciseDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const exercise = id ? getExercise(id) : null;
+  const localExercise = id ? (getExercise(id) ?? null) : null;
+  const { exercise, usingRemoteRules } = useExerciseRules(localExercise);
 
   if (!exercise) {
     return (
@@ -107,41 +139,110 @@ export default function ExerciseDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* header */}
-      <div className="relative px-4 pt-12 pb-4 bg-card border-b border-border">
+    <div className="min-h-screen bg-background text-foreground app-page-flow">
+      <div className="relative overflow-hidden border-b border-border bg-card bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(59,130,246,0.08)_48%,rgba(139,92,246,0.08))]">
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 p-2 rounded-full bg-background/80 backdrop-blur text-foreground"
+          className="absolute left-4 top-4 z-10 rounded-full bg-background/80 p-2 text-foreground backdrop-blur"
         >
           <ChevronLeftIcon />
         </button>
 
-        <div className="flex items-start justify-between gap-2 max-w-lg mx-auto">
-          <div className="flex items-center gap-3">
-            <span className="text-4xl">{exercise.thumbnailEmoji}</span>
-            <div>
-              <h1 className="text-xl font-bold">{t(exercise.nameKey)}</h1>
-              <span className="text-xs text-muted-foreground capitalize">
-                {t(`catalog.categories.${exercise.category}`)}
+        <div className="relative mx-auto max-w-lg px-4 pb-5 pt-16">
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-background text-4xl shadow-sm">
+                {exercise.thumbnailEmoji}
               </span>
+              <div>
+                <h1 className="text-2xl font-black text-foreground">{t(exercise.nameKey)}</h1>
+                <span className="text-xs text-muted-foreground">
+                  {t(`catalog.categories.${exercise.category}`)}
+                </span>
+              </div>
             </div>
+            <span
+              className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${DIFFICULTY_COLOR[exercise.difficulty]}`}
+            >
+              {t(`catalog.difficulty.${exercise.difficulty}`)}
+            </span>
           </div>
-          <span
-            className={`shrink-0 text-xs px-2.5 py-1 rounded-full font-medium mt-1 ${DIFFICULTY_COLOR[exercise.difficulty]}`}
-          >
-            {t(`catalog.difficulty.${exercise.difficulty}`)}
-          </span>
+
+          <p className="mb-4 text-sm leading-6 text-muted-foreground">
+            {t(exercise.descriptionKey)}
+          </p>
+
+          <div className="grid grid-cols-3 gap-2">
+            <Metric
+              icon={<Dumbbell size={16} />}
+              value={exercise.sets}
+              label={t('catalog.detail.sets')}
+            />
+            <Metric
+              icon={<Activity size={16} />}
+              value={exercise.reps === 1 ? t('catalog.detail.hold') : exercise.reps}
+              label={t('catalog.detail.reps')}
+            />
+            <Metric
+              icon={<Clock3 size={16} />}
+              value={`${exercise.estimatedDuration}${t('common.min')}`}
+              label={t('catalog.detail.estimatedTime')}
+            />
+          </div>
         </div>
       </div>
 
       <div className="px-4 py-5 max-w-lg mx-auto">
-        {/* animated demo */}
-        <div className="mb-5">
+        <div className="app-card mb-5 overflow-hidden rounded-xl">
           <ExerciseAnimation exerciseId={exercise.id} />
         </div>
 
-        <p className="text-muted-foreground text-sm mb-5">{t(exercise.descriptionKey)}</p>
+        <div className="mb-5 grid grid-cols-2 gap-3">
+          <InfoTile
+            icon={<Brain size={18} />}
+            title={t('catalog.detail.formCoach')}
+            value={`${exercise.rules.length} ${t('catalog.detail.rules')}`}
+          />
+          <InfoTile
+            icon={<CheckCircle2 size={18} />}
+            title={t('catalog.detail.ruleSource')}
+            value={
+              usingRemoteRules ? t('catalog.detail.backendRules') : t('catalog.detail.localRules')
+            }
+          />
+        </div>
+
+        <Section title={t('catalog.detail.trainingPlan')}>
+          <div className="grid gap-2">
+            <PlanRow
+              label={t('catalog.detail.category')}
+              value={t(`catalog.categories.${exercise.category}`)}
+            />
+            <PlanRow
+              label={t('catalog.detail.difficulty')}
+              value={t(`catalog.difficulty.${exercise.difficulty}`)}
+            />
+            <PlanRow
+              label={t('catalog.detail.volume')}
+              value={`${exercise.sets} × ${
+                exercise.reps === 1 ? t('catalog.detail.hold') : exercise.reps
+              }`}
+            />
+          </div>
+        </Section>
+
+        <Section title={t('catalog.detail.primaryMuscles')}>
+          <div className="flex flex-wrap gap-2">
+            {exercise.primaryMuscles.map(m => (
+              <span
+                key={m}
+                className="rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-500"
+              >
+                {t(`catalog.muscles.${m}`)}
+              </span>
+            ))}
+          </div>
+        </Section>
 
         {/* step-by-step instructions */}
         {(() => {
@@ -164,37 +265,13 @@ export default function ExerciseDetail() {
           );
         })()}
 
-        {/* stats */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <StatChip value={exercise.sets} label={t('catalog.detail.sets')} />
-          <StatChip
-            value={exercise.reps === 1 ? 'Hold' : exercise.reps}
-            label={t('catalog.detail.reps')}
-          />
-          <StatChip value={`${exercise.estimatedDuration}${t('common.min')}`} label="Duration" />
-        </div>
-
-        {/* muscles */}
-        <Section title={t('catalog.detail.primaryMuscles')}>
-          <div className="flex flex-wrap gap-2">
-            {exercise.primaryMuscles.map(m => (
-              <span
-                key={m}
-                className="px-3 py-1 bg-emerald-500/15 text-emerald-500 rounded-full text-sm font-medium"
-              >
-                {t(`catalog.muscles.${m}`)}
-              </span>
-            ))}
-          </div>
-        </Section>
-
         {exercise.secondaryMuscles.length > 0 && (
           <Section title={t('catalog.detail.secondaryMuscles')}>
             <div className="flex flex-wrap gap-2">
               {exercise.secondaryMuscles.map(m => (
                 <span
                   key={m}
-                  className="px-3 py-1 bg-muted text-muted-foreground rounded-full text-sm"
+                  className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground"
                 >
                   {t(`catalog.muscles.${m}`)}
                 </span>
@@ -208,8 +285,11 @@ export default function ExerciseDetail() {
           <Section title={t('catalog.detail.commonErrors')}>
             <ul className="flex flex-col gap-2">
               {exercise.commonErrorKeys.map(key => (
-                <li key={key} className="flex items-start gap-2.5 text-sm text-foreground">
-                  <span className="text-red-500 mt-0.5 shrink-0">✕</span>
+                <li
+                  key={key}
+                  className="flex items-start gap-2.5 rounded-lg bg-red-500/5 p-3 text-sm text-foreground"
+                >
+                  <AlertTriangle size={16} className="mt-0.5 shrink-0 text-red-500" />
                   {t(key)}
                 </li>
               ))}
@@ -224,9 +304,9 @@ export default function ExerciseDetail() {
               {exercise.modificationKeys.map((key, i) => (
                 <li key={key} className="flex items-start gap-2.5 text-sm text-foreground">
                   <span
-                    className={`mt-0.5 shrink-0 ${i === 0 ? 'text-emerald-500' : 'text-yellow-500'}`}
+                    className={`mt-0.5 shrink-0 font-semibold ${i === 0 ? 'text-emerald-500' : 'text-yellow-500'}`}
                   >
-                    {i === 0 ? '↓ Easier' : '↑ Harder'}
+                    {i === 0 ? t('catalog.detail.easier') : t('catalog.detail.harder')}
                   </span>
                   {t(key)}
                 </li>
@@ -236,7 +316,7 @@ export default function ExerciseDetail() {
         )}
 
         {/* angle rules (collapsible) */}
-        <AngleRulesPanel exercise={exercise} />
+        <AngleRulesPanel exercise={exercise} usingRemoteRules={usingRemoteRules} />
 
         <div className="h-28" />
       </div>
@@ -245,9 +325,9 @@ export default function ExerciseDetail() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/90 backdrop-blur border-t border-border">
         <button
           onClick={() => navigate(`/app/workout/${exercise.id}`)}
-          className="w-full max-w-lg mx-auto flex items-center justify-center gap-2 py-4 bg-emerald-500 text-white font-bold text-lg rounded-2xl hover:bg-emerald-600 transition-colors"
+          className="app-primary-action mx-auto flex w-full max-w-lg items-center justify-center gap-2 py-4 text-lg font-bold"
         >
-          <PlayIcon className="text-white" />
+          <Play size={20} fill="currentColor" />
           {t('catalog.detail.startWorkout')}
         </button>
       </div>
@@ -266,11 +346,43 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function StatChip({ value, label }: { value: string | number; label: string }) {
+function Metric({
+  icon,
+  value,
+  label,
+}: {
+  icon: React.ReactNode;
+  value: string | number;
+  label: string;
+}) {
   return (
-    <div className="flex flex-col items-center p-3 bg-card border border-border rounded-xl gap-1">
-      <span className="text-lg font-bold text-foreground">{value}</span>
+    <div className="app-metric-tile flex min-h-20 flex-col justify-between">
+      <span className="text-emerald-500">{icon}</span>
+      <span className="text-lg font-black text-foreground">{value}</span>
       <span className="text-xs text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+function InfoTile({ icon, title, value }: { icon: React.ReactNode; title: string; value: string }) {
+  return (
+    <div className="app-card app-card-hover rounded-xl p-3">
+      <div className="mb-2 flex items-center gap-2 text-emerald-500">
+        {icon}
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {title}
+        </span>
+      </div>
+      <p className="text-sm font-bold text-foreground">{value}</p>
+    </div>
+  );
+}
+
+function PlanRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg bg-muted/70 px-3 py-2 text-sm">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-semibold text-foreground">{value}</span>
     </div>
   );
 }

@@ -8,8 +8,8 @@ import { useAuthStore } from '@/features/auth/authStore';
 
 function SkeletonMockup() {
   return (
-    <div className="relative w-64 sm:w-72 mx-auto">
-      <div className="dark relative rounded-[2.5rem] bg-zinc-900 border-2 border-zinc-700 shadow-2xl shadow-black/60 overflow-hidden aspect-[9/19]">
+    <div className="relative mx-auto w-64 animate-in fade-in slide-in-from-bottom-4 duration-500 sm:w-72 lg:mx-auto">
+      <div className="dark relative aspect-[9/19] overflow-hidden rounded-[2.25rem] border border-zinc-700 bg-zinc-900 shadow-2xl shadow-emerald-950/30 ring-8 ring-foreground/5">
         <svg
           viewBox="0 0 288 580"
           fill="none"
@@ -109,16 +109,16 @@ function SkeletonMockup() {
         </div>
       </div>
 
-      <div className="absolute -left-8 top-1/3 hidden lg:block">
-        <div className="bg-card border border-border rounded-xl px-4 py-3 shadow-xl">
+      <div className="absolute -left-10 top-1/3 hidden xl:block">
+        <div className="app-card px-4 py-3 shadow-xl">
           <div className="text-muted-foreground text-xs mb-0.5">Accuracy</div>
           <div className="text-foreground font-bold text-lg">±3°</div>
           <div className="text-muted-foreground text-xs">joint angles</div>
         </div>
       </div>
 
-      <div className="absolute -right-8 top-1/2 hidden lg:block">
-        <div className="bg-card border border-border rounded-xl px-4 py-3 shadow-xl">
+      <div className="absolute -right-10 top-1/2 hidden xl:block">
+        <div className="app-card px-4 py-3 shadow-xl">
           <div className="text-muted-foreground text-xs mb-0.5">Latency</div>
           <div className="text-emerald-500 font-bold text-lg">&lt;150ms</div>
           <div className="text-muted-foreground text-xs">feedback</div>
@@ -134,7 +134,7 @@ export default function Hero() {
   const { user, openAuthModal } = useAuthStore();
 
   return (
-    <section className="relative min-h-screen flex items-center pt-16 pb-10 sm:pb-16 overflow-hidden">
+    <section className="relative flex min-h-screen items-center overflow-hidden border-b border-border/60 pt-20 pb-10 sm:pb-16">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/20" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
       <div
@@ -146,35 +146,35 @@ export default function Hero() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          <div>
-            <SectionBadge className="mb-8">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+          <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
+            <SectionBadge className="mb-7">
               <Zap className="w-3.5 h-3.5" />
               {t('landing.hero.badge')}
             </SectionBadge>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.08] tracking-tight mb-5 sm:mb-6">
+            <h1 className="mb-5 text-4xl font-black leading-[1.06] tracking-tight text-foreground sm:mb-6 sm:text-5xl lg:text-6xl xl:text-7xl">
               {t('landing.hero.title')}{' '}
               <span className="bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
                 {t('landing.hero.titleHighlight')}
               </span>
             </h1>
 
-            <p className="text-base sm:text-xl text-muted-foreground leading-relaxed mb-8 sm:mb-10 max-w-lg">
+            <p className="mb-8 max-w-xl text-base leading-7 text-muted-foreground sm:mb-10 sm:text-xl sm:leading-8">
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
               <button
                 onClick={() => (user ? navigate('/app/dashboard') : openAuthModal())}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-200 text-base shadow-xl shadow-emerald-500/25 hover:shadow-emerald-400/30 hover:-translate-y-0.5"
+                className="app-primary-action inline-flex items-center justify-center gap-2 px-7 py-3.5 text-base"
               >
                 {t('landing.hero.ctaPrimary')}
                 <Zap className="w-4 h-4" />
               </button>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-foreground/5 hover:bg-foreground/10 border border-foreground/10 hover:border-foreground/20 text-foreground font-medium rounded-xl transition-all duration-200 text-base"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-7 py-3.5 text-base font-semibold text-foreground transition duration-200 hover:-translate-y-0.5 hover:border-emerald-500/35 hover:shadow-lg hover:shadow-emerald-500/10"
               >
                 <Play className="w-4 h-4" />
                 {t('landing.hero.ctaSecondary')}
@@ -184,7 +184,7 @@ export default function Hero() {
             <p className="text-muted-foreground text-sm">{t('landing.hero.noCreditCard')}</p>
           </div>
 
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center">
             <SkeletonMockup />
           </div>
         </div>

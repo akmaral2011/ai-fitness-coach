@@ -4,6 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:all": "npm run build && npm --prefix backend run build",
+    "smoke:backend": "npm --prefix backend run smoke",
     "preview": "vite preview",
     "prepare": "husky",
     "lint": "eslint .",

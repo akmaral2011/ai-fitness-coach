@@ -98,5 +98,31 @@ export default tseslint.config(
       ],
     },
   },
-  { ignores: ['dist', 'node_modules', '*config.*', '*.json', 'coverage', 'build'] },
+  {
+    files: ['backend/**/*.{ts,js,mjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        fetch: 'readonly',
+      },
+    },
+    rules: {
+      'no-undef': 'off',
+    },
+  },
+  {
+    ignores: [
+      'dist/**',
+      'backend/dist/**',
+      'node_modules/**',
+      'backend/node_modules/**',
+      '*config.*',
+      '*.json',
+      'coverage/**',
+      'build/**',
+    ],
+  },
 );

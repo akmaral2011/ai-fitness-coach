@@ -38,15 +38,7 @@ export default function Features() {
   const { t } = useTranslation();
 
   return (
-    <section id="features" className="py-16 sm:py-24 bg-muted/30 relative overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-40"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(16,185,129,0.05) 0%, transparent 60%)',
-        }}
-      />
-
+    <section id="features" className="relative overflow-hidden bg-muted/20 py-16 sm:py-24">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-16">
           <SectionBadge>{t('landing.features.badge')}</SectionBadge>
@@ -61,7 +53,7 @@ export default function Features() {
             return (
               <div
                 key={key}
-                className={`group p-5 sm:p-8 rounded-2xl bg-card border ${colors.cardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}
+                className={`app-card app-card-hover group p-5 sm:p-8 ${colors.cardBorder}`}
               >
                 <div
                   className={`w-11 h-11 rounded-xl ${colors.iconBg} border flex items-center justify-center mb-4 sm:mb-6`}

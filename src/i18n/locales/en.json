@@ -29,9 +29,25 @@
     "title": "Sign in to AI Fitness Coach",
     "subtitle": "Track your progress and get personalized coaching",
     "privacy": "Your video never leaves your device",
-    "signInWithGoogle": "Continue with Google",
-    "or": "or",
-    "demoUser": "Continue as demo user"
+    "loginTab": "Log in",
+    "registerTab": "Sign up",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "newPasswordLabel": "New password",
+    "resetTokenLabel": "Reset token",
+    "loginAction": "Log in",
+    "registerAction": "Create account",
+    "submitting": "Please wait...",
+    "forgotPassword": "Forgot password?",
+    "sendReset": "Send reset link",
+    "resetPassword": "Reset password",
+    "backToLogin": "Back to login",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "networkError": "Could not connect to the server",
+    "resetTokenDev": "Dev reset token: {{token}}",
+    "verifyEmailDev": "Dev email verification token: {{token}}"
   },
   "onboarding": {
     "stepOf": "Step {{current}} of {{total}}",
@@ -123,7 +139,8 @@
       "guide": "Stand 1.5–2 m from camera · Full body in frame",
       "ready": "Everything looks good!",
       "notReady": "Adjust until all checks pass",
-      "confirm": "Looks Good — Start!"
+      "confirm": "Looks Good — Start!",
+      "skip": "Skip camera check"
     },
     "finish": "Start Training!"
   },
@@ -642,7 +659,26 @@
     "reps": "reps",
     "score": "score",
     "level": "Level {{level}}",
-    "xpToNext": "{{xp}} XP to Level {{next}}"
+    "xpToNext": "{{xp}} XP to Level {{next}}",
+    "nextSteps": "Next steps",
+    "coach": {
+      "title": "Coach overview",
+      "empty": "Start with this movement. The AI coach will track reps, score technique, and save your result.",
+      "strong": "Great consistency. Keep the quality high and protect your streak.",
+      "improve": "Focus on controlled reps today. The AI rules will guide your technique in real time.",
+      "synced": "Synced",
+      "local": "Local",
+      "thisWeek": "This week",
+      "bestScore": "Best score",
+      "aiRules": "AI rules"
+    },
+    "actions": {
+      "firstWorkout": "Start first workout",
+      "trainAgain": "Train again",
+      "continueProgram": "Continue program",
+      "chooseProgram": "Choose a program",
+      "learnTechnique": "Learn technique"
+    }
   },
   "catalog": {
     "title": "Exercise Library",
@@ -680,12 +716,44 @@
       "estimatedTime": "Est. Time",
       "startWorkout": "Start Workout",
       "sets": "sets",
-      "reps": "reps"
+      "reps": "reps",
+      "hold": "Hold",
+      "trainingPlan": "Training Plan",
+      "category": "Category",
+      "difficulty": "Difficulty",
+      "volume": "Volume",
+      "formCoach": "Form Coach",
+      "ruleSource": "Rule Source",
+      "aiRules": "AI Technique Rules",
+      "rules": "rules",
+      "backendRules": "Backend rules",
+      "localRules": "Local fallback",
+      "landmarks": "Landmarks",
+      "validRange": "Valid range",
+      "warn": "warn",
+      "error": "error",
+      "easier": "Easier",
+      "harder": "Harder"
     }
   },
   "progress": {
     "title": "My Progress",
     "noSessions": "No workouts yet — complete your first!",
+    "analytics": {
+      "title": "Analytics summary",
+      "headlineActive": "Your training data is turning into coaching insight.",
+      "headlineEmpty": "Complete a workout to unlock analytics.",
+      "descriptionActive": "Score trend, consistency, training time, and top exercises are calculated from saved workout sessions.",
+      "descriptionEmpty": "After your first session, this page will show score trends, volume, muscle load, and personal bests.",
+      "trend": "Trend",
+      "scoreChange": "Score change",
+      "consistency": "Consistency",
+      "trainedDays": "Trained days",
+      "time": "Time",
+      "selectedPeriod": "Selected period",
+      "topExercise": "Top exercise",
+      "mostTrained": "Most trained"
+    },
     "summary": {
       "sessions": "Sessions",
       "reps": "Total Reps",
@@ -706,9 +774,24 @@
       "score": "score",
       "duration": "duration"
     },
-    "period": { "week": "7 Days", "month": "30 Days", "all": "All Time" },
-    "calendar": { "title": "Activity" },
-    "muscles": { "title": "Muscles Trained", "front": "Front", "back": "Back", "empty": "Complete a workout to see muscle activity", "high": "High", "med": "Med", "low": "Low", "none": "None" }
+    "period": {
+      "week": "7 Days",
+      "month": "30 Days",
+      "all": "All Time"
+    },
+    "calendar": {
+      "title": "Activity"
+    },
+    "muscles": {
+      "title": "Muscles Trained",
+      "front": "Front",
+      "back": "Back",
+      "empty": "Complete a workout to see muscle activity",
+      "high": "High",
+      "med": "Med",
+      "low": "Low",
+      "none": "None"
+    }
   },
   "profile": {
     "title": "Profile",
@@ -724,6 +807,19 @@
     "signOut": "Sign Out",
     "achievements": "Achievements",
     "noAchievements": "Complete workouts to unlock achievements",
+    "accountStatus": "Account status",
+    "syncedAccount": "Full-stack account is active",
+    "localAccount": "Local session mode",
+    "syncedDescription": "Your profile, workouts, lessons, and achievements can sync with the Fastify backend.",
+    "localDescription": "Local data is available now. Log in to sync progress with the backend.",
+    "sync": "Sync",
+    "synced": "Synced",
+    "local": "Local",
+    "profileStatus": "Profile",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
+    "workouts": "Workouts",
+    "unlocked": "Unlocked",
     "goals": {
       "lose_weight": "Lose Weight",
       "build_muscle": "Build Muscle",
@@ -803,7 +899,6 @@
     "nav": {
       "features": "Features",
       "howItWorks": "How It Works",
-      "pricing": "Pricing",
       "getStarted": "Get Started Free",
       "openApp": "Open App"
     },
@@ -876,55 +971,6 @@
         }
       }
     },
-    "pricing": {
-      "badge": "Pricing",
-      "title": "Start free. Upgrade when ready.",
-      "free": {
-        "name": "Free",
-        "price": "$0",
-        "period": "forever",
-        "description": "Perfect for getting started",
-        "features": [
-          "20 basic exercises",
-          "3 AI sessions per week",
-          "1 beginner program",
-          "Basic progress tracking",
-          "Community support"
-        ],
-        "cta": "Get Started Free"
-      },
-      "premium": {
-        "name": "Premium",
-        "price": "$25",
-        "period": "/ month",
-        "badge": "Most Popular",
-        "description": "For serious fitness enthusiasts",
-        "features": [
-          "300+ exercises",
-          "Unlimited AI sessions",
-          "All training programs",
-          "Advanced analytics + export",
-          "Full AI personalization",
-          "Priority support"
-        ],
-        "cta": "Start 7-Day Free Trial"
-      },
-      "team": {
-        "name": "Team",
-        "price": "$15",
-        "period": "/ person / month",
-        "description": "Corporate wellness programs",
-        "features": [
-          "Everything in Premium",
-          "Team analytics dashboard",
-          "Corporate training programs",
-          "Dedicated account manager",
-          "Custom branding",
-          "API access"
-        ],
-        "cta": "Contact Sales"
-      }
-    },
     "testimonials": {
       "badge": "Testimonials",
       "title": "Trusted by athletes at every level",
@@ -984,7 +1030,6 @@
       "company": "Company",
       "links": {
         "features": "Features",
-        "pricing": "Pricing",
         "howItWorks": "How It Works",
         "exercises": "Exercise Library",
         "about": "About",
@@ -1005,10 +1050,22 @@
     "message": "Looks like this page skipped leg day — it does not exist. Head back and keep training."
   },
   "tour": {
-    "step1": { "title": "Welcome!", "desc": "AI Fitness Coach tracks your technique via camera and counts reps automatically." },
-    "step2": { "title": "Exercises", "desc": "Pick any exercise from the library and start a workout. AI scores your form in real time." },
-    "step3": { "title": "Progress", "desc": "The Progress tab shows charts, your streak, and a heatmap of trained muscles." },
-    "step4": { "title": "Programs", "desc": "Choose a structured program from beginner to advanced. Progress saves automatically." },
+    "step1": {
+      "title": "Welcome!",
+      "desc": "AI Fitness Coach tracks your technique via camera and counts reps automatically."
+    },
+    "step2": {
+      "title": "Exercises",
+      "desc": "Pick any exercise from the library and start a workout. AI scores your form in real time."
+    },
+    "step3": {
+      "title": "Progress",
+      "desc": "The Progress tab shows charts, your streak, and a heatmap of trained muscles."
+    },
+    "step4": {
+      "title": "Programs",
+      "desc": "Choose a structured program from beginner to advanced. Progress saves automatically."
+    },
     "back": "Back",
     "next": "Next",
     "start": "Start Training 🚀"
@@ -1016,6 +1073,16 @@
   "learn": {
     "title": "Learn",
     "subtitle": "Video lessons and articles on technique, training, and recovery",
+    "hub": "Learning hub",
+    "backendLibrary": "Backend library",
+    "localLibrary": "Local library",
+    "recommended": "Recommended next",
+    "noLessons": "No lessons found for this filter",
+    "stats": {
+      "videos": "Videos",
+      "articles": "Articles",
+      "done": "Done"
+    },
     "categories": {
       "all": "All",
       "video": "Videos",

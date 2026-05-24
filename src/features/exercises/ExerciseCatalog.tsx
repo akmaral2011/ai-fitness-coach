@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import SearchIcon from '@/components/icons/SearchIcon';
-import { EXERCISES } from '@/features/exercises/data';
 import { DIFFICULTY_COLOR } from '@/features/exercises/types';
 import type { Category, Difficulty } from '@/features/exercises/types';
+import { useExercises } from '@/features/exercises/useExercises';
 
 type Filter = { category: Category | 'all'; difficulty: Difficulty | 'all' };
 
@@ -17,19 +17,20 @@ export default function ExerciseCatalog() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Filter>({ category: 'all', difficulty: 'all' });
+  const { exercises, loading } = useExercises();
 
   const filtered = useMemo(() => {
-    return EXERCISES.filter(ex => {
+    return exercises.filter(ex => {
       const name = t(ex.nameKey).toLowerCase();
       const matchSearch = name.includes(search.toLowerCase());
       const matchCategory = filter.category === 'all' || ex.category === filter.category;
       const matchDifficulty = filter.difficulty === 'all' || ex.difficulty === filter.difficulty;
       return matchSearch && matchCategory && matchDifficulty;
     });
-  }, [search, filter, t]);
+  }, [exercises, search, filter, t]);
 
   return (
-    <div className="px-4 py-6 max-w-lg mx-auto">
+    <div className="app-page app-page-flow">
       <h1 className="text-2xl font-bold text-foreground mb-4">{t('catalog.title')}</h1>
 
       <div className="relative mb-4">
@@ -41,7 +42,7 @@ export default function ExerciseCatalog() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder={t('catalog.searchPlaceholder')}
-          className="w-full pl-10 pr-4 py-2.5 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground outline-none focus:border-emerald-500 transition-colors"
+          className="w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-4 text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-emerald-500"
         />
       </div>
 
@@ -52,7 +53,7 @@ export default function ExerciseCatalog() {
             onClick={() => setFilter(f => ({ ...f, category: cat }))}
             className={`shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               filter.category === cat
-                ? 'bg-emerald-500 text-white'
+                ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20'
                 : 'bg-muted text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -68,7 +69,7 @@ export default function ExerciseCatalog() {
             onClick={() => setFilter(f => ({ ...f, difficulty: diff }))}
             className={`shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               filter.difficulty === diff
-                ? 'bg-emerald-500 text-white'
+                ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20'
                 : 'bg-muted text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -77,7 +78,11 @@ export default function ExerciseCatalog() {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 text-muted-foreground">
+          {t('common.loading', 'Loading...')}
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">{t('catalog.noResults')}</div>
       ) : (
         <div className="grid grid-cols-2 gap-3">
@@ -85,7 +90,7 @@ export default function ExerciseCatalog() {
             <button
               key={ex.id}
               onClick={() => navigate(`/app/exercise/${ex.id}`)}
-              className="flex flex-col items-start gap-2 p-4 bg-card border border-border rounded-2xl hover:border-emerald-500/60 transition-colors text-left"
+              className="app-card app-card-hover flex flex-col items-start gap-2 p-4 text-left"
             >
               <div className="flex items-start justify-between w-full">
                 <span className="text-3xl">{ex.thumbnailEmoji}</span>

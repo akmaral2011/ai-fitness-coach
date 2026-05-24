@@ -43,3 +43,19 @@ export const PROFILE_ACHIEVEMENTS: Achievement[] = [
     check: (_sessions, _streak, _score, totalReps) => totalReps >= 100,
   },
 ];
+
+export function getUnlockedAchievementIds({
+  sessions,
+  streak,
+  maxScore,
+  totalReps,
+}: {
+  sessions: number;
+  streak: number;
+  maxScore: number;
+  totalReps: number;
+}) {
+  return PROFILE_ACHIEVEMENTS.filter(achievement =>
+    achievement.check(sessions, streak, maxScore, totalReps)
+  ).map(achievement => achievement.id);
+}

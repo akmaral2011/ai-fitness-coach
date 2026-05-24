@@ -42,7 +42,7 @@ describe('programStore', () => {
     expect(useProgramStore.getState().getCompletedCount('beginner-strength')).toBe(1);
   });
 
-  it('clears enrollments for demo login reset', () => {
+  it('clears enrollments for account switch reset', () => {
     const store = useProgramStore.getState();
 
     store.enroll('beginner-strength');

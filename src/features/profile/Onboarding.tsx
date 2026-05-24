@@ -30,6 +30,7 @@ import type {
   Gender,
   InjuryType,
 } from '@/features/profile/types';
+import { ApiError, apiRequest } from '@/lib/api';
 
 // ─── main component ───────────────────────────────────────────────────────────
 
@@ -39,8 +40,11 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const { saveDraft, completeOnboarding, onboardingDraft } = useProfileStore();
   const user = useAuthStore(s => s.user);
+  const token = useAuthStore(s => s.token);
 
   const [step, setStep] = useState(1);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   // form state
   const [goal, setGoal] = useState<FitnessGoal | null>(onboardingDraft.goal ?? null);
@@ -136,7 +140,47 @@ export default function Onboarding() {
 
   // ─── navigation ─────────────────────────────────────────────────────────────
 
-  function handleNext() {
+  async function finishOnboarding() {
+    if (goal && gender && height && weight && age && activityLevel && fitnessLevel && user) {
+      const selectedInjuries: InjuryType[] = injuries.length === 0 ? ['none'] : injuries;
+      const profile = {
+        goal,
+        gender,
+        heightCm: parseFloat(height),
+        weightKg: parseFloat(weight),
+        ageYears: parseInt(age),
+        activityLevel,
+        fitnessLevel,
+        injuries: selectedInjuries,
+      };
+
+      setSubmitting(true);
+      try {
+        if (token) {
+          await apiRequest('/api/profile/me', {
+            method: 'PUT',
+            token,
+            body: JSON.stringify(profile),
+          });
+        }
+        completeOnboarding(user.id, profile);
+        stopCamera();
+        navigate('/app/dashboard', { replace: true });
+      } catch (err) {
+        const message =
+          err instanceof ApiError
+            ? err.message
+            : t('profile.saveError', 'Could not save your profile');
+        setSubmitError(message);
+      } finally {
+        setSubmitting(false);
+      }
+    }
+  }
+
+  async function handleNext() {
+    setSubmitError(null);
+
     switch (step) {
       case 1:
         if (goal) {
@@ -179,20 +223,7 @@ export default function Onboarding() {
         setStep(8);
         break;
       case 8:
-        if (goal && gender && height && weight && age && activityLevel && fitnessLevel && user) {
-          completeOnboarding(user.id, {
-            goal,
-            gender,
-            heightCm: parseFloat(height),
-            weightKg: parseFloat(weight),
-            ageYears: parseInt(age),
-            activityLevel,
-            fitnessLevel,
-            injuries: injuries.length === 0 ? ['none'] : injuries,
-          });
-          stopCamera();
-          navigate('/app/dashboard', { replace: true });
-        }
+        await finishOnboarding();
         break;
     }
   }
@@ -279,6 +310,22 @@ export default function Onboarding() {
           />
         )}
 
+        {step === 8 && !allChecksPass && (
+          <button
+            type="button"
+            onClick={() => {
+              setSubmitError(null);
+              void finishOnboarding();
+            }}
+            disabled={submitting}
+            className="mt-4 w-full py-3 rounded-xl border border-border text-foreground font-semibold hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {submitting
+              ? t('auth.submitting', 'Please wait...')
+              : t('onboarding.camera.skip', 'Skip camera check')}
+          </button>
+        )}
+
         {/* nav buttons */}
         <div className="mt-auto pt-6 flex gap-3">
           {step > 1 && (
@@ -292,13 +339,22 @@ export default function Onboarding() {
           {!(step === 8 && !cameraReady) && (
             <button
               onClick={handleNext}
-              disabled={!canProceed}
+              disabled={!canProceed || submitting}
               className="flex-1 py-3 rounded-xl bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {isLastStep ? t('onboarding.camera.confirm') : t('common.next')}
+              {submitting
+                ? t('auth.submitting', 'Please wait...')
+                : isLastStep
+                  ? t('onboarding.camera.confirm')
+                  : t('common.next')}
             </button>
           )}
         </div>
+        {submitError && (
+          <div className="mt-3 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-500">
+            {submitError}
+          </div>
+        )}
       </div>
     </div>
   );

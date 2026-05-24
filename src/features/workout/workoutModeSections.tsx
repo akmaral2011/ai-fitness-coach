@@ -234,7 +234,7 @@ export function FeedbackPanel({
   items,
   t,
 }: {
-  items: { ruleId: string; feedbackKey: string; severity: string }[];
+  items: { ruleId: string; feedbackKey: string; message?: string; severity: string }[];
   t: (key: string) => string;
 }) {
   if (items.length === 0) return null;
@@ -254,7 +254,9 @@ export function FeedbackPanel({
           <span className="text-lg leading-none mt-0.5">
             {item.severity === 'error' ? '⚠️' : '💡'}
           </span>
-          <span className="text-sm font-semibold leading-snug">{t(item.feedbackKey)}</span>
+          <span className="text-sm font-semibold leading-snug">
+            {item.message ?? t(item.feedbackKey)}
+          </span>
         </div>
       ))}
     </div>
@@ -346,7 +348,7 @@ export function WorkoutSummary({
       </div>
 
       <div className="px-5 pb-10 flex-1 overflow-y-auto flex flex-col gap-4 max-w-lg mx-auto w-full">
-        <div className="flex items-center gap-5 bg-card border border-border rounded-2xl p-5">
+        <div className="app-card flex items-center gap-5 p-5">
           <div className="text-center shrink-0">
             <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
               {t('workout.summary.grade')}
@@ -375,7 +377,7 @@ export function WorkoutSummary({
           ].map(({ value, label }) => (
             <div
               key={label}
-              className="flex flex-col items-center p-4 bg-card border border-border rounded-2xl gap-1"
+              className="app-card app-card-hover flex flex-col items-center gap-1 p-4"
             >
               <span className="text-2xl font-bold text-foreground">{value}</span>
               <span className="text-xs text-muted-foreground text-center leading-tight">
@@ -386,7 +388,7 @@ export function WorkoutSummary({
         </div>
 
         {sets.length > 1 && (
-          <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="app-card overflow-hidden">
             <p className="px-4 py-3 text-sm font-semibold text-foreground border-b border-border">
               {t('workout.summary.setBreakdown')}
             </p>

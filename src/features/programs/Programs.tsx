@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
+import { useAuthStore } from '@/features/auth/authStore';
 import { PROGRAMS } from '@/features/programs/data';
 import { useProgramStore } from '@/features/programs/programStore';
 import { DIFFICULTY_COLOR } from '@/features/programs/types';
 import type { Program, ProgramDifficulty } from '@/features/programs/types';
+import { apiRequest } from '@/lib/api';
 
 export function DifficultyBadge({ difficulty }: { difficulty: ProgramDifficulty }) {
   const { t } = useTranslation();
@@ -19,10 +21,7 @@ export function DifficultyBadge({ difficulty }: { difficulty: ProgramDifficulty 
 export function ProgressBar({ value }: { value: number }) {
   return (
     <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
-      <div
-        className="h-full bg-emerald-500 rounded-full transition-all"
-        style={{ width: `${Math.min(100, value)}%` }}
-      />
+      <div className="app-progress-fill" style={{ width: `${Math.min(100, value)}%` }} />
     </div>
   );
 }
@@ -30,7 +29,8 @@ export function ProgressBar({ value }: { value: number }) {
 function ProgramCard({ program }: { program: Program }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { getEnrollment, getCompletedCount, enroll } = useProgramStore();
+  const { getEnrollment, getCompletedCount, enroll, setEnrollment } = useProgramStore();
+  const token = useAuthStore(s => s.token);
 
   const enrollment = getEnrollment(program.id);
   const totalWorkoutDays = program.weeks.reduce(
@@ -43,12 +43,27 @@ function ProgramCard({ program }: { program: Program }) {
   function handleAction() {
     if (!enrollment) {
       enroll(program.id);
+      if (token) {
+        void apiRequest<{ enrollment: ReturnType<typeof getEnrollment> }>(
+          `/api/programs/${program.id}/enroll`,
+          {
+            method: 'POST',
+            token,
+          }
+        )
+          .then(response => {
+            if (response.enrollment) setEnrollment(response.enrollment);
+          })
+          .catch(error => {
+            console.error('Failed to enroll in program', error);
+          });
+      }
     }
     navigate(`/app/programs/${program.id}`);
   }
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
+    <div className="app-card app-card-hover overflow-hidden">
       <div className="p-5">
         <div className="flex items-start gap-4 mb-4">
           <span className="text-4xl leading-none">{program.emoji}</span>
@@ -97,7 +112,7 @@ function ProgramCard({ program }: { program: Program }) {
           className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-colors ${
             enrollment
               ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'
-              : 'bg-emerald-500 text-white hover:bg-emerald-600'
+              : 'app-primary-action'
           }`}
         >
           {enrollment ? t('programs.continueProgram') : t('programs.startProgram')}
@@ -111,7 +126,7 @@ export default function Programs() {
   const { t } = useTranslation();
 
   return (
-    <div className="px-4 py-6 max-w-lg mx-auto">
+    <div className="app-page app-page-flow">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">{t('programs.title')}</h1>
         <p className="text-sm text-muted-foreground mt-1">{t('programs.subtitle')}</p>

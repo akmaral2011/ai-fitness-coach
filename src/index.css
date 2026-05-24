@@ -131,3 +131,59 @@
     scroll-behavior: smooth;
   }
 }
+
+@layer utilities {
+  .app-page {
+    @apply mx-auto max-w-lg px-4 py-6;
+  }
+
+  .app-page-flow {
+    @apply animate-in fade-in slide-in-from-bottom-2 duration-300;
+  }
+
+  .app-section-title {
+    @apply mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+  }
+
+  .app-card {
+    @apply rounded-2xl border border-border bg-card shadow-sm shadow-black/5;
+  }
+
+  .app-card-hover {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:border-emerald-500/45 hover:shadow-lg hover:shadow-emerald-500/10 active:translate-y-0;
+  }
+
+  .app-hero-panel {
+    @apply overflow-hidden rounded-2xl border border-border bg-card bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(59,130,246,0.08)_48%,rgba(139,92,246,0.09))] shadow-sm shadow-black/5;
+  }
+
+  .app-metric-tile {
+    @apply rounded-xl border border-border/70 bg-background/80 p-3;
+  }
+
+  .app-chip {
+    @apply rounded-full px-3 py-1 text-xs font-semibold transition-colors;
+  }
+
+  .app-primary-action {
+    @apply rounded-xl bg-emerald-500 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/20 active:translate-y-0;
+  }
+
+  .app-muted-action {
+    @apply rounded-xl bg-muted text-muted-foreground transition-colors hover:text-foreground;
+  }
+
+  .app-progress-fill {
+    @apply h-full rounded-full bg-emerald-500 transition-all duration-700 ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-page-flow,
+  .app-card-hover,
+  .app-primary-action {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

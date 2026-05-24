@@ -101,6 +101,7 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
           addFeedback({
             ruleId: rule.id,
             feedbackKey: rule.feedbackKey,
+            message: rule.feedback,
             severity: rule.severity,
           });
           if (rule.severity === 'error') violatedErrors.push(rule.id);

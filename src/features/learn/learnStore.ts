@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware';
 type LearnStore = {
   completedIds: string[];
   markComplete: (id: string) => void;
+  setCompletedIds: (ids: string[]) => void;
 };
 
 export const useLearnStore = create<LearnStore>()(
@@ -14,6 +15,7 @@ export const useLearnStore = create<LearnStore>()(
         set(s => ({
           completedIds: s.completedIds.includes(id) ? s.completedIds : [...s.completedIds, id],
         })),
+      setCompletedIds: ids => set({ completedIds: ids }),
     }),
     { name: 'learn-progress' }
   )
