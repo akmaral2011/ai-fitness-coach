@@ -30,7 +30,7 @@ import type {
   Gender,
   InjuryType,
 } from '@/features/profile/types';
-import { ApiError, apiRequest } from '@/lib/api';
+import { apiRequest } from '@/lib/api';
 
 // ─── main component ───────────────────────────────────────────────────────────
 
@@ -141,40 +141,40 @@ export default function Onboarding() {
   // ─── navigation ─────────────────────────────────────────────────────────────
 
   async function finishOnboarding() {
-    if (goal && gender && height && weight && age && activityLevel && fitnessLevel) {
-      const selectedInjuries: InjuryType[] = injuries.length === 0 ? ['none'] : injuries;
-      const profile = {
-        goal,
-        gender,
-        heightCm: parseFloat(height),
-        weightKg: parseFloat(weight),
-        ageYears: parseInt(age),
-        activityLevel,
-        fitnessLevel,
-        injuries: selectedInjuries,
-      };
+    if (!goal || !gender || !height || !weight || !age || !activityLevel || !fitnessLevel) {
+      setSubmitError(t('profile.saveError', 'Could not save your profile'));
+      return;
+    }
 
-      setSubmitting(true);
-      try {
-        if (token) {
-          await apiRequest('/api/profile/me', {
-            method: 'PUT',
-            token,
-            body: JSON.stringify(profile),
-          });
-        }
-        completeOnboarding(user?.id ?? 'local-user', profile);
-        stopCamera();
-        navigate('/app/dashboard', { replace: true });
-      } catch (err) {
-        const message =
-          err instanceof ApiError
-            ? err.message
-            : t('profile.saveError', 'Could not save your profile');
-        setSubmitError(message);
-      } finally {
-        setSubmitting(false);
+    const selectedInjuries: InjuryType[] = injuries.length === 0 ? ['none'] : injuries;
+    const profile = {
+      goal,
+      gender,
+      heightCm: parseFloat(height),
+      weightKg: parseFloat(weight),
+      ageYears: parseInt(age),
+      activityLevel,
+      fitnessLevel,
+      injuries: selectedInjuries,
+    };
+
+    setSubmitting(true);
+    completeOnboarding(user?.id ?? 'local-user', profile);
+
+    try {
+      if (token) {
+        await apiRequest('/api/profile/me', {
+          method: 'PUT',
+          token,
+          body: JSON.stringify(profile),
+        });
       }
+    } catch (err) {
+      console.warn('Profile sync failed after onboarding', err);
+    } finally {
+      setSubmitting(false);
+      stopCamera();
+      navigate('/app/dashboard', { replace: true });
     }
   }
 
@@ -240,7 +240,7 @@ export default function Onboarding() {
     (step === 5 && activityLevel !== null) ||
     (step === 6 && fitnessLevel !== null) ||
     step === 7 ||
-    (step === 8 && cameraReady);
+    step === 8;
 
   const isLastStep = step === 8;
 
@@ -336,7 +336,7 @@ export default function Onboarding() {
               {t('common.back')}
             </button>
           )}
-          {!(step === 8 && !cameraReady) && (
+          {step <= 8 && (
             <button
               onClick={handleNext}
               disabled={!canProceed || submitting}
