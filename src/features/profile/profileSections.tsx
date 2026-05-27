@@ -122,7 +122,7 @@ export function AchievementsCard({
 
 export function PreferencesCard({ t }: { t: TranslationFn }) {
   return (
-    <div className="app-card mb-5 overflow-hidden">
+    <div className="app-card mb-5 overflow-visible">
       <h3 className="app-section-title px-4 pt-4">{t('common.settings')}</h3>
       <div className="divide-y divide-border">
         <div className="flex min-h-14 items-center justify-between gap-4 px-4 py-3">
