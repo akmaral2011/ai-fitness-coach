@@ -16,18 +16,20 @@ if (!parsedEnv.success) {
   process.exit(1);
 }
 
+const envData = parsedEnv.data;
+
 if (
-  parsedEnv.data.NODE_ENV === 'production' &&
-  parsedEnv.data.JWT_SECRET === 'local-dev-secret-change-before-production'
+  envData.NODE_ENV === 'production' &&
+  envData.JWT_SECRET === 'local-dev-secret-change-before-production'
 ) {
   console.error('JWT_SECRET must be changed before running in production');
   process.exit(1);
 }
 
 export const env = {
-  nodeEnv: parsedEnv.data.NODE_ENV,
-  port: parsedEnv.data.PORT,
-  jwtSecret: parsedEnv.data.JWT_SECRET,
-  googleClientId: parsedEnv.data.GOOGLE_CLIENT_ID,
-  frontendUrl: parsedEnv.data.FRONTEND_URL,
+  nodeEnv: envData.NODE_ENV,
+  port: envData.PORT,
+  jwtSecret: envData.JWT_SECRET,
+  googleClientId: envData.GOOGLE_CLIENT_ID,
+  frontendUrl: envData.FRONTEND_URL,
 };
