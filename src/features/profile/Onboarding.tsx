@@ -141,7 +141,7 @@ export default function Onboarding() {
   // ─── navigation ─────────────────────────────────────────────────────────────
 
   async function finishOnboarding() {
-    if (goal && gender && height && weight && age && activityLevel && fitnessLevel && user) {
+    if (goal && gender && height && weight && age && activityLevel && fitnessLevel) {
       const selectedInjuries: InjuryType[] = injuries.length === 0 ? ['none'] : injuries;
       const profile = {
         goal,
@@ -163,7 +163,7 @@ export default function Onboarding() {
             body: JSON.stringify(profile),
           });
         }
-        completeOnboarding(user.id, profile);
+        completeOnboarding(user?.id ?? 'local-user', profile);
         stopCamera();
         navigate('/app/dashboard', { replace: true });
       } catch (err) {
@@ -240,7 +240,7 @@ export default function Onboarding() {
     (step === 5 && activityLevel !== null) ||
     (step === 6 && fitnessLevel !== null) ||
     step === 7 ||
-    (step === 8 && cameraReady && allChecksPass);
+    (step === 8 && cameraReady);
 
   const isLastStep = step === 8;
 
@@ -310,7 +310,7 @@ export default function Onboarding() {
           />
         )}
 
-        {step === 8 && !allChecksPass && (
+        {step === 8 && (!cameraReady || !allChecksPass) && (
           <button
             type="button"
             onClick={() => {
@@ -322,7 +322,7 @@ export default function Onboarding() {
           >
             {submitting
               ? t('auth.submitting', 'Please wait...')
-              : t('onboarding.camera.skip', 'Skip camera check')}
+              : t('onboarding.camera.skip', 'Skip and finish')}
           </button>
         )}
 
@@ -345,7 +345,9 @@ export default function Onboarding() {
               {submitting
                 ? t('auth.submitting', 'Please wait...')
                 : isLastStep
-                  ? t('onboarding.camera.confirm')
+                  ? allChecksPass
+                    ? t('onboarding.camera.confirm')
+                    : t('onboarding.finish')
                   : t('common.next')}
             </button>
           )}
