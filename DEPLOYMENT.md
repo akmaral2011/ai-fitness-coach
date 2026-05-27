@@ -3,8 +3,8 @@
 Recommended setup:
 
 - Frontend: Vercel
-- Backend API: Render
-- Database: Render PostgreSQL from `render.yaml`
+- Backend API: Render Web Service
+- Database: Supabase PostgreSQL, or Render PostgreSQL from `render.yaml`
 
 ## Backend on Render
 
@@ -19,6 +19,24 @@ Recommended setup:
    - `https://your-render-api.onrender.com/health`
 
 The backend start command runs Prisma migrations and seed data before starting the API.
+
+## Backend on Render Web Service + Supabase
+
+Use these settings if the Render Blueprint asks for payment:
+
+- Root directory: `backend`
+- Build command: `npm ci --include=dev && npm run build`
+- Start command: `npm run db:migrate && npm run seed && npm start`
+
+Environment variables:
+
+```env
+NODE_ENV=production
+DATABASE_URL=postgresql://postgres.PROJECT_REF:YOUR_PASSWORD@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?sslmode=require
+JWT_SECRET=replace-with-a-long-production-secret
+FRONTEND_URL=https://your-vercel-domain.vercel.app
+GOOGLE_CLIENT_ID=disabled
+```
 
 ## Frontend on Vercel
 
