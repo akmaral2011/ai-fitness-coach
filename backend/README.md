@@ -10,6 +10,21 @@ Node.js + Fastify backend for the AI Fitness Coach app. It stores real users, pr
 - JWT: protected routes with `Authorization: Bearer <token>`.
 - bcryptjs: password hashing.
 - Zod: request and environment validation.
+- Swagger UI: interactive API documentation at `/docs`.
+
+## API Docs
+
+Local:
+
+```text
+http://127.0.0.1:4000/docs
+```
+
+Production:
+
+```text
+https://ai-fitness-coach-api-w0fn.onrender.com/docs
+```
 
 ## Local Commands
 
