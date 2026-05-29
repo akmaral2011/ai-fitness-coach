@@ -1,3 +1,6 @@
+import { useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router';
+
 import FadeIn from '@/components/FadeIn';
 import CTABanner from '@/components/landing/CTABanner';
 import FAQ from '@/components/landing/FAQ';
@@ -14,6 +17,16 @@ import { useAuthStore } from '@/features/auth/authStore';
 
 export default function Home() {
   const authModalOpen = useAuthStore(s => s.authModalOpen);
+  const openAuthModal = useAuthStore(s => s.openAuthModal);
+  const location = useLocation();
+  const resetToken = useMemo(
+    () => new URLSearchParams(location.search).get('resetToken') ?? '',
+    [location.search]
+  );
+
+  useEffect(() => {
+    if (resetToken) openAuthModal();
+  }, [openAuthModal, resetToken]);
 
   return (
     <div className="bg-background text-foreground min-h-screen antialiased" id="hero">
@@ -41,7 +54,9 @@ export default function Home() {
         <CTABanner />
       </FadeIn>
       <Footer />
-      {authModalOpen && <AuthModal />}
+      {authModalOpen && (
+        <AuthModal initialMode={resetToken ? 'reset' : 'login'} initialResetToken={resetToken} />
+      )}
     </div>
   );
 }

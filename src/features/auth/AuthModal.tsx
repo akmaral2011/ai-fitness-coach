@@ -30,21 +30,34 @@ type TokenResponse = {
   emailDelivery?: 'sent' | 'dev';
 };
 
-export default function AuthModal() {
+type AuthModalProps = {
+  initialMode?: AuthMode;
+  initialResetToken?: string;
+};
+
+export default function AuthModal({
+  initialMode = 'login',
+  initialResetToken = '',
+}: AuthModalProps) {
   const { t } = useTranslation();
   const { closeAuthModal, setSession } = useAuthStore();
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [mode, setMode] = useState<AuthMode>('login');
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [resetToken, setResetToken] = useState('');
+  const [resetToken, setResetToken] = useState(initialResetToken);
   const [showPassword, setShowPassword] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setMode(initialMode);
+    setResetToken(initialResetToken);
+  }, [initialMode, initialResetToken]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
