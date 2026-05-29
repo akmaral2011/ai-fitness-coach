@@ -46,6 +46,7 @@
     "showPassword": "Сыр сөздү көрсөтүү",
     "hidePassword": "Сыр сөздү жашыруу",
     "networkError": "Серверге туташуу мүмкүн болгон жок",
+    "resetEmailSent": "Почтаңызды текшериңиз: сыр сөздү жаңылоо токени жөнөтүлдү.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"
   },

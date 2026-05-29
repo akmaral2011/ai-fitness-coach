@@ -1,10 +1,11 @@
-import type { FastifyInstance } from 'fastify';
 import bcrypt from 'bcryptjs';
+import type { FastifyInstance } from 'fastify';
 import crypto from 'node:crypto';
 import { z } from 'zod';
 
 import { env } from '../config/env.js';
 import { getBearerUserId, publicUser } from '../lib/auth.js';
+import { sendPasswordResetEmail, sendVerificationEmail } from '../lib/email.js';
 import { prisma } from '../lib/prisma.js';
 
 const registerSchema = z.object({
@@ -137,13 +138,20 @@ export async function authRoutes(app: FastifyInstance) {
       },
     });
     const verificationToken = await createEmailVerificationToken(user.id);
+    let emailSent = false;
+    try {
+      emailSent = await sendVerificationEmail(user.email, user.name, verificationToken);
+    } catch (error) {
+      app.log.warn({ error }, 'Failed to send verification email');
+    }
 
     const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' });
 
     return reply.status(201).send({
       token,
       user: publicUser(user),
-      verificationToken,
+      emailDelivery: emailSent ? 'sent' : 'dev',
+      ...(!emailSent && env.nodeEnv !== 'production' ? { verificationToken } : {}),
     });
   });
 
@@ -249,10 +257,43 @@ export async function authRoutes(app: FastifyInstance) {
     }
 
     const resetToken = await createPasswordResetToken(user.id);
+    let emailSent = false;
+    try {
+      emailSent = await sendPasswordResetEmail(user.email, resetToken);
+    } catch (error) {
+      app.log.warn({ error }, 'Failed to send password reset email');
+    }
+
     return {
       message: 'If the email exists, a reset link has been prepared',
-      resetToken,
+      emailDelivery: emailSent ? 'sent' : 'dev',
+      ...(!emailSent && env.nodeEnv !== 'production' ? { resetToken } : {}),
     };
+  });
+
+  app.get('/verify-email/:token', async (request, reply) => {
+    const params = z.object({ token: z.string().min(20) }).safeParse(request.params);
+    if (!params.success) return reply.status(400).send({ message: 'Invalid verification token' });
+
+    const tokenHash = hashToken(params.data.token);
+    const record = await prisma.emailVerificationToken.findUnique({
+      where: { tokenHash },
+    });
+
+    if (!record || record.usedAt || record.expiresAt < new Date()) {
+      return reply.status(400).send({ message: 'Invalid or expired verification token' });
+    }
+
+    await prisma.user.update({
+      where: { id: record.userId },
+      data: { emailVerifiedAt: new Date() },
+    });
+    await prisma.emailVerificationToken.update({
+      where: { id: record.id },
+      data: { usedAt: new Date() },
+    });
+
+    return reply.redirect(env.frontendUrl ?? '/');
   });
 
   app.post('/reset-password', async (request, reply) => {

@@ -21,11 +21,13 @@ type AuthResponse = {
     emailVerified?: boolean;
   };
   verificationToken?: string;
+  emailDelivery?: 'sent' | 'dev';
 };
 
 type TokenResponse = {
   message: string;
   resetToken?: string;
+  emailDelivery?: 'sent' | 'dev';
 };
 
 export default function AuthModal() {
@@ -124,10 +126,14 @@ export default function AuthModal() {
       if (response.resetToken) {
         setResetToken(response.resetToken);
         setNotice(t('auth.resetTokenDev', { token: response.resetToken }));
+        setMode('reset');
+      } else if (response.emailDelivery === 'sent') {
+        setResetToken('');
+        setNotice(t('auth.resetEmailSent', 'Check your email for the reset token.'));
+        setMode('reset');
       } else {
         setNotice(response.message);
       }
-      setMode('reset');
       setPassword('');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t('auth.networkError'));

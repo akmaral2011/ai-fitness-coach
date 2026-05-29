@@ -7,6 +7,9 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(24, 'JWT_SECRET must be at least 24 characters'),
   GOOGLE_CLIENT_ID: z.string().optional(),
   FRONTEND_URL: z.string().url().optional(),
+  BACKEND_URL: z.string().url().optional(),
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().email().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -32,4 +35,7 @@ export const env = {
   jwtSecret: envData.JWT_SECRET,
   googleClientId: envData.GOOGLE_CLIENT_ID,
   frontendUrl: envData.FRONTEND_URL,
+  backendUrl: envData.BACKEND_URL,
+  resendApiKey: envData.RESEND_API_KEY,
+  emailFrom: envData.EMAIL_FROM,
 };

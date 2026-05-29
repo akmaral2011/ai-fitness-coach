@@ -46,6 +46,7 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "networkError": "Could not connect to the server",
+    "resetEmailSent": "Check your email for the reset token.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"
   },

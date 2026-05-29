@@ -46,6 +46,7 @@
     "showPassword": "Показать пароль",
     "hidePassword": "Скрыть пароль",
     "networkError": "Не удалось подключиться к серверу",
+    "resetEmailSent": "Проверьте почту: мы отправили токен для сброса пароля.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"
   },
