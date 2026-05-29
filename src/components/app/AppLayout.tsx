@@ -1,8 +1,7 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router';
 
-import OnboardingTour, { useTourDone } from '@/components/OnboardingTour';
 import { useThemeSync } from '@/components/ThemeToggle';
 import BookIcon from '@/components/icons/BookIcon';
 import ChartIcon from '@/components/icons/ChartIcon';
@@ -48,8 +47,6 @@ export default function AppLayout({ children }: Props) {
   const setEnrollments = useProgramStore(s => s.setEnrollments);
   const setCompletedLessonIds = useLearnStore(s => s.setCompletedIds);
   const setUnlockedAchievementIds = useAchievementStore(s => s.setUnlockedIds);
-  const [tourVisible, setTourVisible] = useState(!useTourDone());
-
   useEffect(() => {
     let cancelled = false;
 
@@ -115,8 +112,6 @@ export default function AppLayout({ children }: Props) {
           ))}
         </div>
       </nav>
-
-      {tourVisible && <OnboardingTour onDone={() => setTourVisible(false)} />}
     </div>
   );
 }
