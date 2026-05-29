@@ -112,78 +112,100 @@ async function verifyGoogleCredential(credential: string): Promise<GoogleTokenIn
 }
 
 export async function authRoutes(app: FastifyInstance) {
-  app.post('/register', async (request, reply) => {
-    const parsed = registerSchema.safeParse(request.body);
-    if (!parsed.success) {
-      return reply.status(400).send({
-        message: 'Invalid request body',
-        issues: parsed.error.flatten().fieldErrors,
-      });
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email: parsed.data.email },
-    });
-
-    if (existingUser) {
-      return reply.status(409).send({ message: 'Email is already registered' });
-    }
-
-    const passwordHash = await bcrypt.hash(parsed.data.password, 12);
-    const user = await prisma.user.create({
-      data: {
-        email: parsed.data.email,
-        name: parsed.data.name,
-        passwordHash,
+  app.post(
+    '/register',
+    {
+      config: {
+        rateLimit: {
+          max: 8,
+          timeWindow: '1 minute',
+        },
       },
-    });
-    const verificationToken = await createEmailVerificationToken(user.id);
-    let emailSent = false;
-    try {
-      emailSent = await sendVerificationEmail(user.email, user.name, verificationToken);
-    } catch (error) {
-      app.log.warn({ error }, 'Failed to send verification email');
-    }
+    },
+    async (request, reply) => {
+      const parsed = registerSchema.safeParse(request.body);
+      if (!parsed.success) {
+        return reply.status(400).send({
+          message: 'Invalid request body',
+          issues: parsed.error.flatten().fieldErrors,
+        });
+      }
 
-    const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' });
+      const existingUser = await prisma.user.findUnique({
+        where: { email: parsed.data.email },
+      });
 
-    return reply.status(201).send({
-      token,
-      user: publicUser(user),
-      emailDelivery: emailSent ? 'sent' : 'dev',
-      ...(!emailSent && env.nodeEnv !== 'production' ? { verificationToken } : {}),
-    });
-  });
+      if (existingUser) {
+        return reply.status(409).send({ message: 'Email is already registered' });
+      }
 
-  app.post('/login', async (request, reply) => {
-    const parsed = loginSchema.safeParse(request.body);
-    if (!parsed.success) {
-      return reply.status(400).send({
-        message: 'Invalid request body',
-        issues: parsed.error.flatten().fieldErrors,
+      const passwordHash = await bcrypt.hash(parsed.data.password, 12);
+      const user = await prisma.user.create({
+        data: {
+          email: parsed.data.email,
+          name: parsed.data.name,
+          passwordHash,
+        },
+      });
+      const verificationToken = await createEmailVerificationToken(user.id);
+      let emailSent = false;
+      try {
+        emailSent = await sendVerificationEmail(user.email, user.name, verificationToken);
+      } catch (error) {
+        app.log.warn({ error }, 'Failed to send verification email');
+      }
+
+      const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' });
+
+      return reply.status(201).send({
+        token,
+        user: publicUser(user),
+        emailDelivery: emailSent ? 'sent' : 'dev',
+        ...(!emailSent && env.nodeEnv !== 'production' ? { verificationToken } : {}),
       });
     }
+  );
 
-    const user = await prisma.user.findUnique({
-      where: { email: parsed.data.email },
-    });
+  app.post(
+    '/login',
+    {
+      config: {
+        rateLimit: {
+          max: 10,
+          timeWindow: '1 minute',
+        },
+      },
+    },
+    async (request, reply) => {
+      const parsed = loginSchema.safeParse(request.body);
+      if (!parsed.success) {
+        return reply.status(400).send({
+          message: 'Invalid request body',
+          issues: parsed.error.flatten().fieldErrors,
+        });
+      }
 
-    if (!user?.passwordHash) {
-      return reply.status(401).send({ message: 'Invalid email or password' });
+      const user = await prisma.user.findUnique({
+        where: { email: parsed.data.email },
+      });
+
+      if (!user?.passwordHash) {
+        return reply.status(401).send({ message: 'Invalid email or password' });
+      }
+
+      const passwordMatches = await bcrypt.compare(parsed.data.password, user.passwordHash);
+      if (!passwordMatches) {
+        return reply.status(401).send({ message: 'Invalid email or password' });
+      }
+
+      const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' });
+
+      return {
+        token,
+        user: publicUser(user),
+      };
     }
-
-    const passwordMatches = await bcrypt.compare(parsed.data.password, user.passwordHash);
-    if (!passwordMatches) {
-      return reply.status(401).send({ message: 'Invalid email or password' });
-    }
-
-    const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' });
-
-    return {
-      token,
-      user: publicUser(user),
-    };
-  });
+  );
 
   app.post('/google', async (request, reply) => {
     const parsed = googleSchema.safeParse(request.body);
@@ -245,31 +267,42 @@ export async function authRoutes(app: FastifyInstance) {
     return { user: publicUser(user) };
   });
 
-  app.post('/forgot-password', async (request, reply) => {
-    const parsed = forgotPasswordSchema.safeParse(request.body);
-    if (!parsed.success) {
-      return reply.status(400).send({ message: 'Invalid request body' });
-    }
+  app.post(
+    '/forgot-password',
+    {
+      config: {
+        rateLimit: {
+          max: 5,
+          timeWindow: '1 minute',
+        },
+      },
+    },
+    async (request, reply) => {
+      const parsed = forgotPasswordSchema.safeParse(request.body);
+      if (!parsed.success) {
+        return reply.status(400).send({ message: 'Invalid request body' });
+      }
 
-    const user = await prisma.user.findUnique({ where: { email: parsed.data.email } });
-    if (!user) {
-      return { message: 'If the email exists, a reset link has been prepared' };
-    }
+      const user = await prisma.user.findUnique({ where: { email: parsed.data.email } });
+      if (!user) {
+        return { message: 'If the email exists, a reset link has been prepared' };
+      }
 
-    const resetToken = await createPasswordResetToken(user.id);
-    let emailSent = false;
-    try {
-      emailSent = await sendPasswordResetEmail(user.email, resetToken);
-    } catch (error) {
-      app.log.warn({ error }, 'Failed to send password reset email');
-    }
+      const resetToken = await createPasswordResetToken(user.id);
+      let emailSent = false;
+      try {
+        emailSent = await sendPasswordResetEmail(user.email, resetToken);
+      } catch (error) {
+        app.log.warn({ error }, 'Failed to send password reset email');
+      }
 
-    return {
-      message: 'If the email exists, a reset link has been prepared',
-      emailDelivery: emailSent ? 'sent' : 'dev',
-      ...(!emailSent && env.nodeEnv !== 'production' ? { resetToken } : {}),
-    };
-  });
+      return {
+        message: 'If the email exists, a reset link has been prepared',
+        emailDelivery: emailSent ? 'sent' : 'dev',
+        ...(!emailSent && env.nodeEnv !== 'production' ? { resetToken } : {}),
+      };
+    }
+  );
 
   app.get('/verify-email/:token', async (request, reply) => {
     const params = z.object({ token: z.string().min(20) }).safeParse(request.params);

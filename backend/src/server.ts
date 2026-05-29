@@ -1,5 +1,7 @@
 import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
 import jwt from '@fastify/jwt';
+import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import Fastify from 'fastify';
@@ -10,18 +12,27 @@ import { authRoutes } from './routes/auth.js';
 import { exerciseRoutes } from './routes/exercises.js';
 import { lessonRoutes } from './routes/lessons.js';
 import { profileRoutes } from './routes/profile.js';
-import { progressRoutes } from './routes/progress.js';
 import { programRoutes } from './routes/programs.js';
+import { progressRoutes } from './routes/progress.js';
 import { workoutRoutes } from './routes/workouts.js';
 
 const app = Fastify({
   logger: true,
 });
 
+await app.register(helmet, {
+  contentSecurityPolicy: false,
+});
+
 await app.register(cors, {
   origin: env.frontendUrl ? [env.frontendUrl] : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+});
+
+await app.register(rateLimit, {
+  max: 120,
+  timeWindow: '1 minute',
 });
 
 await app.register(jwt, {
