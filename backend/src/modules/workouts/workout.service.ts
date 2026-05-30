@@ -33,6 +33,12 @@ export async function listWorkoutSessions(userId: string, limit: number) {
   });
 }
 
+export async function clearWorkoutSessions(userId: string) {
+  await prisma.workoutSession.deleteMany({
+    where: { userId },
+  });
+}
+
 export async function getWorkoutSummary(userId: string) {
   const sessions = await prisma.workoutSession.findMany({
     where: { userId },

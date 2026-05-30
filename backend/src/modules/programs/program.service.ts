@@ -227,6 +227,12 @@ export async function leaveProgram(userId: string, programId: string) {
   });
 }
 
+export async function clearProgramEnrollments(userId: string) {
+  await prisma.programEnrollment.deleteMany({
+    where: { userId },
+  });
+}
+
 export type CompleteProgramDayResult =
   | { status: 'completed'; enrollment: ProgramEnrollment }
   | { status: 'already_completed'; enrollment: ProgramEnrollment }

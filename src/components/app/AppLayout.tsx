@@ -43,8 +43,11 @@ export default function AppLayout({ children }: Props) {
   const { t } = useTranslation();
   const location = useLocation();
   const token = useAuthStore(s => s.token);
+  const user = useAuthStore(s => s.user);
   const setSessions = useProgressStore(s => s.setSessions);
+  const clearSessions = useProgressStore(s => s.clearSessions);
   const setEnrollments = useProgramStore(s => s.setEnrollments);
+  const clearEnrollments = useProgramStore(s => s.clearEnrollments);
   const setCompletedLessonIds = useLearnStore(s => s.setCompletedIds);
   const setUnlockedAchievementIds = useAchievementStore(s => s.setUnlockedIds);
   useEffect(() => {
@@ -54,6 +57,17 @@ export default function AppLayout({ children }: Props) {
       if (!token) return;
 
       try {
+        const resetKey = user?.id ? `program-flow-reset-v1:${user.id}` : null;
+        if (resetKey && localStorage.getItem(resetKey) !== 'done') {
+          await Promise.all([
+            apiRequest('/api/programs/enrollments/me', { method: 'DELETE', token }),
+            apiRequest('/api/workouts/me', { method: 'DELETE', token }),
+          ]);
+          clearEnrollments();
+          clearSessions();
+          localStorage.setItem(resetKey, 'done');
+        }
+
         const [workoutsResponse, enrollmentsResponse, lessonsResponse, achievementsResponse] =
           await Promise.all([
             apiRequest<{ workouts: CompletedSession[] }>('/api/workouts?limit=100', { token }),
@@ -81,7 +95,16 @@ export default function AppLayout({ children }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [setCompletedLessonIds, setEnrollments, setSessions, setUnlockedAchievementIds, token]);
+  }, [
+    clearEnrollments,
+    clearSessions,
+    setCompletedLessonIds,
+    setEnrollments,
+    setSessions,
+    setUnlockedAchievementIds,
+    token,
+    user?.id,
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">

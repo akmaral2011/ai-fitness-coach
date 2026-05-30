@@ -3,7 +3,12 @@ import type { FastifyInstance } from 'fastify';
 import { requireUserId } from '../../lib/auth.js';
 import { publicWorkout } from './workout.presenter.js';
 import { createWorkoutSchema, workoutListQuerySchema } from './workout.schemas.js';
-import { createWorkoutSession, getWorkoutSummary, listWorkoutSessions } from './workout.service.js';
+import {
+  clearWorkoutSessions,
+  createWorkoutSession,
+  getWorkoutSummary,
+  listWorkoutSessions,
+} from './workout.service.js';
 
 export async function workoutRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
@@ -39,6 +44,14 @@ export async function workoutRoutes(app: FastifyInstance) {
     const sessions = await listWorkoutSessions(userId, limit);
 
     return { workouts: sessions.map(publicWorkout) };
+  });
+
+  app.delete('/me', async (request, reply) => {
+    const userId = await requireUserId(request, reply);
+    if (!userId) return;
+
+    await clearWorkoutSessions(userId);
+    return { ok: true };
   });
 
   app.get('/summary', async (request, reply) => {

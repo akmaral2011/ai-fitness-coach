@@ -4,6 +4,7 @@ import { requireUserId } from '../../lib/auth.js';
 import { publicEnrollment, publicProgram } from './program.presenter.js';
 import { completeProgramDayParamsSchema, programIdParamsSchema } from './program.schemas.js';
 import {
+  clearProgramEnrollments,
   completeProgramDay,
   enrollInProgram,
   findProgramById,
@@ -24,6 +25,14 @@ export async function programRoutes(app: FastifyInstance) {
 
     const enrollments = await listProgramEnrollments(userId);
     return { enrollments: enrollments.map(publicEnrollment) };
+  });
+
+  app.delete('/enrollments/me', async (request, reply) => {
+    const userId = await requireUserId(request, reply);
+    if (!userId) return;
+
+    await clearProgramEnrollments(userId);
+    return { ok: true };
   });
 
   app.get('/:id', async (request, reply) => {
