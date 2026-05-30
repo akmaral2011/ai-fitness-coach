@@ -23,7 +23,28 @@
     "programs": "Programs",
     "learn": "Learn",
     "progress": "Progress",
+    "leaderboard": "Rank",
     "profile": "Profile"
+  },
+  "leaderboard": {
+    "eyebrow": "Global ranking",
+    "title": "Leaderboard",
+    "you": "You",
+    "xp": "XP",
+    "heroRank": "You are ranked #{{rank}}",
+    "heroEmpty": "Rankings unlock after your first workout",
+    "heroActive": "Rank is based on XP, technique score, and workout volume.",
+    "heroInactive": "Finish a workout and your rank will appear here.",
+    "rankings": "Player rankings",
+    "rowMeta": "Level {{level}} · {{sessions}} workouts · {{score}}% form",
+    "emptyTitle": "No rankings yet",
+    "emptyDescription": "The leaderboard will fill in after the first saved workout.",
+    "error": "Could not load the leaderboard. Local progress is shown when available.",
+    "metrics": {
+      "xp": "XP",
+      "score": "Form",
+      "players": "Players"
+    }
   },
   "auth": {
     "title": "Sign in to AI Fitness Coach",

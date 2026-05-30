@@ -30,6 +30,70 @@ function publicWorkout(session: {
 }
 
 export async function progressRoutes(app: FastifyInstance) {
+  app.get('/leaderboard', async (request, reply) => {
+    const userId = await requireUserId(request, reply);
+    if (!userId) return;
+
+    const users = await prisma.user.findMany({
+      include: {
+        workouts: {
+          orderBy: { completedAt: 'desc' },
+        },
+      },
+    });
+
+    const ranked = users
+      .map(user => {
+        const totalSessions = user.workouts.length;
+        const totalReps = user.workouts.reduce((sum, session) => sum + session.repCount, 0);
+        const totalWorkoutSeconds = user.workouts.reduce(
+          (sum, session) => sum + session.durationSeconds,
+          0
+        );
+        const averageScore =
+          totalSessions === 0
+            ? 0
+            : Math.round(
+                user.workouts.reduce((sum, session) => sum + session.averageScore, 0) /
+                  totalSessions
+              );
+        const totalXP = user.workouts.reduce((sum, session) => sum + sessionXP(session), 0);
+
+        return {
+          userId: user.id,
+          name: user.name,
+          pictureUrl: user.pictureUrl,
+          totalXP,
+          level: xpData(totalXP).level,
+          totalSessions,
+          totalReps,
+          totalWorkoutSeconds,
+          averageScore,
+          currentStreak: calculateCurrentStreak(user.workouts.map(session => session.completedAt)),
+          lastWorkoutAt: user.workouts[0]?.completedAt.toISOString() ?? null,
+        };
+      })
+      .filter(entry => entry.totalSessions > 0)
+      .sort((a, b) => {
+        if (b.totalXP !== a.totalXP) return b.totalXP - a.totalXP;
+        if (b.averageScore !== a.averageScore) return b.averageScore - a.averageScore;
+        return b.totalSessions - a.totalSessions;
+      })
+      .map((entry, index) => ({
+        ...entry,
+        rank: index + 1,
+        isCurrentUser: entry.userId === userId,
+      }));
+
+    const currentUser = ranked.find(entry => entry.userId === userId) ?? null;
+
+    return {
+      leaderboard: ranked.slice(0, 20),
+      currentUser,
+      totalCompetitors: ranked.length,
+    };
+  });
+
   app.get('/overview', async (request, reply) => {
     const userId = await requireUserId(request, reply);
     if (!userId) return;

@@ -19,6 +19,7 @@ const ExerciseCatalog = lazy(() => import('./features/exercises/ExerciseCatalog'
 const ExerciseDetail = lazy(() => import('./features/exercises/ExerciseDetail'));
 const WorkoutMode = lazy(() => import('./features/workout/WorkoutMode'));
 const ProgressPage = lazy(() => import('./features/progress/Progress'));
+const LeaderboardPage = lazy(() => import('./features/leaderboard/Leaderboard'));
 const ProfilePage = lazy(() => import('./features/profile/Profile'));
 const ProgramsPage = lazy(() => import('./features/programs/Programs'));
 const ProgramDetailPage = lazy(() => import('./features/programs/ProgramDetail'));
@@ -104,6 +105,16 @@ function App() {
                 <ProtectedRoute>
                   <AppLayout>
                     <ProgressPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/leaderboard"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <LeaderboardPage />
                   </AppLayout>
                 </ProtectedRoute>
               }

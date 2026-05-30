@@ -8,6 +8,7 @@ import ChartIcon from '@/components/icons/ChartIcon';
 import DumbbellIcon from '@/components/icons/DumbbellIcon';
 import HomeIcon from '@/components/icons/HomeIcon';
 import ListIcon from '@/components/icons/ListIcon';
+import TrophyIcon from '@/components/icons/TrophyIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import { useAuthStore } from '@/features/auth/authStore';
 import { useLearnStore } from '@/features/learn/learnStore';
@@ -30,6 +31,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/app/programs', labelKey: 'nav.programs', icon: <ListIcon size={22} /> },
   { to: '/app/learn', labelKey: 'nav.learn', icon: <BookIcon size={22} /> },
   { to: '/app/progress', labelKey: 'nav.progress', icon: <ChartIcon size={22} /> },
+  { to: '/app/leaderboard', labelKey: 'nav.leaderboard', icon: <TrophyIcon size={22} /> },
   { to: '/app/profile', labelKey: 'nav.profile', icon: <UserIcon size={22} /> },
 ];
 
