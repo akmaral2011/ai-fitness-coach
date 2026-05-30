@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import { PROGRAMS } from '@/features/programs/data';
+
 export type ProgramEnrollment = {
   programId: string;
   startedAt: string;
@@ -20,6 +22,35 @@ type ProgramStore = {
   getCompletedCount: (programId: string) => number;
 };
 
+function getWorkoutDayOrder(programId: string) {
+  const program = PROGRAMS.find(item => item.id === programId);
+  return program?.weeks.flatMap(week =>
+    week.days.filter(day => day.type === 'workout').map(day => day.id)
+  );
+}
+
+function normalizeCompletedDayIds(programId: string, completedDayIds: string[]) {
+  const workoutDayOrder = getWorkoutDayOrder(programId);
+  if (!workoutDayOrder) return completedDayIds;
+
+  const completed = new Set(completedDayIds);
+  const normalized: string[] = [];
+
+  for (const dayId of workoutDayOrder) {
+    if (!completed.has(dayId)) break;
+    normalized.push(dayId);
+  }
+
+  return normalized;
+}
+
+function normalizeEnrollment(enrollment: ProgramEnrollment): ProgramEnrollment {
+  return {
+    ...enrollment,
+    completedDayIds: normalizeCompletedDayIds(enrollment.programId, enrollment.completedDayIds),
+  };
+}
+
 export const useProgramStore = create<ProgramStore>()(
   persist(
     (set, get) => ({
@@ -38,11 +69,11 @@ export const useProgramStore = create<ProgramStore>()(
       setEnrollment: enrollment =>
         set(state => ({
           enrollments: [
-            enrollment,
+            normalizeEnrollment(enrollment),
             ...state.enrollments.filter(e => e.programId !== enrollment.programId),
           ],
         })),
-      setEnrollments: enrollments => set({ enrollments }),
+      setEnrollments: enrollments => set({ enrollments: enrollments.map(normalizeEnrollment) }),
 
       unenroll: programId =>
         set(state => ({
@@ -51,24 +82,54 @@ export const useProgramStore = create<ProgramStore>()(
 
       clearEnrollments: () => set({ enrollments: [] }),
 
-      markDayComplete: (programId, dayId) =>
-        set(state => ({
-          enrollments: state.enrollments.map(e =>
-            e.programId === programId && !e.completedDayIds.includes(dayId)
-              ? { ...e, completedDayIds: [...e.completedDayIds, dayId] }
-              : e
-          ),
-        })),
+      markDayComplete: (programId, dayId) => {
+        const workoutDayOrder = getWorkoutDayOrder(programId);
 
-      getEnrollment: programId => get().enrollments.find(e => e.programId === programId),
+        set(state => ({
+          enrollments: state.enrollments.map(enrollment => {
+            if (enrollment.programId !== programId || enrollment.completedDayIds.includes(dayId)) {
+              return enrollment;
+            }
+
+            if (!workoutDayOrder) {
+              return { ...enrollment, completedDayIds: [...enrollment.completedDayIds, dayId] };
+            }
+
+            const normalizedCompletedDayIds = normalizeCompletedDayIds(
+              programId,
+              enrollment.completedDayIds
+            );
+            const nextDayId =
+              workoutDayOrder.find(item => !normalizedCompletedDayIds.includes(item)) ?? null;
+
+            if (nextDayId !== dayId) {
+              return { ...enrollment, completedDayIds: normalizedCompletedDayIds };
+            }
+
+            return {
+              ...enrollment,
+              completedDayIds: [...normalizedCompletedDayIds, dayId],
+            };
+          }),
+        }));
+      },
+
+      getEnrollment: programId => {
+        const enrollment = get().enrollments.find(e => e.programId === programId);
+        return enrollment ? normalizeEnrollment(enrollment) : undefined;
+      },
 
       isDayComplete: (programId, dayId) =>
-        get()
-          .enrollments.find(e => e.programId === programId)
-          ?.completedDayIds.includes(dayId) ?? false,
+        normalizeCompletedDayIds(
+          programId,
+          get().enrollments.find(e => e.programId === programId)?.completedDayIds ?? []
+        ).includes(dayId),
 
       getCompletedCount: programId =>
-        get().enrollments.find(e => e.programId === programId)?.completedDayIds.length ?? 0,
+        normalizeCompletedDayIds(
+          programId,
+          get().enrollments.find(e => e.programId === programId)?.completedDayIds ?? []
+        ).length,
     }),
     { name: 'program-enrollments' }
   )
