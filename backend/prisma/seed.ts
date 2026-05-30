@@ -843,7 +843,7 @@ const lessons = [
     id: 'lunge-video',
     type: LessonType.VIDEO,
     category: LessonCategory.TECHNIQUE,
-    emoji: '🏃',
+    emoji: '🦵',
     title: 'Lunge technique guide',
     summary: 'Learn how to keep balance, knee position, and torso control during lunges.',
     body: [
@@ -975,7 +975,7 @@ const lessons = [
     id: 'lateral-raise-video',
     type: LessonType.VIDEO,
     category: LessonCategory.TECHNIQUE,
-    emoji: '🙆',
+    emoji: '🏋️',
     title: 'Lateral raise shoulder control',
     summary: 'Learn how to raise the arms without shrugging, swinging, or overloading the neck.',
     body: [
@@ -1009,7 +1009,7 @@ const lessons = [
     id: 'calf-raise-video',
     type: LessonType.VIDEO,
     category: LessonCategory.BEGINNER,
-    emoji: '🦵',
+    emoji: '🦶',
     title: 'Calf raise tempo',
     summary: 'Use pauses and controlled range instead of bouncing through calf raises.',
     body: [
@@ -1026,7 +1026,7 @@ const lessons = [
     id: 'reverse-lunge-video',
     type: LessonType.VIDEO,
     category: LessonCategory.TECHNIQUE,
-    emoji: '🦶',
+    emoji: '🦵',
     title: 'Reverse lunge balance',
     summary: 'Practice a beginner-friendly lunge variation with better balance and knee control.',
     body: [

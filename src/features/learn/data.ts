@@ -74,7 +74,7 @@ export const LESSONS: Lesson[] = [
   {
     id: 'lunge-video',
     type: 'video',
-    emoji: '🏃',
+    emoji: '🦵',
     category: 'technique',
     durationMinutes: 7,
     titleKey: 'learn.lessons.lungeVideo.title',
