@@ -856,6 +856,8 @@
     "recoveryDay": "Активное восстановление",
     "workoutDay": "Тренировка",
     "dayLabel": "День {{n}}",
+    "completePrevious": "Сначала завершите предыдущий день",
+    "startProgramFirst": "Сначала начните программу",
     "enrollConfirm": "Начать эту программу?",
     "unenrollConfirm": "Покинуть программу? Прогресс будет потерян.",
     "goals": "Цели",

@@ -861,6 +861,8 @@
     "recoveryDay": "Active Recovery",
     "workoutDay": "Workout",
     "dayLabel": "Day {{n}}",
+    "completePrevious": "Complete previous day first",
+    "startProgramFirst": "Start program first",
     "enrollConfirm": "Start this program?",
     "unenrollConfirm": "Leave this program? Progress will be lost.",
     "goals": "Goals",

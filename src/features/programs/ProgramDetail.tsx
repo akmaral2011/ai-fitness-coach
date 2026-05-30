@@ -16,15 +16,20 @@ function WorkoutDayCard({
   day,
   dayNumber,
   programId,
+  canComplete,
+  disabledReasonKey,
 }: {
   day: ProgramDay;
   dayNumber: number;
   programId: string;
+  canComplete: boolean;
+  disabledReasonKey?: string;
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isDayComplete, markDayComplete, setEnrollment } = useProgramStore();
   const token = useAuthStore(s => s.token);
+  const [submitting, setSubmitting] = useState(false);
   const complete = isDayComplete(programId, day.id);
 
   if (day.type === 'rest') {
@@ -100,25 +105,41 @@ function WorkoutDayCard({
 
         {!complete && (
           <button
-            onClick={() => {
-              markDayComplete(programId, day.id);
+            disabled={!canComplete || submitting}
+            onClick={async () => {
+              if (!canComplete || submitting) return;
+
               if (token) {
-                void apiRequest<{ enrollment: ProgramEnrollment }>(
-                  `/api/programs/${programId}/days/${day.id}/complete`,
-                  {
-                    method: 'POST',
-                    token,
-                  }
-                )
-                  .then(response => setEnrollment(response.enrollment))
-                  .catch(error => {
-                    console.error('Failed to mark program day complete', error);
-                  });
+                setSubmitting(true);
+                try {
+                  const response = await apiRequest<{ enrollment: ProgramEnrollment }>(
+                    `/api/programs/${programId}/days/${day.id}/complete`,
+                    {
+                      method: 'POST',
+                      token,
+                    }
+                  );
+                  setEnrollment(response.enrollment);
+                } catch (error) {
+                  console.error('Failed to mark program day complete', error);
+                } finally {
+                  setSubmitting(false);
+                }
+              } else {
+                markDayComplete(programId, day.id);
               }
             }}
-            className="app-primary-action w-full py-2 text-sm"
+            className={`w-full rounded-xl py-2 text-sm font-semibold transition-colors ${
+              canComplete
+                ? 'app-primary-action'
+                : 'cursor-not-allowed bg-muted text-muted-foreground'
+            }`}
           >
-            {t('programs.completed')} ✓
+            {canComplete
+              ? submitting
+                ? t('common.loading')
+                : `${t('programs.completed')} ✓`
+              : t(disabledReasonKey ?? 'programs.completePrevious')}
           </button>
         )}
       </div>
@@ -130,10 +151,14 @@ function WeekAccordion({
   week,
   programId,
   defaultOpen,
+  nextWorkoutDayId,
+  isEnrolled,
 }: {
   week: ProgramWeek;
   programId: string;
   defaultOpen: boolean;
+  nextWorkoutDayId: string | null;
+  isEnrolled: boolean;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(defaultOpen);
@@ -171,7 +196,15 @@ function WeekAccordion({
         <div className="px-4 pb-4 flex flex-col gap-2 border-t border-border bg-background">
           {week.days.map((day, i) => (
             <div key={day.id} className="mt-2">
-              <WorkoutDayCard day={day} dayNumber={i + 1} programId={programId} />
+              <WorkoutDayCard
+                day={day}
+                dayNumber={i + 1}
+                programId={programId}
+                canComplete={isEnrolled && day.id === nextWorkoutDayId}
+                disabledReasonKey={
+                  isEnrolled ? 'programs.completePrevious' : 'programs.startProgramFirst'
+                }
+              />
             </div>
           ))}
         </div>
@@ -205,6 +238,11 @@ export default function ProgramDetail() {
   );
   const completedCount = getCompletedCount(programId);
   const progressPct = totalWorkoutDays > 0 ? (completedCount / totalWorkoutDays) * 100 : 0;
+  const workoutDayIds = program.weeks.flatMap(week =>
+    week.days.filter(day => day.type === 'workout').map(day => day.id)
+  );
+  const completedDayIds = enrollment?.completedDayIds ?? [];
+  const nextWorkoutDayId = workoutDayIds.find(dayId => !completedDayIds.includes(dayId)) ?? null;
 
   function handleEnrollToggle() {
     if (enrollment) {
@@ -317,6 +355,8 @@ export default function ProgramDetail() {
               week={week}
               programId={program.id}
               defaultOpen={i === 0}
+              nextWorkoutDayId={nextWorkoutDayId}
+              isEnrolled={Boolean(enrollment)}
             />
           ))}
         </div>

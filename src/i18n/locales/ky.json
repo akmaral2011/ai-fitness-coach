@@ -856,6 +856,8 @@
     "recoveryDay": "Активдүү калыбына келтирүү",
     "workoutDay": "Машыгуу",
     "dayLabel": "{{n}} күн",
+    "completePrevious": "Алгач мурунку күндү бүтүрүңүз",
+    "startProgramFirst": "Алгач программаны баштаңыз",
     "enrollConfirm": "Бул программаны баштоо?",
     "unenrollConfirm": "Программадан чыгуу? Прогресс жоголот.",
     "goals": "Максаттар",
