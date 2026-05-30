@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router';
 
 import { useAuthStore } from '@/features/auth/authStore';
 import { PROGRAMS } from '@/features/programs/data';
+import {
+  getRequiredPreviousProgramId,
+  getWorkoutDays,
+  isProgramUnlocked,
+} from '@/features/programs/programProgress';
 import { useProgramStore } from '@/features/programs/programStore';
 import { DIFFICULTY_COLOR } from '@/features/programs/types';
 import type { Program, ProgramDifficulty } from '@/features/programs/types';
@@ -33,14 +38,21 @@ function ProgramCard({ program }: { program: Program }) {
   const token = useAuthStore(s => s.token);
 
   const enrollment = getEnrollment(program.id);
-  const totalWorkoutDays = program.weeks.reduce(
-    (acc, w) => acc + w.days.filter(d => d.type === 'workout').length,
-    0
-  );
+  const totalWorkoutDays = getWorkoutDays(program).length;
   const completedCount = getCompletedCount(program.id);
   const progressPct = totalWorkoutDays > 0 ? (completedCount / totalWorkoutDays) * 100 : 0;
+  const unlocked = isProgramUnlocked(
+    program.id,
+    programId => getEnrollment(programId)?.completedDayIds ?? []
+  );
+  const previousProgramId = getRequiredPreviousProgramId(program.id);
+  const previousProgram = previousProgramId
+    ? PROGRAMS.find(item => item.id === previousProgramId)
+    : null;
 
   function handleAction() {
+    if (!unlocked) return;
+
     if (!enrollment) {
       enroll(program.id);
       if (token) {
@@ -108,14 +120,21 @@ function ProgramCard({ program }: { program: Program }) {
         )}
 
         <button
+          disabled={!unlocked}
           onClick={handleAction}
           className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-colors ${
-            enrollment
-              ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'
-              : 'app-primary-action'
+            !unlocked
+              ? 'cursor-not-allowed bg-muted text-muted-foreground'
+              : enrollment
+                ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'
+                : 'app-primary-action'
           }`}
         >
-          {enrollment ? t('programs.continueProgram') : t('programs.startProgram')}
+          {!unlocked && previousProgram
+            ? t('programs.completePreviousProgram', { name: t(previousProgram.nameKey) })
+            : enrollment
+              ? t('programs.continueProgram')
+              : t('programs.startProgram')}
         </button>
       </div>
     </div>

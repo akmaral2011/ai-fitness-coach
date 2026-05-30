@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { PROGRAMS } from '@/features/programs/data';
+import { getProgramProgressCount, getWorkoutDays } from '@/features/programs/programProgress';
 
 export type ProgramEnrollment = {
   programId: string;
@@ -24,9 +25,7 @@ type ProgramStore = {
 
 function getWorkoutDayOrder(programId: string) {
   const program = PROGRAMS.find(item => item.id === programId);
-  return program?.weeks.flatMap(week =>
-    week.days.filter(day => day.type === 'workout').map(day => day.id)
-  );
+  return program ? getWorkoutDays(program).map(day => day.id) : undefined;
 }
 
 function normalizeCompletedDayIds(programId: string, completedDayIds: string[]) {
@@ -126,10 +125,10 @@ export const useProgramStore = create<ProgramStore>()(
         ).includes(dayId),
 
       getCompletedCount: programId =>
-        normalizeCompletedDayIds(
+        getProgramProgressCount(
           programId,
           get().enrollments.find(e => e.programId === programId)?.completedDayIds ?? []
-        ).length,
+        ),
     }),
     { name: 'program-enrollments' }
   )

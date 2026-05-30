@@ -8,8 +8,15 @@ import { useAuthStore } from '@/features/auth/authStore';
 import { EXERCISES } from '@/features/exercises/data';
 import { DifficultyBadge, ProgressBar } from '@/features/programs/Programs';
 import { getProgram } from '@/features/programs/data';
+import {
+  getMissingExerciseIdsForDay,
+  getRequiredPreviousProgramId,
+  getWorkoutDays,
+  isProgramUnlocked,
+} from '@/features/programs/programProgress';
 import { type ProgramEnrollment, useProgramStore } from '@/features/programs/programStore';
 import type { ProgramDay, ProgramWeek } from '@/features/programs/types';
+import { useProgressStore } from '@/features/progress/progressStore';
 import { apiRequest } from '@/lib/api';
 
 function WorkoutDayCard({
@@ -18,12 +25,14 @@ function WorkoutDayCard({
   programId,
   canComplete,
   disabledReasonKey,
+  missingExerciseIds,
 }: {
   day: ProgramDay;
   dayNumber: number;
   programId: string;
   canComplete: boolean;
   disabledReasonKey?: string;
+  missingExerciseIds: string[];
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -104,43 +113,52 @@ function WorkoutDayCard({
         </div>
 
         {!complete && (
-          <button
-            disabled={!canComplete || submitting}
-            onClick={async () => {
-              if (!canComplete || submitting) return;
+          <>
+            {missingExerciseIds.length > 0 && (
+              <p className="mb-2 text-xs text-muted-foreground">
+                {t('programs.missingExercises', {
+                  count: missingExerciseIds.length,
+                })}
+              </p>
+            )}
+            <button
+              disabled={!canComplete || submitting}
+              onClick={async () => {
+                if (!canComplete || submitting) return;
 
-              if (token) {
-                setSubmitting(true);
-                try {
-                  const response = await apiRequest<{ enrollment: ProgramEnrollment }>(
-                    `/api/programs/${programId}/days/${day.id}/complete`,
-                    {
-                      method: 'POST',
-                      token,
-                    }
-                  );
-                  setEnrollment(response.enrollment);
-                } catch (error) {
-                  console.error('Failed to mark program day complete', error);
-                } finally {
-                  setSubmitting(false);
+                if (token) {
+                  setSubmitting(true);
+                  try {
+                    const response = await apiRequest<{ enrollment: ProgramEnrollment }>(
+                      `/api/programs/${programId}/days/${day.id}/complete`,
+                      {
+                        method: 'POST',
+                        token,
+                      }
+                    );
+                    setEnrollment(response.enrollment);
+                  } catch (error) {
+                    console.error('Failed to mark program day complete', error);
+                  } finally {
+                    setSubmitting(false);
+                  }
+                } else {
+                  markDayComplete(programId, day.id);
                 }
-              } else {
-                markDayComplete(programId, day.id);
-              }
-            }}
-            className={`w-full rounded-xl py-2 text-sm font-semibold transition-colors ${
-              canComplete
-                ? 'app-primary-action'
-                : 'cursor-not-allowed bg-muted text-muted-foreground'
-            }`}
-          >
-            {canComplete
-              ? submitting
-                ? t('common.loading')
-                : `${t('programs.completed')} ✓`
-              : t(disabledReasonKey ?? 'programs.completePrevious')}
-          </button>
+              }}
+              className={`w-full rounded-xl py-2 text-sm font-semibold transition-colors ${
+                canComplete
+                  ? 'app-primary-action'
+                  : 'cursor-not-allowed bg-muted text-muted-foreground'
+              }`}
+            >
+              {canComplete
+                ? submitting
+                  ? t('common.loading')
+                  : `${t('programs.completed')} ✓`
+                : t(disabledReasonKey ?? 'programs.completePrevious')}
+            </button>
+          </>
         )}
       </div>
     </div>
@@ -153,12 +171,18 @@ function WeekAccordion({
   defaultOpen,
   nextWorkoutDayId,
   isEnrolled,
+  enrollmentStartedAt,
+  sessions,
+  isProgramLocked,
 }: {
   week: ProgramWeek;
   programId: string;
   defaultOpen: boolean;
   nextWorkoutDayId: string | null;
   isEnrolled: boolean;
+  enrollmentStartedAt?: string;
+  sessions: ReturnType<typeof useProgressStore.getState>['sessions'];
+  isProgramLocked: boolean;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(defaultOpen);
@@ -196,15 +220,34 @@ function WeekAccordion({
         <div className="px-4 pb-4 flex flex-col gap-2 border-t border-border bg-background">
           {week.days.map((day, i) => (
             <div key={day.id} className="mt-2">
-              <WorkoutDayCard
-                day={day}
-                dayNumber={i + 1}
-                programId={programId}
-                canComplete={isEnrolled && day.id === nextWorkoutDayId}
-                disabledReasonKey={
-                  isEnrolled ? 'programs.completePrevious' : 'programs.startProgramFirst'
-                }
-              />
+              {(() => {
+                const missingExerciseIds = getMissingExerciseIdsForDay(
+                  day,
+                  sessions,
+                  enrollmentStartedAt
+                );
+                const exercisesDone = day.type !== 'workout' || missingExerciseIds.length === 0;
+                return (
+                  <WorkoutDayCard
+                    day={day}
+                    dayNumber={i + 1}
+                    programId={programId}
+                    canComplete={
+                      !isProgramLocked && isEnrolled && day.id === nextWorkoutDayId && exercisesDone
+                    }
+                    disabledReasonKey={
+                      isProgramLocked
+                        ? 'programs.lockedByPreviousProgram'
+                        : !isEnrolled
+                          ? 'programs.startProgramFirst'
+                          : !exercisesDone
+                            ? 'programs.completeExercisesFirst'
+                            : 'programs.completePrevious'
+                    }
+                    missingExerciseIds={missingExerciseIds}
+                  />
+                );
+              })()}
             </div>
           ))}
         </div>
@@ -218,6 +261,7 @@ export default function ProgramDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { getEnrollment, getCompletedCount, enroll, setEnrollment, unenroll } = useProgramStore();
+  const sessions = useProgressStore(s => s.sessions);
   const token = useAuthStore(s => s.token);
 
   const program = id ? getProgram(id) : undefined;
@@ -232,19 +276,22 @@ export default function ProgramDetail() {
 
   const programId = program.id;
   const enrollment = getEnrollment(programId);
-  const totalWorkoutDays = program.weeks.reduce(
-    (acc, w) => acc + w.days.filter(d => d.type === 'workout').length,
-    0
-  );
+  const totalWorkoutDays = getWorkoutDays(program).length;
   const completedCount = getCompletedCount(programId);
   const progressPct = totalWorkoutDays > 0 ? (completedCount / totalWorkoutDays) * 100 : 0;
-  const workoutDayIds = program.weeks.flatMap(week =>
-    week.days.filter(day => day.type === 'workout').map(day => day.id)
-  );
+  const workoutDayIds = getWorkoutDays(program).map(day => day.id);
   const completedDayIds = enrollment?.completedDayIds ?? [];
   const nextWorkoutDayId = workoutDayIds.find(dayId => !completedDayIds.includes(dayId)) ?? null;
+  const unlocked = isProgramUnlocked(
+    programId,
+    candidateProgramId => getEnrollment(candidateProgramId)?.completedDayIds ?? []
+  );
+  const previousProgramId = getRequiredPreviousProgramId(programId);
+  const previousProgram = previousProgramId ? getProgram(previousProgramId) : null;
 
   function handleEnrollToggle() {
+    if (!unlocked) return;
+
     if (enrollment) {
       if (window.confirm(t('programs.unenrollConfirm'))) {
         unenroll(programId);
@@ -336,15 +383,28 @@ export default function ProgramDetail() {
             </div>
           )}
 
+          {!unlocked && previousProgram && (
+            <p className="mb-4 rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+              {t('programs.completePreviousProgram', { name: t(previousProgram.nameKey) })}
+            </p>
+          )}
+
           <button
+            disabled={!unlocked}
             onClick={handleEnrollToggle}
             className={`w-full py-3 rounded-xl font-semibold transition-colors ${
-              enrollment
-                ? 'bg-muted text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500'
-                : 'app-primary-action'
+              !unlocked
+                ? 'cursor-not-allowed bg-muted text-muted-foreground'
+                : enrollment
+                  ? 'bg-muted text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500'
+                  : 'app-primary-action'
             }`}
           >
-            {enrollment ? t('programs.leaveProgram') : t('programs.startProgram')}
+            {!unlocked
+              ? t('programs.locked')
+              : enrollment
+                ? t('programs.leaveProgram')
+                : t('programs.startProgram')}
           </button>
         </div>
 
@@ -357,6 +417,9 @@ export default function ProgramDetail() {
               defaultOpen={i === 0}
               nextWorkoutDayId={nextWorkoutDayId}
               isEnrolled={Boolean(enrollment)}
+              enrollmentStartedAt={enrollment?.startedAt}
+              sessions={sessions}
+              isProgramLocked={!unlocked}
             />
           ))}
         </div>

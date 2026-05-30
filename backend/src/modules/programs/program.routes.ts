@@ -44,6 +44,12 @@ export async function programRoutes(app: FastifyInstance) {
 
     const enrollment = await enrollInProgram(userId, params.data.id);
     if (!enrollment) return reply.status(404).send({ message: 'Program not found' });
+    if ('lockedByProgramId' in enrollment) {
+      return reply.status(409).send({
+        message: 'Complete previous program first',
+        lockedByProgramId: enrollment.lockedByProgramId,
+      });
+    }
 
     return { enrollment: publicEnrollment(enrollment) };
   });
@@ -76,6 +82,12 @@ export async function programRoutes(app: FastifyInstance) {
       return reply.status(409).send({
         message: 'Complete previous program days first',
         nextDayId: result.nextDayId,
+      });
+    }
+    if (result.status === 'missing_exercises') {
+      return reply.status(409).send({
+        message: 'Complete this program day exercises first',
+        missingExerciseIds: result.missingExerciseIds,
       });
     }
 
