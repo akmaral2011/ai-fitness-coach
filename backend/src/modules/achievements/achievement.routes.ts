@@ -1,20 +1,16 @@
-import type { FastifyInstance } from 'fastify';
 import { Prisma } from '@prisma/client';
+import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 
-import { requireUserId } from '../lib/auth.js';
-import { prisma } from '../lib/prisma.js';
+import { requireUserId } from '../../lib/auth.js';
+import { prisma } from '../../lib/prisma.js';
 
 const unlockSchema = z.object({
   type: z.string().min(1).max(80),
   metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
-function publicAchievement(achievement: {
-  type: string;
-  unlockedAt: Date;
-  metadata: unknown;
-}) {
+function publicAchievement(achievement: { type: string; unlockedAt: Date; metadata: unknown }) {
   return {
     type: achievement.type,
     unlockedAt: achievement.unlockedAt.toISOString(),

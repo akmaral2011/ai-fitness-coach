@@ -1,13 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 
-import { requireUserId } from '../lib/auth.js';
-import { prisma } from '../lib/prisma.js';
-import {
-  calculateCurrentStreak,
-  dayKey,
-  sessionXP,
-  xpData,
-} from '../modules/workouts/workout.stats.js';
+import { requireUserId } from '../../lib/auth.js';
+import { prisma } from '../../lib/prisma.js';
+import { calculateCurrentStreak, dayKey, sessionXP, xpData } from '../workouts/workout.stats.js';
 
 function publicWorkout(session: {
   id: string;

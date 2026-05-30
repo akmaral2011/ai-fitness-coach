@@ -1,15 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 
-import { publicExercise, publicExerciseRule } from '../modules/exercises/exercise.presenter.js';
-import {
-  exerciseSlugParamsSchema,
-  listExercisesQuerySchema,
-} from '../modules/exercises/exercise.schemas.js';
-import {
-  findExerciseBySlug,
-  findExerciseRulesBySlug,
-  listExercises,
-} from '../modules/exercises/exercise.service.js';
+import { publicExercise, publicExerciseRule } from './exercise.presenter.js';
+import { exerciseSlugParamsSchema, listExercisesQuerySchema } from './exercise.schemas.js';
+import { findExerciseBySlug, findExerciseRulesBySlug, listExercises } from './exercise.service.js';
 
 export async function exerciseRoutes(app: FastifyInstance) {
   app.get('/', async request => {

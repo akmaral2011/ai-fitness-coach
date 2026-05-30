@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 
-import { requireUserId } from '../lib/auth.js';
-import { prisma } from '../lib/prisma.js';
+import { requireUserId } from '../../lib/auth.js';
+import { prisma } from '../../lib/prisma.js';
 
 function apiDifficulty(difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED') {
   return difficulty.toLowerCase();

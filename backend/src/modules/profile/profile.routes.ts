@@ -1,13 +1,9 @@
+import { FitnessGoal, FitnessLevel, type Profile } from '@prisma/client';
 import type { FastifyInstance } from 'fastify';
-import {
-  FitnessGoal,
-  FitnessLevel,
-  type Profile,
-} from '@prisma/client';
 import { z } from 'zod';
 
-import { requireUserId } from '../lib/auth.js';
-import { prisma } from '../lib/prisma.js';
+import { requireUserId } from '../../lib/auth.js';
+import { prisma } from '../../lib/prisma.js';
 
 const goalMap = {
   lose_weight: FitnessGoal.LOSE_WEIGHT,
@@ -32,7 +28,13 @@ const profileSchema = z.object({
   injuries: z.array(
     z.enum(['lower_back', 'knees', 'shoulders', 'wrists', 'neck', 'ankles', 'hips', 'none'])
   ),
-  goal: z.enum(['lose_weight', 'build_muscle', 'improve_technique', 'stay_active', 'rehabilitation']),
+  goal: z.enum([
+    'lose_weight',
+    'build_muscle',
+    'improve_technique',
+    'stay_active',
+    'rehabilitation',
+  ]),
   fitnessLevel: z.enum(['beginner', 'intermediate', 'advanced']),
 });
 

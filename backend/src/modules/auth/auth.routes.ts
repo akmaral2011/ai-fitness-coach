@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 
-import { env } from '../config/env.js';
-import { getBearerUserId, publicUser } from '../lib/auth.js';
+import { env } from '../../config/env.js';
+import { getBearerUserId, publicUser } from '../../lib/auth.js';
 import {
   forgotPasswordSchema,
   googleSchema,
@@ -10,7 +10,7 @@ import {
   resetPasswordSchema,
   tokenParamsSchema,
   verifyEmailSchema,
-} from '../modules/auth/auth.schemas.js';
+} from './auth.schemas.js';
 import {
   findUserById,
   loginWithEmail,
@@ -19,7 +19,7 @@ import {
   requestPasswordReset,
   resetPassword,
   verifyEmailToken,
-} from '../modules/auth/auth.service.js';
+} from './auth.service.js';
 
 const genericResetMessage = 'If the email exists, a reset link has been prepared';
 

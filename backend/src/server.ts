@@ -7,14 +7,14 @@ import swaggerUi from '@fastify/swagger-ui';
 import Fastify from 'fastify';
 
 import { env } from './config/env.js';
-import { achievementRoutes } from './routes/achievements.js';
-import { authRoutes } from './routes/auth.js';
-import { exerciseRoutes } from './routes/exercises.js';
-import { lessonRoutes } from './routes/lessons.js';
-import { profileRoutes } from './routes/profile.js';
-import { programRoutes } from './routes/programs.js';
-import { progressRoutes } from './routes/progress.js';
-import { workoutRoutes } from './routes/workouts.js';
+import { achievementRoutes } from './modules/achievements/achievement.routes.js';
+import { authRoutes } from './modules/auth/auth.routes.js';
+import { exerciseRoutes } from './modules/exercises/exercise.routes.js';
+import { lessonRoutes } from './modules/lessons/lesson.routes.js';
+import { profileRoutes } from './modules/profile/profile.routes.js';
+import { programRoutes } from './modules/programs/program.routes.js';
+import { progressRoutes } from './modules/progress/progress.routes.js';
+import { workoutRoutes } from './modules/workouts/workout.routes.js';
 
 const app = Fastify({
   logger: true,

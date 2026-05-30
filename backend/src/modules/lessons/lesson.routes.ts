@@ -1,9 +1,9 @@
-import type { FastifyInstance } from 'fastify';
 import { LessonCategory, LessonType } from '@prisma/client';
+import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 
-import { requireUserId } from '../lib/auth.js';
-import { prisma } from '../lib/prisma.js';
+import { requireUserId } from '../../lib/auth.js';
+import { prisma } from '../../lib/prisma.js';
 
 function apiType(type: LessonType) {
   return type.toLowerCase();

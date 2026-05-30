@@ -1,16 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 
-import { requireUserId } from '../lib/auth.js';
-import { publicWorkout } from '../modules/workouts/workout.presenter.js';
-import {
-  createWorkoutSchema,
-  workoutListQuerySchema,
-} from '../modules/workouts/workout.schemas.js';
-import {
-  createWorkoutSession,
-  getWorkoutSummary,
-  listWorkoutSessions,
-} from '../modules/workouts/workout.service.js';
+import { requireUserId } from '../../lib/auth.js';
+import { publicWorkout } from './workout.presenter.js';
+import { createWorkoutSchema, workoutListQuerySchema } from './workout.schemas.js';
+import { createWorkoutSession, getWorkoutSummary, listWorkoutSessions } from './workout.service.js';
 
 export async function workoutRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
