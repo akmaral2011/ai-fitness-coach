@@ -90,7 +90,7 @@ export default function ExerciseCatalog() {
             <button
               key={ex.id}
               onClick={() => navigate(`/app/exercise/${ex.id}`)}
-              className="app-card app-card-hover flex flex-col items-start gap-2 p-4 text-left"
+              className="app-card app-card-hover flex min-h-40 flex-col items-start gap-2 p-4 text-left"
             >
               <div className="flex items-start justify-between w-full">
                 <span className="text-3xl">{ex.thumbnailEmoji}</span>
@@ -101,7 +101,7 @@ export default function ExerciseCatalog() {
                 </span>
               </div>
               <div>
-                <p className="app-card-title">{t(ex.nameKey)}</p>
+                <p className="app-card-title line-clamp-2">{t(ex.nameKey)}</p>
                 <p className="app-card-meta mt-0.5">
                   {ex.sets} × {ex.reps} {t('catalog.detail.reps')} · {ex.estimatedDuration}
                   {t('common.min')}

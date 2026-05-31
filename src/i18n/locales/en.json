@@ -1132,6 +1132,7 @@
     "progress": "{{done}} of {{total}} completed",
     "videoComingSoon": "Video coming soon",
     "back": "Back",
+    "notFound": "Lesson not found.",
     "articles": {
       "formOverReps": {
         "title": "Form Over Reps — Why Technique Is Everything",

@@ -24,7 +24,7 @@ export default function ArticleDetail() {
   if (!lesson) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <p className="text-muted-foreground">Lesson not found.</p>
+        <p className="text-muted-foreground">{t('learn.notFound')}</p>
       </div>
     );
   }

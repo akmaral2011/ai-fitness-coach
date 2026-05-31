@@ -110,12 +110,12 @@ export default function AppLayout({ children }: Props) {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <main
         key={location.pathname}
-        className="flex-1 pb-20 overflow-y-auto animate-in fade-in duration-200"
+        className="flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))] animate-in fade-in duration-200"
       >
         {children}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] backdrop-blur">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_30px_rgba(0,0,0,0.08)] backdrop-blur">
         <div className="flex items-stretch h-16 max-w-lg mx-auto">
           {NAV_ITEMS.map(item => (
             <NavLink

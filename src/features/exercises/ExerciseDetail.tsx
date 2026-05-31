@@ -405,7 +405,7 @@ export default function ExerciseDetail() {
       </div>
 
       {/* sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/90 backdrop-blur border-t border-border">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-border bg-background/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
         <button
           onClick={() => navigate(`/app/workout/${exercise.id}`)}
           className="app-primary-action mx-auto flex w-full max-w-lg items-center justify-center gap-2 py-4 text-lg font-bold"

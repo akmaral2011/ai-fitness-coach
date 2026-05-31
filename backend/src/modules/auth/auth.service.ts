@@ -15,6 +15,7 @@ import {
 } from './auth.tokens.js';
 import { verifyGoogleCredential } from './google.service.js';
 
+// eslint-disable-next-line no-unused-vars
 type EmailErrorHandler = (error: unknown) => void;
 
 export async function registerWithEmail(input: RegisterInput, onEmailError?: EmailErrorHandler) {
