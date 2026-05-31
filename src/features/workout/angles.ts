@@ -17,6 +17,32 @@ export function calculateRepScore(violatedErrors: number, violatedWarns: number)
   return Math.max(0, 100 - violatedErrors * 20 - violatedWarns * 8);
 }
 
+export function calculateRulePenalty({
+  angle,
+  minAngle,
+  maxAngle,
+  severity,
+}: {
+  angle: number;
+  minAngle: number;
+  maxAngle: number;
+  severity: 'warn' | 'error';
+}): number {
+  if (angle >= minAngle && angle <= maxAngle) return 0;
+
+  const deviation = angle < minAngle ? minAngle - angle : angle - maxAngle;
+  const base = severity === 'error' ? 18 : 8;
+  const perDegree = severity === 'error' ? 0.9 : 0.55;
+  const maxPenalty = severity === 'error' ? 55 : 32;
+
+  return Math.min(maxPenalty, base + deviation * perDegree);
+}
+
+export function averageScore(history: number[]): number {
+  if (history.length === 0) return 100;
+  return history.reduce((sum, score) => sum + score, 0) / history.length;
+}
+
 export function rollingAverage(history: number[], alpha = 0.3): number {
   if (history.length === 0) return 100;
   return history.reduce((ema, val) => ema * (1 - alpha) + val * alpha, history[0]);

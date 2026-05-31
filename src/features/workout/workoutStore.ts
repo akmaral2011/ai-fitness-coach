@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { getExercise } from '@/features/exercises/data';
-import { rollingAverage } from '@/features/workout/angles';
+import { averageScore as averageTechniqueScore, rollingAverage } from '@/features/workout/angles';
 import type { CompletedSession, WorkoutFeedback, WorkoutState } from '@/features/workout/types';
 
 type WorkoutPhase = WorkoutState['phase'];
@@ -41,7 +41,7 @@ const InitialWorkoutState: Pick<
   | 'endedAt'
 > = {
   exerciseId: null,
-  phase: 'down',
+  phase: 'up',
   repCount: 0,
   targetReps: 0,
   techniqueScore: 100,
@@ -77,7 +77,7 @@ function buildInitialState(
   return {
     ...InitialWorkoutState,
     exerciseId,
-    phase: exercise?.rules.some(rule => rule.phase === 'hold') ? 'hold' : 'down',
+    phase: exercise?.rules.some(rule => rule.phase === 'hold') ? 'hold' : 'up',
     targetReps: targetReps ?? exercise?.reps ?? 0,
   };
 }
@@ -85,11 +85,20 @@ function buildInitialState(
 function buildSessionFromState(state: WorkoutStore): CompletedSession | null {
   if (!state.exerciseId || !state.startedAt) return null;
 
+  const exercise = getExercise(state.exerciseId);
+  const isStatic = exercise?.rules.some(rule => rule.phase === 'hold') ?? false;
   const finishedAt = state.endedAt ?? Date.now();
   const durationSeconds = Math.max(1, Math.round((finishedAt - state.startedAt) / 1000));
-  const averageScore = clampScore(
-    state.scoreHistory.length === 0 ? state.techniqueScore : rollingAverage(state.scoreHistory)
+  let averageScore = clampScore(
+    state.scoreHistory.length === 0
+      ? state.techniqueScore
+      : averageTechniqueScore(state.scoreHistory)
   );
+
+  if (!isStatic && state.targetReps > 0 && state.repCount < state.targetReps) {
+    const completionRatio = Math.max(0, Math.min(1, state.repCount / state.targetReps));
+    averageScore = Math.min(averageScore, clampScore(50 + completionRatio * 45));
+  }
 
   return {
     id: globalThis.crypto.randomUUID(),
@@ -136,7 +145,7 @@ export const useWorkoutStore = create<WorkoutStore>()(
             startedAt: null,
             endedAt: null,
             isRunning: false,
-            phase: exercise?.rules.some(r => r.phase === 'hold') ? 'hold' : 'down',
+            phase: exercise?.rules.some(r => r.phase === 'hold') ? 'hold' : 'up',
           };
         }),
       setPhase: phase => set({ phase }),

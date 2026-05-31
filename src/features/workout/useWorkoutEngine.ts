@@ -4,15 +4,25 @@ import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
 
 import type { Exercise } from '@/features/exercises/types';
 import type { RepPhase } from '@/features/exercises/types';
-import { calculateAngle, calculateRepScore, smoothAngle } from '@/features/workout/angles';
+import { calculateAngle, calculateRulePenalty, smoothAngle } from '@/features/workout/angles';
 import { useWorkoutStore } from '@/features/workout/workoutStore';
 
 // Minimum ms to stay in a phase before switching — prevents jitter-triggered reps
 const MIN_PHASE_MS = 400;
+const MIN_TRACKING_CONFIDENCE = 0.45;
 
 type UseWorkoutEngineReturn = {
   processFrame: (landmarks: NormalizedLandmark[]) => void;
 };
+
+function trackingConfidence(landmark: NormalizedLandmark | undefined): number {
+  if (!landmark) return 0;
+  return landmark.visibility ?? 1;
+}
+
+function hasReliableLandmarks(...landmarks: Array<NormalizedLandmark | undefined>) {
+  return landmarks.every(landmark => trackingConfidence(landmark) >= MIN_TRACKING_CONFIDENCE);
+}
 
 export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineReturn {
   const {
@@ -56,7 +66,10 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
       const vertex = landmarks[repVertexIndex];
       const b = landmarks[repBIndex];
 
-      if (!a || !vertex || !b) return;
+      if (!hasReliableLandmarks(a, vertex, b)) {
+        pushScore(45);
+        return;
+      }
 
       // Smooth raw angle to reduce jitter
       const rawAngle = calculateAngle(a, vertex, b);
@@ -68,11 +81,11 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
       const canSwitch = now - lastPhaseSwitchRef.current > MIN_PHASE_MS;
 
       if (canSwitch) {
-        if (currentPhase === 'down' && repAngle > upThresh) {
-          setPhase('up');
-          lastPhaseSwitchRef.current = now;
-        } else if (currentPhase === 'up' && repAngle < downThresh) {
+        if (currentPhase === 'up' && repAngle < downThresh) {
           setPhase('down');
+          lastPhaseSwitchRef.current = now;
+        } else if (currentPhase === 'down' && repAngle > upThresh) {
+          setPhase('up');
           lastPhaseSwitchRef.current = now;
           incrementRep();
         }
@@ -81,6 +94,9 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
       // Form checks
       const violatedErrors: string[] = [];
       const violatedWarns: string[] = [];
+      let frameScore = 100;
+      let checkedRules = 0;
+      let missingRuleLandmarks = 0;
 
       for (const rule of exercise.rules) {
         if (rule.phase !== 'any' && rule.phase !== currentPhase) {
@@ -92,12 +108,23 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
         const lmV = landmarks[rule.landmarks.vertex];
         const lmB = landmarks[rule.landmarks.b];
 
-        if (!lmA || !lmV || !lmB) continue;
+        if (!hasReliableLandmarks(lmA, lmV, lmB)) {
+          missingRuleLandmarks += 1;
+          continue;
+        }
 
+        checkedRules += 1;
         const angle = calculateAngle(lmA, lmV, lmB);
-        const violated = angle < rule.minAngle || angle > rule.maxAngle;
+        const penalty = calculateRulePenalty({
+          angle,
+          minAngle: rule.minAngle,
+          maxAngle: rule.maxAngle,
+          severity: rule.severity,
+        });
+        const violated = penalty > 0;
 
         if (violated) {
+          frameScore -= penalty;
           addFeedback({
             ruleId: rule.id,
             feedbackKey: rule.feedbackKey,
@@ -111,8 +138,13 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
         }
       }
 
-      const score = calculateRepScore(violatedErrors.length, violatedWarns.length);
-      pushScore(score);
+      if (checkedRules === 0 && missingRuleLandmarks > 0) {
+        frameScore = Math.min(frameScore, 55);
+      } else if (missingRuleLandmarks > 0) {
+        frameScore -= missingRuleLandmarks * 10;
+      }
+
+      pushScore(frameScore);
     },
     [exercise, targetReps, setPhase, incrementRep, pushScore, addFeedback, clearFeedback]
   );
