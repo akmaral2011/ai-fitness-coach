@@ -2,7 +2,17 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
-import { Activity, AlertTriangle, Brain, CheckCircle2, Clock3, Dumbbell, Play } from 'lucide-react';
+import {
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  Brain,
+  CheckCircle2,
+  Clock3,
+  Dumbbell,
+  Play,
+  Video,
+} from 'lucide-react';
 
 import ChevronDownIcon from '@/components/icons/ChevronDownIcon';
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
@@ -11,6 +21,8 @@ import { getExercise } from '@/features/exercises/data';
 import { DIFFICULTY_COLOR } from '@/features/exercises/types';
 import type { Exercise } from '@/features/exercises/types';
 import { useExerciseRules } from '@/features/exercises/useExerciseRules';
+import type { DisplayLesson } from '@/features/learn/useLessons';
+import { useLessons } from '@/features/learn/useLessons';
 
 // ─── angle rules visualization ────────────────────────────────────────────────
 
@@ -118,6 +130,65 @@ function AngleRulesPanel({
   );
 }
 
+function TechniqueGuideCard({
+  lesson,
+  loading,
+  onOpen,
+}: {
+  lesson: DisplayLesson | undefined;
+  loading: boolean;
+  onOpen: () => void;
+}) {
+  const { t } = useTranslation();
+
+  if (loading) {
+    return (
+      <div className="app-card mb-5 p-4">
+        <p className="app-card-meta">{t('common.loading')}</p>
+      </div>
+    );
+  }
+
+  if (!lesson) {
+    return (
+      <div className="app-card mb-5 p-4">
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-500">
+            <Video size={18} />
+          </span>
+          <div>
+            <p className="app-card-title">{t('catalog.detail.techniqueGuide')}</p>
+            <p className="app-card-meta mt-1">{t('catalog.detail.guideComingSoon')}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={onOpen}
+      className="app-card app-card-hover mb-5 flex w-full items-center gap-3 p-4 text-left"
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-500">
+        {lesson.videoId || lesson.type === 'video' ? <Play size={19} /> : <Video size={19} />}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="app-card-title block">{t('catalog.detail.techniqueGuide')}</span>
+        <span className="app-card-meta mt-1 block truncate">
+          {lesson.remoteTitle ?? t(lesson.titleKey)}
+        </span>
+        <span className="app-card-meta mt-1 block text-emerald-500">
+          {lesson.type === 'video'
+            ? `${lesson.durationMinutes ?? 0} ${t('learn.videoMin')}`
+            : `${lesson.readMinutes ?? 0} ${t('learn.readMin')}`}
+        </span>
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </button>
+  );
+}
+
 // ─── main component ───────────────────────────────────────────────────────────
 
 export default function ExerciseDetail() {
@@ -126,6 +197,10 @@ export default function ExerciseDetail() {
   const { id } = useParams<{ id: string }>();
   const localExercise = id ? (getExercise(id) ?? null) : null;
   const { exercise, usingRemoteRules } = useExerciseRules(localExercise);
+  const { lessons, loading: lessonsLoading } = useLessons();
+  const linkedLesson = exercise
+    ? lessons.find(lesson => lesson.linkedExerciseId === exercise.id)
+    : undefined;
 
   if (!exercise) {
     return (
@@ -196,6 +271,14 @@ export default function ExerciseDetail() {
         <div className="app-card mb-5 overflow-hidden rounded-xl">
           <ExerciseAnimation exerciseId={exercise.id} />
         </div>
+
+        <TechniqueGuideCard
+          lesson={linkedLesson}
+          loading={lessonsLoading}
+          onOpen={() => {
+            if (linkedLesson) navigate(`/app/learn/${linkedLesson.id}`);
+          }}
+        />
 
         <div className="mb-5 grid grid-cols-2 gap-3">
           <InfoTile

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router';
 
 import { useThemeSync } from '@/components/ThemeToggle';
-import BookIcon from '@/components/icons/BookIcon';
 import ChartIcon from '@/components/icons/ChartIcon';
 import DumbbellIcon from '@/components/icons/DumbbellIcon';
 import HomeIcon from '@/components/icons/HomeIcon';
@@ -29,7 +28,6 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/app/dashboard', labelKey: 'nav.dashboard', icon: <HomeIcon size={22} /> },
   { to: '/app/catalog', labelKey: 'nav.catalog', icon: <DumbbellIcon size={22} /> },
   { to: '/app/programs', labelKey: 'nav.programs', icon: <ListIcon size={22} /> },
-  { to: '/app/learn', labelKey: 'nav.learn', icon: <BookIcon size={22} /> },
   { to: '/app/progress', labelKey: 'nav.progress', icon: <ChartIcon size={22} /> },
   { to: '/app/leaderboard', labelKey: 'nav.leaderboard', icon: <TrophyIcon size={22} /> },
   { to: '/app/profile', labelKey: 'nav.profile', icon: <UserIcon size={22} /> },

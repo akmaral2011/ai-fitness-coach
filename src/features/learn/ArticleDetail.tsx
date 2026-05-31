@@ -38,7 +38,7 @@ export default function ArticleDetail() {
     <div className="min-h-screen bg-background text-foreground pb-10 app-page-flow">
       <div className="sticky top-0 z-10 bg-background/90 backdrop-blur border-b border-border px-4 h-14 flex items-center gap-3">
         <button
-          onClick={() => navigate('/app/learn')}
+          onClick={() => navigate(-1)}
           className="p-2 -ml-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
           aria-label={t('learn.back')}
         >
