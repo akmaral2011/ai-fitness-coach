@@ -89,7 +89,7 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
         <div className="flex items-center gap-2">
           <p className="app-card-title truncate">{entry.name}</p>
           {entry.isCurrentUser && (
-            <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-500">
+            <span className="app-chip-label rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] text-emerald-500">
               {t('leaderboard.you')}
             </span>
           )}
@@ -104,7 +104,7 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
       </div>
       <div className="text-right">
         <p className="app-card-title text-right">{entry.totalXP}</p>
-        <p className="text-[10px] uppercase text-muted-foreground">{t('leaderboard.xp')}</p>
+        <p className="app-card-meta text-[10px] uppercase">{t('leaderboard.xp')}</p>
       </div>
     </div>
   );
@@ -208,7 +208,7 @@ export default function Leaderboard() {
                 className="my-2 h-11 w-11"
                 textClassName="text-sm"
               />
-              <p className="app-card-title w-full truncate text-xs">{entry.name}</p>
+              <p className="app-card-title w-full truncate">{entry.name}</p>
               <p className="app-card-meta mt-0.5">{entry.totalXP} XP</p>
             </div>
           ))}
@@ -216,7 +216,7 @@ export default function Leaderboard() {
       )}
 
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="app-card-title text-base">{t('leaderboard.rankings')}</h2>
+        <h2 className="app-section-title mb-0">{t('leaderboard.rankings')}</h2>
         {currentUser?.lastWorkoutAt && (
           <span className="app-card-meta">
             {formatDuration(currentUser.totalWorkoutSeconds, t)}
@@ -225,7 +225,7 @@ export default function Leaderboard() {
       </div>
 
       {isLoading ? (
-        <div className="app-card-meta py-12 text-center text-sm">{t('common.loading')}</div>
+        <div className="app-card-meta py-12 text-center">{t('common.loading')}</div>
       ) : entries.length > 0 ? (
         <div className="grid gap-2">
           {entries.map(entry => (

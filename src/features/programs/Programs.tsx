@@ -17,7 +17,7 @@ export function DifficultyBadge({ difficulty }: { difficulty: ProgramDifficulty 
   const { t } = useTranslation();
   const colorClass = DIFFICULTY_COLOR[difficulty] ?? 'bg-muted text-muted-foreground';
   return (
-    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full capitalize ${colorClass}`}>
+    <span className={`app-chip-label px-2 py-0.5 rounded-full capitalize ${colorClass}`}>
       {t(`catalog.difficulty.${difficulty}`)}
     </span>
   );
@@ -81,35 +81,33 @@ function ProgramCard({ program }: { program: Program }) {
           <span className="text-4xl leading-none">{program.emoji}</span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <h3 className="text-lg font-bold text-foreground">{t(program.nameKey)}</h3>
+              <h3 className="app-detail-title text-lg leading-6">{t(program.nameKey)}</h3>
               <DifficultyBadge difficulty={program.difficulty} />
               {enrollment && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500">
+                <span className="app-chip-label px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500">
                   {t('programs.enrolled')}
                 </span>
               )}
             </div>
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {t(program.descriptionKey)}
-            </p>
+            <p className="app-body-text line-clamp-2">{t(program.descriptionKey)}</p>
           </div>
         </div>
 
         <div className="flex gap-3 mb-4 flex-wrap">
-          <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-lg">
+          <span className="app-card-meta bg-muted px-2.5 py-1 rounded-lg">
             {t('programs.durationWeeks', { n: program.durationWeeks })}
           </span>
-          <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-lg">
+          <span className="app-card-meta bg-muted px-2.5 py-1 rounded-lg">
             {t('programs.sessionsPerWeek', { n: program.sessionsPerWeek })}
           </span>
-          <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-lg">
+          <span className="app-card-meta bg-muted px-2.5 py-1 rounded-lg">
             {t('programs.minutesPerSession', { n: program.estimatedMinutesPerSession })}
           </span>
         </div>
 
         {enrollment && (
           <div className="mb-4">
-            <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+            <div className="app-card-meta flex justify-between mb-1.5">
               <span>
                 {t('programs.sessionsDone', { done: completedCount, total: totalWorkoutDays })}
               </span>

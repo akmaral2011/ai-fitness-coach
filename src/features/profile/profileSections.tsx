@@ -23,8 +23,8 @@ export function ProfileHeaderCard({
         className="w-20 h-20 mb-3"
         textClassName="text-2xl"
       />
-      <h2 className="text-lg font-semibold text-foreground">{name ?? '—'}</h2>
-      <p className="text-sm text-muted-foreground">{email ?? ''}</p>
+      <h2 className="app-detail-title text-lg leading-6">{name ?? '—'}</h2>
+      <p className="app-body-text">{email ?? ''}</p>
     </div>
   );
 }
@@ -70,12 +70,12 @@ export function AchievementsCard({
     <div className="app-card mb-5 p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <h3 className="app-section-title mb-0">{t('profile.achievements')}</h3>
-        <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-500">
+        <span className="app-chip-label rounded-full bg-emerald-500/10 px-2.5 py-1 text-emerald-500">
           {unlockedCount}/{PROFILE_ACHIEVEMENTS.length}
         </span>
       </div>
       {PROFILE_ACHIEVEMENTS.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t('profile.noAchievements')}</p>
+        <p className="app-body-text">{t('profile.noAchievements')}</p>
       ) : (
         <div className="grid gap-2">
           {PROFILE_ACHIEVEMENTS.map(achievement => {
@@ -96,15 +96,13 @@ export function AchievementsCard({
                 </span>
                 <div className="min-w-0 flex-1">
                   <p
-                    className={`truncate text-sm font-semibold ${
+                    className={`app-card-title truncate ${
                       unlocked ? 'text-foreground' : 'text-muted-foreground'
                     }`}
                   >
                     {t(achievement.titleKey)}
                   </p>
-                  <p className="line-clamp-1 text-xs text-muted-foreground">
-                    {t(achievement.descKey)}
-                  </p>
+                  <p className="app-card-meta line-clamp-1">{t(achievement.descKey)}</p>
                 </div>
                 {unlocked && (
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-sm font-semibold text-white">
@@ -126,12 +124,12 @@ export function PreferencesCard({ t }: { t: TranslationFn }) {
       <h3 className="app-section-title px-4 pt-4">{t('common.settings')}</h3>
       <div className="divide-y divide-border">
         <div className="flex min-h-14 items-center justify-between gap-4 px-4 py-3">
-          <span className="text-sm font-semibold text-foreground">{t('profile.theme')}</span>
+          <span className="app-card-title">{t('profile.theme')}</span>
           <ThemeToggle />
         </div>
 
         <div className="flex min-h-14 items-center justify-between gap-4 px-4 py-3">
-          <span className="text-sm font-semibold text-foreground">{t('profile.language')}</span>
+          <span className="app-card-title">{t('profile.language')}</span>
           <LanguageSwitcher />
         </div>
       </div>
@@ -142,8 +140,8 @@ export function PreferencesCard({ t }: { t: TranslationFn }) {
 function InfoTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border bg-background/80 p-3">
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <span className="mt-1 block text-sm font-semibold text-foreground">{value}</span>
+      <span className="app-card-meta">{label}</span>
+      <span className="app-card-title mt-1 block">{value}</span>
     </div>
   );
 }

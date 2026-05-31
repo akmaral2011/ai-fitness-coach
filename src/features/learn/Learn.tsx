@@ -58,7 +58,7 @@ export default function Learn() {
                 <p className="app-hero-body mt-1">{t('learn.subtitle')}</p>
               </div>
               <span
-                className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
+                className={`app-chip-label shrink-0 rounded-full px-2.5 py-1 ${
                   usingRemoteData
                     ? 'bg-emerald-500/15 text-emerald-500'
                     : 'bg-yellow-500/15 text-yellow-500'
@@ -108,7 +108,7 @@ export default function Learn() {
         >
           <div className="mb-2 flex items-center gap-2 text-emerald-500">
             <Sparkles className="h-4 w-4" />
-            <span className="text-xs font-bold uppercase tracking-wider">
+            <span className="app-section-title mb-0 text-emerald-500">
               {t('learn.recommended')}
             </span>
           </div>
@@ -122,7 +122,7 @@ export default function Learn() {
                 {recommendedLesson.remoteSummary ?? t(recommendedLesson.summaryKey)}
               </span>
             </span>
-            <span className="shrink-0 rounded-full bg-background px-2 py-1 text-xs font-semibold text-muted-foreground">
+            <span className="app-chip-label shrink-0 rounded-full bg-background px-2 py-1 text-muted-foreground">
               {stats.remaining}
             </span>
           </div>
@@ -134,7 +134,7 @@ export default function Learn() {
           <button
             key={key}
             onClick={() => setFilter(key)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+            className={`app-chip-label px-3 py-1.5 rounded-full whitespace-nowrap transition-colors ${
               filter === key
                 ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20'
                 : 'bg-muted text-muted-foreground hover:text-foreground'
@@ -163,12 +163,12 @@ export default function Learn() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span
-                    className={`text-xs font-semibold capitalize px-2 py-0.5 rounded-full ${categoryColor(lesson.category)}`}
+                    className={`app-chip-label capitalize px-2 py-0.5 rounded-full ${categoryColor(lesson.category)}`}
                   >
                     {t(`learn.categories.${lesson.category}`)}
                   </span>
                   {lesson.type === 'video' && (
-                    <span className="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-500">
+                    <span className="app-chip-label flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-500">
                       <Play className="w-2.5 h-2.5" />
                       {t('learn.video')}
                     </span>
@@ -191,9 +191,7 @@ export default function Learn() {
           );
         })}
         {!loading && filtered.length === 0 && (
-          <div className="app-card app-card-meta py-10 text-center text-sm">
-            {t('learn.noLessons')}
-          </div>
+          <div className="app-card app-card-meta py-10 text-center">{t('learn.noLessons')}</div>
         )}
       </div>
     </div>

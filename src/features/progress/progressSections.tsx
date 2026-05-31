@@ -19,11 +19,7 @@ import type { CompletedSession } from '@/features/workout/types';
 import { formatDuration } from '@/lib/utils';
 
 function SectionLabel({ children, mb = 'mb-3' }: { children: ReactNode; mb?: string }) {
-  return (
-    <p className={`text-xs font-semibold text-muted-foreground uppercase tracking-wider ${mb}`}>
-      {children}
-    </p>
-  );
+  return <p className={`app-section-title ${mb}`}>{children}</p>;
 }
 
 export function StatCard({
@@ -37,8 +33,8 @@ export function StatCard({
 }) {
   return (
     <div className="app-card app-card-hover flex flex-col items-center justify-center gap-1 p-4">
-      <span className={`text-2xl font-bold ${color}`}>{value}</span>
-      <span className="text-xs text-muted-foreground text-center leading-tight">{label}</span>
+      <span className={`app-metric-value text-2xl ${color}`}>{value}</span>
+      <span className="app-metric-label text-center">{label}</span>
     </div>
   );
 }
@@ -164,22 +160,16 @@ export function MuscleHeatmap({ sessions }: { sessions: CompletedSession[] }) {
     <div>
       <SectionLabel>{t('progress.muscles.title')}</SectionLabel>
       {sessions.length === 0 ? (
-        <p className="text-xs text-muted-foreground text-center py-4">
-          {t('progress.muscles.empty')}
-        </p>
+        <p className="app-card-meta text-center py-4">{t('progress.muscles.empty')}</p>
       ) : (
         <>
           <div className="flex gap-3">
             <div className="flex-1 flex flex-col items-center">
-              <span className="text-xs text-muted-foreground mb-1">
-                {t('progress.muscles.front')}
-              </span>
+              <span className="app-card-meta mb-1">{t('progress.muscles.front')}</span>
               <BodyFrontIcon intensities={intensities} />
             </div>
             <div className="flex-1 flex flex-col items-center">
-              <span className="text-xs text-muted-foreground mb-1">
-                {t('progress.muscles.back')}
-              </span>
+              <span className="app-card-meta mb-1">{t('progress.muscles.back')}</span>
               <BodyBackIcon intensities={intensities} />
             </div>
           </div>
@@ -187,7 +177,7 @@ export function MuscleHeatmap({ sessions }: { sessions: CompletedSession[] }) {
             {legend.map(({ labelKey, bg }) => (
               <div key={labelKey} className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: bg }} />
-                <span className="text-xs text-muted-foreground">{t(labelKey)}</span>
+                <span className="app-card-meta">{t(labelKey)}</span>
               </div>
             ))}
           </div>
@@ -448,9 +438,7 @@ export function PersonalBests({
     <div className="mb-6">
       <div className="flex items-center gap-1.5 mb-3">
         <TrophyIcon size={14} className="text-muted-foreground" />
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-          {t('progress.personalBests')}
-        </h2>
+        <h2 className="app-section-title mb-0">{t('progress.personalBests')}</h2>
       </div>
       <div className="flex flex-col gap-2">
         {exerciseIds.map(exerciseId => {
@@ -462,8 +450,8 @@ export function PersonalBests({
             <div key={exerciseId} className="app-card app-card-hover flex items-center gap-3 p-3">
               <span className="text-2xl">{exercise.thumbnailEmoji}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground">{t(exercise.nameKey)}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="app-card-title">{t(exercise.nameKey)}</p>
+                <p className="app-card-meta">
                   {best.repCount} {t('progress.session.reps')} ·{' '}
                   {formatDuration(best.durationSeconds, t)}
                 </p>
@@ -474,7 +462,7 @@ export function PersonalBests({
                 >
                   {best.averageScore}%
                 </p>
-                <p className="text-xs text-muted-foreground">{t('progress.session.score')}</p>
+                <p className="app-card-meta">{t('progress.session.score')}</p>
               </div>
             </div>
           );
@@ -489,9 +477,7 @@ export function SessionHistory({ sessions }: { sessions: CompletedSession[] }) {
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-        {t('progress.history')}
-      </h2>
+      <h2 className="app-section-title">{t('progress.history')}</h2>
       <div className="flex flex-col gap-2">
         {sessions.map(session => {
           const exercise = EXERCISES.find(item => item.id === session.exerciseId);
@@ -504,10 +490,10 @@ export function SessionHistory({ sessions }: { sessions: CompletedSession[] }) {
             <div key={session.id} className="app-card flex items-center gap-3 p-3">
               <span className="text-xl">{exercise?.thumbnailEmoji ?? '🏋️'}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="app-card-title truncate">
                   {exercise ? t(exercise.nameKey) : session.exerciseId}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="app-card-meta">
                   {date} · {session.repCount} {t('progress.session.reps')} ·{' '}
                   {formatDuration(session.durationSeconds, t)}
                 </p>
@@ -531,7 +517,7 @@ export function EmptyProgressState() {
   return (
     <div className="text-center py-16">
       <TrendingUpIcon size={48} className="mx-auto mb-3 text-muted-foreground/40" />
-      <p className="text-muted-foreground">{t('progress.noSessions')}</p>
+      <p className="app-body-text">{t('progress.noSessions')}</p>
     </div>
   );
 }

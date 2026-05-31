@@ -46,10 +46,8 @@ function WorkoutDayCard({
       <div className="flex items-center gap-3 p-4 bg-muted/40 border border-border rounded-xl opacity-60">
         <span className="text-xl">😴</span>
         <div>
-          <p className="text-sm font-medium text-foreground">
-            {t('programs.dayLabel', { n: dayNumber })}
-          </p>
-          <p className="text-xs text-muted-foreground">{t('programs.restDay')}</p>
+          <p className="app-card-title">{t('programs.dayLabel', { n: dayNumber })}</p>
+          <p className="app-card-meta">{t('programs.restDay')}</p>
         </div>
       </div>
     );
@@ -60,10 +58,8 @@ function WorkoutDayCard({
       <div className="flex items-center gap-3 p-4 bg-muted/40 border border-border rounded-xl opacity-70">
         <span className="text-xl">🧘</span>
         <div>
-          <p className="text-sm font-medium text-foreground">
-            {t('programs.dayLabel', { n: dayNumber })}
-          </p>
-          <p className="text-xs text-muted-foreground">{t('programs.recoveryDay')}</p>
+          <p className="app-card-title">{t('programs.dayLabel', { n: dayNumber })}</p>
+          <p className="app-card-meta">{t('programs.recoveryDay')}</p>
         </div>
       </div>
     );
@@ -78,14 +74,12 @@ function WorkoutDayCard({
           <div className="flex items-center gap-2">
             <span className="text-lg">{complete ? '✅' : '💪'}</span>
             <div>
-              <p className="text-sm font-semibold text-foreground">
-                {t('programs.dayLabel', { n: dayNumber })}
-              </p>
-              <p className="text-xs text-muted-foreground">{t('programs.workoutDay')}</p>
+              <p className="app-card-title">{t('programs.dayLabel', { n: dayNumber })}</p>
+              <p className="app-card-meta">{t('programs.workoutDay')}</p>
             </div>
           </div>
           {complete && (
-            <span className="text-xs font-medium text-emerald-500">{t('programs.completed')}</span>
+            <span className="app-chip-label text-emerald-500">{t('programs.completed')}</span>
           )}
         </div>
 
@@ -100,11 +94,11 @@ function WorkoutDayCard({
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{ex?.thumbnailEmoji ?? '🏋️'}</span>
-                  <span className="text-sm text-foreground">
+                  <span className="app-card-title font-medium">
                     {ex ? t(ex.nameKey) : pe.exerciseId}
                   </span>
                 </div>
-                <span className="text-xs text-muted-foreground">
+                <span className="app-card-meta">
                   {pe.sets}×{pe.reps}
                 </span>
               </button>
@@ -115,7 +109,7 @@ function WorkoutDayCard({
         {!complete && (
           <>
             {missingExerciseIds.length > 0 && (
-              <p className="mb-2 text-xs text-muted-foreground">
+              <p className="app-card-meta mb-2">
                 {t('programs.missingExercises', {
                   count: missingExerciseIds.length,
                 })}
@@ -199,14 +193,14 @@ function WeekAccordion({
       >
         <div className="flex items-center gap-3 text-left">
           <div>
-            <p className="text-sm font-semibold text-foreground">
+            <p className="app-card-title">
               {t('programs.weekOf', { current: week.number, total: 4 })}
             </p>
-            <p className="text-xs text-muted-foreground">{t(week.themeKey)}</p>
+            <p className="app-card-meta">{t(week.themeKey)}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-muted-foreground">
+          <span className="app-card-meta">
             {completedInWeek}/{workoutDays.length}
           </span>
           <ChevronDownIcon
@@ -329,7 +323,7 @@ export default function ProgramDetail() {
         >
           <ChevronLeftIcon />
         </button>
-        <h1 className="font-semibold text-foreground truncate">{t(program.nameKey)}</h1>
+        <h1 className="app-card-title truncate">{t(program.nameKey)}</h1>
       </div>
 
       <div className="px-4 max-w-lg mx-auto">
@@ -338,32 +332,30 @@ export default function ProgramDetail() {
             <span className="text-5xl leading-none">{program.emoji}</span>
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <h2 className="text-xl font-bold text-foreground">{t(program.nameKey)}</h2>
+                <h2 className="app-detail-title">{t(program.nameKey)}</h2>
                 <DifficultyBadge difficulty={program.difficulty} />
               </div>
-              <p className="text-sm text-muted-foreground">{t(program.descriptionKey)}</p>
+              <p className="app-body-text">{t(program.descriptionKey)}</p>
             </div>
           </div>
 
           <div className="flex gap-2 flex-wrap mb-5">
-            <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-lg">
+            <span className="app-card-meta bg-muted px-2.5 py-1 rounded-lg">
               {t('programs.durationWeeks', { n: program.durationWeeks })}
             </span>
-            <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-lg">
+            <span className="app-card-meta bg-muted px-2.5 py-1 rounded-lg">
               {t('programs.sessionsPerWeek', { n: program.sessionsPerWeek })}
             </span>
-            <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-lg">
+            <span className="app-card-meta bg-muted px-2.5 py-1 rounded-lg">
               {t('programs.minutesPerSession', { n: program.estimatedMinutesPerSession })}
             </span>
           </div>
 
           <div className="mb-5">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-              {t('programs.goals')}
-            </p>
+            <p className="app-section-title mb-2">{t('programs.goals')}</p>
             <ul className="flex flex-col gap-1.5">
               {program.goalKeys.map(key => (
-                <li key={key} className="flex items-center gap-2 text-sm text-foreground">
+                <li key={key} className="flex items-center gap-2 app-card-title font-medium">
                   <span className="text-emerald-500">✓</span>
                   {t(key)}
                 </li>
@@ -373,7 +365,7 @@ export default function ProgramDetail() {
 
           {enrollment && (
             <div className="mb-5">
-              <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+              <div className="app-card-meta flex justify-between mb-1.5">
                 <span>
                   {t('programs.sessionsDone', { done: completedCount, total: totalWorkoutDays })}
                 </span>

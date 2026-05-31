@@ -169,6 +169,18 @@
     @apply text-xs leading-4 text-muted-foreground;
   }
 
+  .app-body-text {
+    @apply text-sm leading-6 text-muted-foreground;
+  }
+
+  .app-detail-title {
+    @apply text-xl font-bold leading-7 text-foreground;
+  }
+
+  .app-chip-label {
+    @apply text-xs font-semibold leading-4;
+  }
+
   .app-metric-value {
     @apply text-base font-bold leading-6 text-foreground;
   }

@@ -95,7 +95,7 @@ export default function ExerciseCatalog() {
               <div className="flex items-start justify-between w-full">
                 <span className="text-3xl">{ex.thumbnailEmoji}</span>
                 <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${DIFFICULTY_COLOR[ex.difficulty]}`}
+                  className={`app-chip-label px-2 py-0.5 rounded-full ${DIFFICULTY_COLOR[ex.difficulty]}`}
                 >
                   {t(`catalog.difficulty.${ex.difficulty}`)}
                 </span>

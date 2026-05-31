@@ -62,10 +62,8 @@ function AngleRulesPanel({
             <Brain size={20} />
           </span>
           <span>
-            <span className="block text-sm font-bold text-foreground">
-              {t('catalog.detail.aiRules')}
-            </span>
-            <span className="block text-xs text-muted-foreground">
+            <span className="app-card-title block">{t('catalog.detail.aiRules')}</span>
+            <span className="app-card-meta block">
               {exercise.rules.length} {t('catalog.detail.rules')} ·{' '}
               {usingRemoteRules ? t('catalog.detail.backendRules') : t('catalog.detail.localRules')}
             </span>
@@ -89,7 +87,7 @@ function AngleRulesPanel({
                   <span className="text-xs font-mono text-muted-foreground">{rule.id}</span>
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`rounded px-1.5 py-0.5 text-xs font-medium ${
+                      className={`app-chip-label rounded px-1.5 py-0.5 ${
                         rule.severity === 'error'
                           ? 'bg-red-500/15 text-red-500'
                           : 'bg-yellow-500/15 text-yellow-500'
@@ -97,7 +95,7 @@ function AngleRulesPanel({
                     >
                       {t(`catalog.detail.${rule.severity}`)}
                     </span>
-                    <span className="rounded bg-background px-1.5 py-0.5 text-xs text-muted-foreground">
+                    <span className="app-card-meta rounded bg-background px-1.5 py-0.5">
                       {rule.phase}
                     </span>
                   </div>
@@ -230,22 +228,20 @@ export default function ExerciseDetail() {
                 {exercise.thumbnailEmoji}
               </span>
               <div>
-                <h1 className="text-2xl font-black text-foreground">{t(exercise.nameKey)}</h1>
-                <span className="text-xs text-muted-foreground">
+                <h1 className="app-detail-title">{t(exercise.nameKey)}</h1>
+                <span className="app-card-meta">
                   {t(`catalog.categories.${exercise.category}`)}
                 </span>
               </div>
             </div>
             <span
-              className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${DIFFICULTY_COLOR[exercise.difficulty]}`}
+              className={`app-chip-label shrink-0 rounded-full px-2.5 py-1 ${DIFFICULTY_COLOR[exercise.difficulty]}`}
             >
               {t(`catalog.difficulty.${exercise.difficulty}`)}
             </span>
           </div>
 
-          <p className="mb-4 text-sm leading-6 text-muted-foreground">
-            {t(exercise.descriptionKey)}
-          </p>
+          <p className="app-body-text mb-4">{t(exercise.descriptionKey)}</p>
 
           <div className="grid grid-cols-3 gap-2">
             <Metric
@@ -319,7 +315,7 @@ export default function ExerciseDetail() {
             {exercise.primaryMuscles.map(m => (
               <span
                 key={m}
-                className="rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-500"
+                className="app-control-label rounded-full bg-emerald-500/15 px-3 py-1 text-emerald-500"
               >
                 {t(`catalog.muscles.${m}`)}
               </span>
@@ -336,7 +332,7 @@ export default function ExerciseDetail() {
             <Section title={t('catalog.detail.steps')}>
               <ol className="flex flex-col gap-2.5">
                 {(steps as string[]).map((step, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-foreground">
+                  <li key={i} className="app-card-title flex items-start gap-3 font-medium">
                     <span className="shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-xs font-bold mt-0.5">
                       {i + 1}
                     </span>
@@ -354,7 +350,7 @@ export default function ExerciseDetail() {
               {exercise.secondaryMuscles.map(m => (
                 <span
                   key={m}
-                  className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground"
+                  className="app-control-label rounded-full bg-muted px-3 py-1 text-muted-foreground"
                 >
                   {t(`catalog.muscles.${m}`)}
                 </span>
@@ -370,7 +366,7 @@ export default function ExerciseDetail() {
               {exercise.commonErrorKeys.map(key => (
                 <li
                   key={key}
-                  className="flex items-start gap-2.5 rounded-lg bg-red-500/5 p-3 text-sm text-foreground"
+                  className="app-card-title flex items-start gap-2.5 rounded-lg bg-red-500/5 p-3 font-medium"
                 >
                   <AlertTriangle size={16} className="mt-0.5 shrink-0 text-red-500" />
                   {t(key)}
@@ -385,7 +381,7 @@ export default function ExerciseDetail() {
           <Section title={t('catalog.detail.modifications')}>
             <ul className="flex flex-col gap-2">
               {exercise.modificationKeys.map((key, i) => (
-                <li key={key} className="flex items-start gap-2.5 text-sm text-foreground">
+                <li key={key} className="app-card-title flex items-start gap-2.5 font-medium">
                   <span
                     className={`mt-0.5 shrink-0 font-semibold ${i === 0 ? 'text-emerald-500' : 'text-yellow-500'}`}
                   >
@@ -421,9 +417,7 @@ export default function ExerciseDetail() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-5">
-      <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
-        {title}
-      </h2>
+      <h2 className="app-section-title mb-2.5">{title}</h2>
       {children}
     </div>
   );
@@ -441,8 +435,8 @@ function Metric({
   return (
     <div className="app-metric-tile flex min-h-20 flex-col justify-between">
       <span className="text-emerald-500">{icon}</span>
-      <span className="text-lg font-black text-foreground">{value}</span>
-      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="app-metric-value text-lg">{value}</span>
+      <span className="app-metric-label">{label}</span>
     </div>
   );
 }
@@ -452,11 +446,9 @@ function InfoTile({ icon, title, value }: { icon: React.ReactNode; title: string
     <div className="app-card app-card-hover rounded-xl p-3">
       <div className="mb-2 flex items-center gap-2 text-emerald-500">
         {icon}
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          {title}
-        </span>
+        <span className="app-section-title mb-0">{title}</span>
       </div>
-      <p className="text-sm font-bold text-foreground">{value}</p>
+      <p className="app-card-title">{value}</p>
     </div>
   );
 }
