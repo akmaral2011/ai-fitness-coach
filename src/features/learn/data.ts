@@ -18,6 +18,34 @@ export type Lesson = {
 
 export type Article = Lesson;
 
+const exerciseVideo = (
+  id: string,
+  emoji: string,
+  category: ArticleCategory,
+  durationMinutes: number,
+  titleKey: string,
+  summaryKey: string,
+  videoId: string,
+  linkedExerciseId: string
+): Lesson => ({
+  id: `${id}-video`,
+  type: 'video',
+  emoji,
+  category,
+  durationMinutes,
+  titleKey,
+  summaryKey,
+  bodyKeys: ['learn.lessons.genericVideo.p1', 'learn.lessons.genericVideo.p2'],
+  keyTakeawayKeys: [
+    'learn.lessons.genericVideo.t1',
+    'learn.lessons.genericVideo.t2',
+    'learn.lessons.genericVideo.t3',
+    'learn.lessons.genericVideo.t4',
+  ],
+  videoId,
+  linkedExerciseId,
+});
+
 export const LESSONS: Lesson[] = [
   // ── VIDEO LESSONS ─────────────────────────────────────────────────
   {
@@ -35,6 +63,7 @@ export const LESSONS: Lesson[] = [
       'learn.lessons.squatVideo.t3',
       'learn.lessons.squatVideo.t4',
     ],
+    videoId: 'aclHkVaku9U',
     linkedExerciseId: 'squat',
   },
   {
@@ -52,6 +81,7 @@ export const LESSONS: Lesson[] = [
       'learn.lessons.pushupVideo.t3',
       'learn.lessons.pushupVideo.t4',
     ],
+    videoId: 'IODxDxX7oi4',
     linkedExerciseId: 'pushup',
   },
   {
@@ -69,6 +99,7 @@ export const LESSONS: Lesson[] = [
       'learn.lessons.plankVideo.t3',
       'learn.lessons.plankVideo.t4',
     ],
+    videoId: 'pSHjTRCQxIw',
     linkedExerciseId: 'plank',
   },
   {
@@ -86,8 +117,169 @@ export const LESSONS: Lesson[] = [
       'learn.lessons.lungeVideo.t3',
       'learn.lessons.lungeVideo.t4',
     ],
+    videoId: 'QOVaHwm-Q6U',
     linkedExerciseId: 'lunge',
   },
+  exerciseVideo(
+    'deadlift',
+    '🏋️',
+    'technique',
+    6,
+    'exercises.deadlift.name',
+    'exercises.deadlift.description',
+    'wYREQkVtvEc',
+    'deadlift'
+  ),
+  exerciseVideo(
+    'glute-bridge',
+    '🍑',
+    'technique',
+    5,
+    'exercises.gluteBridge.name',
+    'exercises.gluteBridge.description',
+    'wPM8icPu6H8',
+    'glute-bridge'
+  ),
+  exerciseVideo(
+    'shoulder-press',
+    '🏋️',
+    'technique',
+    5,
+    'exercises.shoulderPress.name',
+    'exercises.shoulderPress.description',
+    'qEwKCR5JCog',
+    'shoulder-press'
+  ),
+  exerciseVideo(
+    'bicep-curl',
+    '💪',
+    'technique',
+    4,
+    'exercises.bicepCurl.name',
+    'exercises.bicepCurl.description',
+    'ykJmrZ5v0Oo',
+    'bicep-curl'
+  ),
+  exerciseVideo(
+    'burpee',
+    '💥',
+    'training',
+    5,
+    'exercises.burpee.name',
+    'exercises.burpee.description',
+    'dZgVxmf6jkA',
+    'burpee'
+  ),
+  exerciseVideo(
+    'mountain-climber',
+    '⛰️',
+    'technique',
+    4,
+    'exercises.mountainClimber.name',
+    'exercises.mountainClimber.description',
+    'cnyTQDSE884',
+    'mountain-climber'
+  ),
+  exerciseVideo(
+    'jumping-jack',
+    '🤸',
+    'beginner',
+    3,
+    'exercises.jumpingJack.name',
+    'exercises.jumpingJack.description',
+    'c4DAnQ6DtF8',
+    'jumping-jack'
+  ),
+  exerciseVideo(
+    'high-knees',
+    '🏃',
+    'beginner',
+    3,
+    'exercises.highKnees.name',
+    'exercises.highKnees.description',
+    'oDdkytliOqE',
+    'high-knees'
+  ),
+  exerciseVideo(
+    'tricep-dip',
+    '🪑',
+    'technique',
+    4,
+    'exercises.tricepDip.name',
+    'exercises.tricepDip.description',
+    '0326dy_-CzM',
+    'tricep-dip'
+  ),
+  exerciseVideo(
+    'tricep-extension',
+    '💪',
+    'technique',
+    4,
+    'exercises.tricepExtension.name',
+    'exercises.tricepExtension.description',
+    'nRiJVZDpdL0',
+    'tricep-extension'
+  ),
+  exerciseVideo(
+    'lateral-raise',
+    '🏋️',
+    'technique',
+    4,
+    'exercises.lateralRaise.name',
+    'exercises.lateralRaise.description',
+    '3VcKaXpzqRo',
+    'lateral-raise'
+  ),
+  exerciseVideo(
+    'calf-raise',
+    '🦶',
+    'beginner',
+    3,
+    'exercises.calfRaise.name',
+    'exercises.calfRaise.description',
+    'gwLzBJYoWlI',
+    'calf-raise'
+  ),
+  exerciseVideo(
+    'side-lunge',
+    '🦵',
+    'technique',
+    5,
+    'exercises.sideLunge.name',
+    'exercises.sideLunge.description',
+    'rvqLVxYqEvo',
+    'side-lunge'
+  ),
+  exerciseVideo(
+    'reverse-lunge',
+    '🦵',
+    'technique',
+    5,
+    'exercises.reverseLunge.name',
+    'exercises.reverseLunge.description',
+    'SXYrUTUwFoc',
+    'reverse-lunge'
+  ),
+  exerciseVideo(
+    'superman',
+    '🦸',
+    'beginner',
+    4,
+    'exercises.superman.name',
+    'exercises.superman.description',
+    'z6PJMT2y8GQ',
+    'superman'
+  ),
+  exerciseVideo(
+    'wall-sit',
+    '🧱',
+    'beginner',
+    3,
+    'exercises.wallSit.name',
+    'exercises.wallSit.description',
+    'y-wV4Venusw',
+    'wall-sit'
+  ),
   {
     id: 'progressive-overload-video',
     type: 'video',

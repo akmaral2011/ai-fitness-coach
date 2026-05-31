@@ -1270,6 +1270,14 @@
         "t2": "Technique score rising from 70% to 90% is measurable overload",
         "t3": "Log every session — you can't manage what you don't measure",
         "t4": "Increase load by no more than 5% per week to avoid regression"
+      },
+      "genericVideo": {
+        "p1": "Watch the video first, then practice the exercise slowly while focusing on the same checkpoints.",
+        "p2": "Use the camera workout mode after watching so the AI can compare your form with the guide.",
+        "t1": "Start with a controlled tempo",
+        "t2": "Keep the target joints aligned",
+        "t3": "Stop the set when technique drops",
+        "t4": "Choose an easier variation when needed"
       }
     }
   },

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { EXERCISES } from '@/features/exercises/data';
+import { EXERCISES, sortExercisesByPopularity } from '@/features/exercises/data';
 import type { Category, Difficulty, Exercise } from '@/features/exercises/types';
 import { apiRequest } from '@/lib/api';
 
@@ -48,7 +48,7 @@ export function useExercises() {
         const merged = response.exercises
           .map(mergeExercise)
           .filter((exercise): exercise is Exercise => exercise !== null);
-        setRemoteExercises(merged.length > 0 ? merged : null);
+        setRemoteExercises(merged.length > 0 ? sortExercisesByPopularity(merged) : null);
       } catch (error) {
         console.error('Failed to load exercises from backend', error);
         if (!cancelled) setRemoteExercises(null);
@@ -64,7 +64,10 @@ export function useExercises() {
     };
   }, []);
 
-  const exercises = useMemo(() => remoteExercises ?? EXERCISES, [remoteExercises]);
+  const exercises = useMemo(
+    () => remoteExercises ?? sortExercisesByPopularity(EXERCISES),
+    [remoteExercises]
+  );
 
   return {
     exercises,

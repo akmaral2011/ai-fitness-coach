@@ -1,5 +1,40 @@
 import type { Exercise } from '@/features/exercises/types';
 
+export const POPULAR_EXERCISE_ORDER = [
+  'squat',
+  'pushup',
+  'plank',
+  'lunge',
+  'deadlift',
+  'glute-bridge',
+  'shoulder-press',
+  'bicep-curl',
+  'burpee',
+  'mountain-climber',
+  'jumping-jack',
+  'high-knees',
+  'tricep-dip',
+  'tricep-extension',
+  'lateral-raise',
+  'calf-raise',
+  'side-lunge',
+  'reverse-lunge',
+  'superman',
+  'wall-sit',
+] as const;
+
+const popularityRank = new Map<string, number>(
+  POPULAR_EXERCISE_ORDER.map((id, index) => [id, index])
+);
+
+export function sortExercisesByPopularity(exercises: Exercise[]) {
+  return [...exercises].sort(
+    (a, b) =>
+      (popularityRank.get(a.id) ?? Number.MAX_SAFE_INTEGER) -
+      (popularityRank.get(b.id) ?? Number.MAX_SAFE_INTEGER)
+  );
+}
+
 export const EXERCISES: Exercise[] = [
   {
     id: 'squat',
