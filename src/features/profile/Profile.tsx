@@ -83,20 +83,18 @@ export default function ProfilePage() {
 
   return (
     <div className="app-page app-page-flow">
-      <h1 className="text-2xl font-semibold text-foreground mb-5">{t('profile.title')}</h1>
+      <h1 className="app-page-title mb-5">{t('profile.title')}</h1>
 
       <ProfileHeaderCard name={user?.name} email={user?.email} picture={user?.picture} />
 
       <div className="app-hero-panel mb-5">
         <div className="relative p-4">
           <div className="relative">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-500">
-              {t('profile.accountStatus')}
-            </p>
-            <h2 className="mb-1 text-xl font-semibold text-foreground">
+            <p className="app-hero-eyebrow">{t('profile.accountStatus')}</p>
+            <h2 className="app-hero-title mb-1">
               {token ? t('profile.syncedAccount') : t('profile.localAccount')}
             </h2>
-            <p className="mb-4 text-sm leading-6 text-muted-foreground">
+            <p className="app-hero-body mb-4">
               {token ? t('profile.syncedDescription') : t('profile.localDescription')}
             </p>
 
@@ -154,8 +152,8 @@ function AccountMetric({
   return (
     <div className="app-metric-tile">
       <div className="mb-2 text-emerald-500">{icon}</div>
-      <p className="text-lg font-semibold text-foreground">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="app-metric-value">{value}</p>
+      <p className="app-metric-label">{label}</p>
     </div>
   );
 }

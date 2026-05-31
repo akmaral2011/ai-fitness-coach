@@ -53,13 +53,9 @@ export default function Learn() {
           <div className="relative">
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-500">
-                  {t('learn.hub')}
-                </p>
-                <h1 className="text-2xl font-black text-foreground">{t('learn.title')}</h1>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {t('learn.subtitle')}
-                </p>
+                <p className="app-hero-eyebrow">{t('learn.hub')}</p>
+                <h1 className="app-page-title">{t('learn.title')}</h1>
+                <p className="app-hero-body mt-1">{t('learn.subtitle')}</p>
               </div>
               <span
                 className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
@@ -100,7 +96,7 @@ export default function Learn() {
             style={{ width: `${total > 0 ? (completedCount / total) * 100 : 0}%` }}
           />
         </div>
-        <span className="text-xs text-muted-foreground whitespace-nowrap shrink-0">
+        <span className="app-card-meta whitespace-nowrap shrink-0">
           {t('learn.progress', { done: completedCount, total })}
         </span>
       </div>
@@ -119,10 +115,10 @@ export default function Learn() {
           <div className="flex items-start gap-3">
             <span className="text-3xl leading-none">{recommendedLesson.emoji}</span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">
+              <span className="app-card-title block">
                 {recommendedLesson.remoteTitle ?? t(recommendedLesson.titleKey)}
               </span>
-              <span className="mt-1 block line-clamp-2 text-xs text-muted-foreground">
+              <span className="app-card-meta mt-1 block line-clamp-2">
                 {recommendedLesson.remoteSummary ?? t(recommendedLesson.summaryKey)}
               </span>
             </span>
@@ -177,16 +173,16 @@ export default function Learn() {
                       {t('learn.video')}
                     </span>
                   )}
-                  <span className="text-xs text-muted-foreground">
+                  <span className="app-card-meta">
                     {lesson.type === 'video'
                       ? `${lesson.durationMinutes} ${t('learn.videoMin')}`
                       : `${lesson.readMinutes} ${t('learn.readMin')}`}
                   </span>
                 </div>
-                <p className="text-sm font-semibold text-foreground mb-1 group-hover:text-emerald-500 transition-colors">
+                <p className="app-card-title mb-1 transition-colors group-hover:text-emerald-500">
                   {lesson.remoteTitle ?? t(lesson.titleKey)}
                 </p>
-                <p className="text-xs text-muted-foreground line-clamp-2">
+                <p className="app-card-meta line-clamp-2">
                   {lesson.remoteSummary ?? t(lesson.summaryKey)}
                 </p>
               </div>
@@ -195,7 +191,7 @@ export default function Learn() {
           );
         })}
         {!loading && filtered.length === 0 && (
-          <div className="app-card py-10 text-center text-sm text-muted-foreground">
+          <div className="app-card app-card-meta py-10 text-center text-sm">
             {t('learn.noLessons')}
           </div>
         )}
@@ -216,8 +212,8 @@ function LearningStat({
   return (
     <div className="app-metric-tile">
       <div className="mb-2 text-emerald-500">{icon}</div>
-      <p className="text-lg font-black text-foreground">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="app-metric-value">{value}</p>
+      <p className="app-metric-label">{label}</p>
     </div>
   );
 }

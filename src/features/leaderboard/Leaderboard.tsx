@@ -63,8 +63,8 @@ function Metric({
   return (
     <div className="app-metric-tile">
       <div className="mb-2 text-emerald-500">{icon}</div>
-      <p className="text-lg font-black text-foreground">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="app-metric-value">{value}</p>
+      <p className="app-metric-label">{label}</p>
     </div>
   );
 }
@@ -87,14 +87,14 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className="truncate text-sm font-semibold text-foreground">{entry.name}</p>
+          <p className="app-card-title truncate">{entry.name}</p>
           {entry.isCurrentUser && (
             <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-500">
               {t('leaderboard.you')}
             </span>
           )}
         </div>
-        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+        <p className="app-card-meta mt-0.5 truncate">
           {t('leaderboard.rowMeta', {
             level: entry.level,
             sessions: entry.totalSessions,
@@ -103,7 +103,7 @@ function LeaderboardRow({ entry }: { entry: LeaderboardEntry }) {
         </p>
       </div>
       <div className="text-right">
-        <p className="text-sm font-black text-foreground">{entry.totalXP}</p>
+        <p className="app-card-title text-right">{entry.totalXP}</p>
         <p className="text-[10px] uppercase text-muted-foreground">{t('leaderboard.xp')}</p>
       </div>
     </div>
@@ -156,10 +156,8 @@ export default function Leaderboard() {
     <div className="app-page app-page-flow">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-500">
-            {t('leaderboard.eyebrow')}
-          </p>
-          <h1 className="text-2xl font-bold text-foreground">{t('leaderboard.title')}</h1>
+          <p className="app-hero-eyebrow">{t('leaderboard.eyebrow')}</p>
+          <h1 className="app-page-title">{t('leaderboard.title')}</h1>
         </div>
         <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
           <Trophy size={22} />
@@ -169,12 +167,12 @@ export default function Leaderboard() {
       <div className="app-hero-panel mb-6">
         <div className="relative p-4">
           <div className="relative">
-            <h2 className="mb-1 text-xl font-black text-foreground">
+            <h2 className="app-hero-title mb-1">
               {currentUser
                 ? t('leaderboard.heroRank', { rank: currentUser.rank })
                 : t('leaderboard.heroEmpty')}
             </h2>
-            <p className="mb-4 text-sm leading-6 text-muted-foreground">
+            <p className="app-hero-body mb-4">
               {currentUser ? t('leaderboard.heroActive') : t('leaderboard.heroInactive')}
             </p>
 
@@ -210,24 +208,24 @@ export default function Leaderboard() {
                 className="my-2 h-11 w-11"
                 textClassName="text-sm"
               />
-              <p className="w-full truncate text-xs font-semibold text-foreground">{entry.name}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{entry.totalXP} XP</p>
+              <p className="app-card-title w-full truncate text-xs">{entry.name}</p>
+              <p className="app-card-meta mt-0.5">{entry.totalXP} XP</p>
             </div>
           ))}
         </div>
       )}
 
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-base font-semibold text-foreground">{t('leaderboard.rankings')}</h2>
+        <h2 className="app-card-title text-base">{t('leaderboard.rankings')}</h2>
         {currentUser?.lastWorkoutAt && (
-          <span className="text-xs text-muted-foreground">
+          <span className="app-card-meta">
             {formatDuration(currentUser.totalWorkoutSeconds, t)}
           </span>
         )}
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center text-sm text-muted-foreground">{t('common.loading')}</div>
+        <div className="app-card-meta py-12 text-center text-sm">{t('common.loading')}</div>
       ) : entries.length > 0 ? (
         <div className="grid gap-2">
           {entries.map(entry => (
@@ -236,8 +234,8 @@ export default function Leaderboard() {
         </div>
       ) : (
         <div className="app-card p-5 text-center">
-          <p className="text-sm font-semibold text-foreground">{t('leaderboard.emptyTitle')}</p>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+          <p className="app-card-title">{t('leaderboard.emptyTitle')}</p>
+          <p className="app-hero-body mt-1">
             {isError ? t('leaderboard.error') : t('leaderboard.emptyDescription')}
           </p>
         </div>

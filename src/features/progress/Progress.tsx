@@ -40,8 +40,8 @@ function AnalyticsTile({
           {label}
         </span>
       </div>
-      <p className="text-lg font-black text-foreground">{value}</p>
-      <p className="mt-0.5 truncate text-xs text-muted-foreground">{helper}</p>
+      <p className="app-metric-value">{value}</p>
+      <p className="app-metric-label mt-0.5 truncate">{helper}</p>
     </div>
   );
 }
@@ -97,22 +97,20 @@ export default function Progress() {
 
   return (
     <div className="app-page app-page-flow">
-      <h1 className="text-2xl font-bold text-foreground mb-5">{t('progress.title')}</h1>
+      <h1 className="app-page-title mb-5">{t('progress.title')}</h1>
 
       <PeriodSelector period={period} onChange={setPeriod} />
 
       <div className="app-hero-panel mb-6">
         <div className="relative p-4">
           <div className="relative">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-500">
-              {t('progress.analytics.title')}
-            </p>
-            <h2 className="mb-1 text-xl font-black text-foreground">
+            <p className="app-hero-eyebrow">{t('progress.analytics.title')}</p>
+            <h2 className="app-hero-title mb-1">
               {hasData
                 ? t('progress.analytics.headlineActive')
                 : t('progress.analytics.headlineEmpty')}
             </h2>
-            <p className="mb-4 text-sm leading-6 text-muted-foreground">
+            <p className="app-hero-body mb-4">
               {hasData
                 ? t('progress.analytics.descriptionActive')
                 : t('progress.analytics.descriptionEmpty')}

@@ -147,8 +147,8 @@ export default function Programs() {
   return (
     <div className="app-page app-page-flow">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">{t('programs.title')}</h1>
-        <p className="text-sm text-muted-foreground mt-1">{t('programs.subtitle')}</p>
+        <h1 className="app-page-title">{t('programs.title')}</h1>
+        <p className="app-hero-body mt-1">{t('programs.subtitle')}</p>
       </div>
 
       <div className="flex flex-col gap-4">

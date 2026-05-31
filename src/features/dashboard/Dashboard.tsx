@@ -36,8 +36,8 @@ function StatCard({
       className="app-card app-card-hover flex flex-col items-center justify-center gap-1 p-4 animate-in fade-in slide-in-from-bottom-3 duration-300 fill-mode-both"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <span className="text-2xl font-semibold text-foreground">{value}</span>
-      <span className="text-xs text-muted-foreground text-center leading-tight">{label}</span>
+      <span className="app-metric-value text-xl">{value}</span>
+      <span className="app-metric-label text-center">{label}</span>
     </div>
   );
 }
@@ -62,8 +62,8 @@ function ActionButton({
         {icon}
       </span>
       <span className="min-w-0">
-        <span className="block text-sm font-semibold text-foreground truncate">{title}</span>
-        <span className="block text-xs text-muted-foreground truncate">{subtitle}</span>
+        <span className="app-card-title block truncate">{title}</span>
+        <span className="app-card-meta block truncate">{subtitle}</span>
       </span>
     </button>
   );
@@ -81,8 +81,8 @@ function CoachMetric({
   return (
     <div className="app-metric-tile">
       <div className="mb-2 text-emerald-500">{icon}</div>
-      <p className="text-lg font-semibold text-foreground">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="app-metric-value">{value}</p>
+      <p className="app-metric-label">{label}</p>
     </div>
   );
 }
@@ -147,7 +147,7 @@ export default function Dashboard() {
           textClassName="text-sm"
         />
         <div>
-          <h1 className="text-xl font-semibold text-foreground">{greeting}</h1>
+          <h1 className="app-page-title">{greeting}</h1>
         </div>
       </div>
 
@@ -156,13 +156,9 @@ export default function Dashboard() {
           <div className="relative">
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-500">
-                  {t('dashboard.coach.title')}
-                </p>
-                <h2 className="text-xl font-semibold text-foreground">
-                  {t(primaryExercise.nameKey)}
-                </h2>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">{coachMessage}</p>
+                <p className="app-hero-eyebrow">{t('dashboard.coach.title')}</p>
+                <h2 className="app-hero-title">{t(primaryExercise.nameKey)}</h2>
+                <p className="app-hero-body mt-1">{coachMessage}</p>
               </div>
               <span
                 className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
@@ -197,17 +193,15 @@ export default function Dashboard() {
 
       <div className="app-card mb-5 p-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-foreground">
-            {t('dashboard.level', { level: xp.level })}
-          </span>
-          <span className="text-xs text-muted-foreground">
+          <span className="app-card-title">{t('dashboard.level', { level: xp.level })}</span>
+          <span className="app-card-meta">
             {xp.xpInCurrentLevel} / {xp.xpPerLevel} XP
           </span>
         </div>
         <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
           <div className="app-progress-fill" style={{ width: `${xp.progressPercent}%` }} />
         </div>
-        <p className="text-xs text-muted-foreground mt-1.5">
+        <p className="app-card-meta mt-1.5">
           {t('dashboard.xpToNext', { xp: xp.xpPerLevel - xp.xpInCurrentLevel, next: xp.level + 1 })}
         </p>
       </div>
@@ -282,12 +276,12 @@ export default function Dashboard() {
                 >
                   <span className="text-2xl">{p.emoji}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">{t(p.nameKey)}</p>
+                    <p className="app-card-title truncate">{t(p.nameKey)}</p>
                     <div className="mt-1 h-1.5 w-full bg-muted rounded-full overflow-hidden">
                       <div className="app-progress-fill" style={{ width: `${pct}%` }} />
                     </div>
                   </div>
-                  <span className="text-xs text-muted-foreground shrink-0">{pct}%</span>
+                  <span className="app-card-meta shrink-0">{pct}%</span>
                 </button>
               );
             })}
@@ -305,8 +299,8 @@ export default function Dashboard() {
               className="app-card app-card-hover flex flex-col items-start gap-2 p-4 text-left"
             >
               <span className="text-3xl">{ex.thumbnailEmoji}</span>
-              <span className="text-sm font-semibold text-foreground">{t(ex.nameKey)}</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="app-card-title">{t(ex.nameKey)}</span>
+              <span className="app-card-meta">
                 {ex.sets} × {ex.reps} {t('catalog.detail.reps')}
               </span>
             </button>
@@ -324,19 +318,17 @@ export default function Dashboard() {
                 <div key={session.id} className="app-card flex items-center gap-3 p-3">
                   <span className="text-2xl">{ex?.thumbnailEmoji ?? '🏋️'}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">
+                    <p className="app-card-title truncate">
                       {ex ? t(ex.nameKey) : session.exerciseId}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="app-card-meta">
                       {session.repCount} {t('dashboard.reps')} ·{' '}
                       {formatDuration(session.durationSeconds, t)}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-emerald-500">
-                      {session.averageScore}%
-                    </p>
-                    <p className="text-xs text-muted-foreground">{t('dashboard.score')}</p>
+                    <p className="app-card-title text-emerald-500">{session.averageScore}%</p>
+                    <p className="app-card-meta">{t('dashboard.score')}</p>
                   </div>
                 </div>
               );

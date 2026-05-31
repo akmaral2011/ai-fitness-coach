@@ -31,7 +31,7 @@ export default function ExerciseCatalog() {
 
   return (
     <div className="app-page app-page-flow">
-      <h1 className="text-2xl font-bold text-foreground mb-4">{t('catalog.title')}</h1>
+      <h1 className="app-page-title mb-4">{t('catalog.title')}</h1>
 
       <div className="relative mb-4">
         <SearchIcon
@@ -51,7 +51,7 @@ export default function ExerciseCatalog() {
           <button
             key={cat}
             onClick={() => setFilter(f => ({ ...f, category: cat }))}
-            className={`shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`app-control-label shrink-0 px-3 py-1.5 rounded-lg transition-colors ${
               filter.category === cat
                 ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20'
                 : 'bg-muted text-muted-foreground hover:text-foreground'
@@ -67,7 +67,7 @@ export default function ExerciseCatalog() {
           <button
             key={diff}
             onClick={() => setFilter(f => ({ ...f, difficulty: diff }))}
-            className={`shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`app-control-label shrink-0 px-3 py-1.5 rounded-lg transition-colors ${
               filter.difficulty === diff
                 ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/20'
                 : 'bg-muted text-muted-foreground hover:text-foreground'
@@ -101,18 +101,15 @@ export default function ExerciseCatalog() {
                 </span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-foreground">{t(ex.nameKey)}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="app-card-title">{t(ex.nameKey)}</p>
+                <p className="app-card-meta mt-0.5">
                   {ex.sets} × {ex.reps} {t('catalog.detail.reps')} · {ex.estimatedDuration}
                   {t('common.min')}
                 </p>
               </div>
               <div className="flex flex-wrap gap-1 mt-auto">
                 {ex.primaryMuscles.slice(0, 2).map(m => (
-                  <span
-                    key={m}
-                    className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full"
-                  >
+                  <span key={m} className="app-card-meta rounded-full bg-muted px-2 py-0.5">
                     {t(`catalog.muscles.${m}`)}
                   </span>
                 ))}
