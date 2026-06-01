@@ -13,10 +13,6 @@ export function calculateAngle(a: Point, vertex: Point, b: Point): number {
   return Math.acos(cos) * (180 / Math.PI);
 }
 
-export function calculateRepScore(violatedErrors: number, violatedWarns: number): number {
-  return Math.max(0, 100 - violatedErrors * 20 - violatedWarns * 8);
-}
-
 export function calculateRulePenalty({
   angle,
   minAngle,
