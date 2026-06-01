@@ -815,6 +815,11 @@
   },
   "profile": {
     "title": "Профиль",
+    "accountSettings": "Аккаунт жөндөөлөрү",
+    "fullName": "Аты жана фамилиясы",
+    "emailReadonly": "Email азырынча тастыктоосуз өзгөртүлбөйт.",
+    "accountSaved": "Аккаунт жаңырды",
+    "accountSaveError": "Аккаунтту жаңыртуу мүмкүн болгон жок",
     "editProfile": "Түзөтүү",
     "saveChanges": "Сактоо",
     "goal": "Максат",

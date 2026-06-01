@@ -820,6 +820,11 @@
   },
   "profile": {
     "title": "Profile",
+    "accountSettings": "Account Settings",
+    "fullName": "Name and surname",
+    "emailReadonly": "Email changes require verification and are locked for now.",
+    "accountSaved": "Account updated",
+    "accountSaveError": "Could not update account",
     "editProfile": "Edit Profile",
     "saveChanges": "Save Changes",
     "goal": "Goal",

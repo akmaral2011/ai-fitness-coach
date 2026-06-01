@@ -9,6 +9,7 @@ import {
   registerSchema,
   resetPasswordSchema,
   tokenParamsSchema,
+  updateAccountSchema,
   verifyEmailSchema,
 } from './auth.schemas.js';
 import {
@@ -18,6 +19,7 @@ import {
   registerWithEmail,
   requestPasswordReset,
   resetPassword,
+  updateAccount,
   verifyEmailToken,
 } from './auth.service.js';
 
@@ -194,6 +196,24 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.status(401).send({ message: 'Unauthorized' });
     }
 
+    return { user: publicUser(user) };
+  });
+
+  app.patch('/me', async (request, reply) => {
+    const userId = await getBearerUserId(request);
+    if (!userId) {
+      return reply.status(401).send({ message: 'Unauthorized' });
+    }
+
+    const parsed = updateAccountSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.status(400).send({
+        message: 'Invalid request body',
+        issues: parsed.error.flatten().fieldErrors,
+      });
+    }
+
+    const user = await updateAccount(userId, parsed.data);
     return { user: publicUser(user) };
   });
 }

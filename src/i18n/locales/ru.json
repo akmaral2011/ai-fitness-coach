@@ -815,6 +815,11 @@
   },
   "profile": {
     "title": "Профиль",
+    "accountSettings": "Настройки аккаунта",
+    "fullName": "Имя и фамилия",
+    "emailReadonly": "Email пока нельзя менять без подтверждения.",
+    "accountSaved": "Аккаунт обновлен",
+    "accountSaveError": "Не удалось обновить аккаунт",
     "editProfile": "Редактировать",
     "saveChanges": "Сохранить",
     "goal": "Цель",

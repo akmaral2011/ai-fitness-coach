@@ -7,6 +7,7 @@ import type {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateAccountInput,
 } from './auth.schemas.js';
 import {
   createEmailVerificationToken,
@@ -153,5 +154,14 @@ export async function resetPassword(input: ResetPasswordInput) {
 export async function findUserById(userId: string) {
   return prisma.user.findUnique({
     where: { id: userId },
+  });
+}
+
+export async function updateAccount(userId: string, input: UpdateAccountInput) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      name: input.name,
+    },
   });
 }

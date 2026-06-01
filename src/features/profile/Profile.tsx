@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { Award, CheckCircle2, Database, Dumbbell } from 'lucide-react';
 
-import { useAuthStore } from '@/features/auth/authStore';
+import { type AuthUser, useAuthStore } from '@/features/auth/authStore';
 import { clearSessionData } from '@/features/auth/sessionData';
 import { useAchievementStore } from '@/features/profile/achievementStore';
 import {
@@ -24,7 +24,7 @@ import { apiRequest } from '@/lib/api';
 export default function ProfilePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, token, signOut } = useAuthStore();
+  const { user, token, signOut, setSession } = useAuthStore();
   const { profile } = useProfileStore();
   const { getSummary, sessions } = useProgressStore();
   const storedAchievementIds = useAchievementStore(s => s.unlockedIds);
@@ -87,6 +87,8 @@ export default function ProfilePage() {
 
       <ProfileHeaderCard name={user?.name} email={user?.email} picture={user?.picture} />
 
+      <AccountSettingsCard user={user} token={token} setSession={setSession} t={t} />
+
       <div className="app-hero-panel mb-5">
         <div className="relative p-4">
           <div className="relative">
@@ -137,6 +139,108 @@ export default function ProfilePage() {
         {t('profile.signOut')}
       </button>
     </div>
+  );
+}
+
+function AccountSettingsCard({
+  user,
+  token,
+  setSession,
+  t,
+}: {
+  user: AuthUser | null;
+  token: string | null;
+  setSession: (session: { user: AuthUser; token: string | null }) => void;
+  t: (key: string) => string;
+}) {
+  const [name, setName] = useState(user?.name ?? '');
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setName(user?.name ?? '');
+  }, [user?.name]);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!token || !user) return;
+
+    setSaving(true);
+    setMessage(null);
+    setError(null);
+
+    try {
+      const response = await apiRequest<{
+        user: {
+          id: string;
+          name: string;
+          email: string;
+          pictureUrl?: string | null;
+          emailVerified?: boolean;
+        };
+      }>('/api/auth/me', {
+        method: 'PATCH',
+        token,
+        body: JSON.stringify({ name }),
+      });
+
+      setSession({
+        token,
+        user: {
+          id: response.user.id,
+          name: response.user.name,
+          email: response.user.email,
+          picture: response.user.pictureUrl ?? undefined,
+          emailVerified: response.user.emailVerified,
+        },
+      });
+      setMessage(t('profile.accountSaved'));
+    } catch {
+      setError(t('profile.accountSaveError'));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="app-card mb-5 p-4">
+      <h2 className="app-section-title">{t('profile.accountSettings')}</h2>
+
+      <label className="mb-3 flex flex-col gap-1.5">
+        <span className="app-card-meta">{t('profile.fullName')}</span>
+        <input
+          value={name}
+          onChange={event => setName(event.target.value)}
+          minLength={2}
+          maxLength={80}
+          required
+          disabled={!token}
+          className="h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors focus:border-emerald-500 disabled:opacity-60"
+        />
+      </label>
+
+      <label className="mb-4 flex flex-col gap-1.5">
+        <span className="app-card-meta">{t('auth.emailLabel')}</span>
+        <input
+          value={user?.email ?? ''}
+          readOnly
+          className="h-11 rounded-xl border border-border bg-muted px-3 text-sm text-muted-foreground outline-none"
+        />
+        <span className="app-card-meta">{t('profile.emailReadonly')}</span>
+      </label>
+
+      {message && <p className="app-card-meta mb-3 text-emerald-500">{message}</p>}
+      {error && <p className="app-card-meta mb-3 text-red-500">{error}</p>}
+
+      <button
+        type="submit"
+        disabled={!token || saving}
+        className="app-primary-action h-11 w-full text-sm disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {saving ? t('auth.submitting') : t('profile.saveChanges')}
+      </button>
+    </form>
   );
 }
 

@@ -16,6 +16,10 @@ export const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+export const updateAccountSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+});
+
 export const googleSchema = z.object({
   credential: z.string().min(20),
 });
@@ -39,6 +43,7 @@ export const tokenParamsSchema = z.object({
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
 export type GoogleInput = z.infer<typeof googleSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
