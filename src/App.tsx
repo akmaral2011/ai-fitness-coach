@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
@@ -7,6 +7,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import AppLayout from '@/components/app/AppLayout';
 import ProtectedRoute from '@/features/auth/ProtectedRoute';
+import { useAuthStore } from '@/features/auth/authStore';
+import { clearSessionData } from '@/features/auth/sessionData';
+import { apiRequest } from '@/lib/api';
 
 import './i18n';
 import './index.css';
@@ -36,10 +39,70 @@ function Spinner() {
   );
 }
 
+function SessionVerifier() {
+  const user = useAuthStore(s => s.user);
+  const token = useAuthStore(s => s.token);
+  const setSession = useAuthStore(s => s.setSession);
+  const signOut = useAuthStore(s => s.signOut);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function verifySession() {
+      if (!user) return;
+
+      if (!token) {
+        clearSessionData();
+        signOut();
+        return;
+      }
+
+      try {
+        const response = await apiRequest<{
+          user: {
+            id: string;
+            name: string;
+            email: string;
+            pictureUrl?: string | null;
+            emailVerified?: boolean;
+          };
+        }>('/api/auth/me', { token });
+
+        if (cancelled) return;
+
+        setSession({
+          token,
+          user: {
+            id: response.user.id,
+            name: response.user.name,
+            email: response.user.email,
+            picture: response.user.pictureUrl ?? undefined,
+            emailVerified: response.user.emailVerified,
+          },
+        });
+      } catch {
+        if (!cancelled) {
+          clearSessionData();
+          signOut();
+        }
+      }
+    }
+
+    verifySession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [setSession, signOut, token, user]);
+
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <SessionVerifier />
         <Suspense fallback={<Spinner />}>
           <Routes>
             <Route path="/" element={<Home />} />
