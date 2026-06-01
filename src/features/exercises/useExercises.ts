@@ -24,7 +24,7 @@ function mergeExercise(apiExercise: ApiExercise): Exercise | null {
   return {
     ...local,
     category: apiExercise.category,
-    difficulty: apiExercise.difficulty,
+    difficulty: local.difficulty,
     primaryMuscles: apiExercise.primaryMuscles,
     secondaryMuscles: apiExercise.secondaryMuscles,
     sets: apiExercise.sets,
