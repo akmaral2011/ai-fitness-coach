@@ -161,9 +161,7 @@ export async function authRoutes(app: FastifyInstance) {
       return {
         message: genericResetMessage,
         emailDelivery: result.emailDelivery,
-        ...(result.emailDelivery !== 'sent' && env.nodeEnv !== 'production'
-          ? { resetToken: result.resetToken }
-          : {}),
+        ...(result.emailDelivery !== 'sent' ? { resetToken: result.resetToken } : {}),
       };
     }
   );
