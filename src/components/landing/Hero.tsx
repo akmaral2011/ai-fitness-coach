@@ -153,18 +153,21 @@ export default function Hero() {
               {t('landing.hero.badge')}
             </SectionBadge>
 
-            <h1 className="mb-5 text-4xl font-black leading-[1.06] tracking-tight text-foreground sm:mb-6 sm:text-5xl lg:text-6xl xl:text-7xl">
+            <h1 className="mb-5 max-w-[20rem] break-words text-[2.15rem] font-black leading-[1.08] tracking-tight text-foreground sm:mb-6 sm:max-w-xl sm:text-5xl lg:max-w-none lg:text-6xl xl:text-7xl">
               {t('landing.hero.title')}{' '}
-              <span className="bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
+              <span
+                className="block max-w-full whitespace-normal bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent sm:inline"
+                style={{ overflowWrap: 'anywhere' }}
+              >
                 {t('landing.hero.titleHighlight')}
               </span>
             </h1>
 
-            <p className="mb-8 max-w-xl text-base leading-7 text-muted-foreground sm:mb-10 sm:text-xl sm:leading-8">
+            <p className="mb-8 max-w-[20rem] text-base leading-7 text-muted-foreground sm:mb-10 sm:max-w-xl sm:text-xl sm:leading-8">
               {t('landing.hero.subtitle')}
             </p>
 
-            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <div className="mb-6 flex max-w-[20rem] flex-col gap-3 sm:max-w-none sm:flex-row sm:gap-4">
               <button
                 onClick={() => (user ? navigate('/app/dashboard') : openAuthModal())}
                 className="app-primary-action inline-flex items-center justify-center gap-2 px-7 py-3.5 text-base"
