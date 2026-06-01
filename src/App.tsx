@@ -44,12 +44,13 @@ function SessionVerifier() {
   const token = useAuthStore(s => s.token);
   const setSession = useAuthStore(s => s.setSession);
   const signOut = useAuthStore(s => s.signOut);
+  const userId = user?.id;
 
   useEffect(() => {
     let cancelled = false;
 
     async function verifySession() {
-      if (!user) return;
+      if (!userId) return;
 
       if (!token) {
         clearSessionData();
@@ -70,18 +71,28 @@ function SessionVerifier() {
 
         if (cancelled) return;
 
-        setSession({
-          token,
-          user: {
-            id: response.user.id,
-            name: response.user.name,
-            email: response.user.email,
-            picture: response.user.pictureUrl ?? undefined,
-            emailVerified: response.user.emailVerified,
-          },
-        });
+        const current = useAuthStore.getState();
+        if (current.token !== token) return;
+
+        const verifiedUser = {
+          id: response.user.id,
+          name: response.user.name,
+          email: response.user.email,
+          picture: response.user.pictureUrl ?? undefined,
+          emailVerified: response.user.emailVerified,
+        };
+
+        if (
+          current.user?.id !== verifiedUser.id ||
+          current.user.name !== verifiedUser.name ||
+          current.user.email !== verifiedUser.email ||
+          current.user.picture !== verifiedUser.picture ||
+          current.user.emailVerified !== verifiedUser.emailVerified
+        ) {
+          setSession({ token, user: verifiedUser });
+        }
       } catch {
-        if (!cancelled) {
+        if (!cancelled && useAuthStore.getState().token === token) {
           clearSessionData();
           signOut();
         }
@@ -93,7 +104,7 @@ function SessionVerifier() {
     return () => {
       cancelled = true;
     };
-  }, [setSession, signOut, token, user]);
+  }, [setSession, signOut, token, userId]);
 
   return null;
 }
