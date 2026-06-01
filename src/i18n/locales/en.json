@@ -55,6 +55,7 @@
     "nameLabel": "Name",
     "emailLabel": "Email",
     "passwordLabel": "Password",
+    "passwordHint": "Use at least 8 characters with one letter and one number.",
     "newPasswordLabel": "New password",
     "resetTokenLabel": "Reset token",
     "loginAction": "Log in",

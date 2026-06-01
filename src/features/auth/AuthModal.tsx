@@ -35,6 +35,28 @@ type AuthModalProps = {
   initialResetToken?: string;
 };
 
+function getAuthErrorMessage(error: unknown, fallback: string) {
+  if (!(error instanceof ApiError)) return fallback;
+
+  if (
+    error.details &&
+    typeof error.details === 'object' &&
+    'issues' in error.details &&
+    error.details.issues &&
+    typeof error.details.issues === 'object'
+  ) {
+    const messages = Object.values(error.details.issues)
+      .flatMap(value => (Array.isArray(value) ? value : []))
+      .filter((value): value is string => typeof value === 'string');
+
+    if (messages.length > 0) {
+      return messages.join(' ');
+    }
+  }
+
+  return error.message;
+}
+
 export default function AuthModal({
   initialMode = 'login',
   initialResetToken = '',
@@ -115,11 +137,7 @@ export default function AuthModal({
 
       completeAuth(response, mode);
     } catch (err) {
-      const message =
-        err instanceof ApiError
-          ? err.message
-          : t('auth.networkError', 'Could not connect to the server');
-      setError(message);
+      setError(getAuthErrorMessage(err, t('auth.networkError', 'Could not connect to the server')));
     } finally {
       setSubmitting(false);
     }
@@ -284,6 +302,11 @@ export default function AuthModal({
                   onClick={() => setShowPassword(value => !value)}
                 />
               </div>
+              {mode === 'register' && (
+                <span className="text-xs leading-4 text-muted-foreground">
+                  {t('auth.passwordHint')}
+                </span>
+              )}
             </label>
 
             {mode === 'login' && (

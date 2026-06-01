@@ -55,6 +55,7 @@
     "nameLabel": "Аты",
     "emailLabel": "Email",
     "passwordLabel": "Сыр сөз",
+    "passwordHint": "Кеминде 8 белги, бир тамга жана бир сан болушу керек.",
     "newPasswordLabel": "Жаңы сыр сөз",
     "resetTokenLabel": "Reset token",
     "loginAction": "Кирүү",

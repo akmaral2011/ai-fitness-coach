@@ -55,6 +55,7 @@
     "nameLabel": "Имя",
     "emailLabel": "Email",
     "passwordLabel": "Пароль",
+    "passwordHint": "Минимум 8 символов, хотя бы одна буква и одна цифра.",
     "newPasswordLabel": "Новый пароль",
     "resetTokenLabel": "Reset token",
     "loginAction": "Войти",
