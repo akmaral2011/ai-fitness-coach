@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -19,6 +19,7 @@ type AuthResponse = {
     pictureUrl?: string | null;
     emailVerified?: boolean;
   };
+  isNewUser?: boolean;
   verificationToken?: string;
   emailDelivery?: 'sent' | 'dev';
 };
@@ -33,6 +34,35 @@ type AuthModalProps = {
   initialMode?: AuthMode;
   initialResetToken?: string;
 };
+
+let googleIdentityScriptPromise: Promise<void> | null = null;
+
+function loadGoogleIdentityScript() {
+  if (window.google?.accounts?.id) return Promise.resolve();
+  if (googleIdentityScriptPromise) return googleIdentityScriptPromise;
+
+  googleIdentityScriptPromise = new Promise((resolve, reject) => {
+    const existingScript = document.getElementById('google-identity-services');
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(), { once: true });
+      existingScript.addEventListener('error', () => reject(new Error('Google script failed')), {
+        once: true,
+      });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = 'google-identity-services';
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Google script failed'));
+    document.head.appendChild(script);
+  });
+
+  return googleIdentityScriptPromise;
+}
 
 function getAuthErrorMessage(error: unknown, fallback: string) {
   if (!(error instanceof ApiError)) return fallback;
@@ -74,6 +104,9 @@ export default function AuthModal({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   useEffect(() => {
     setMode(initialMode);
@@ -92,22 +125,94 @@ export default function AuthModal({
     };
   }, [closeAuthModal]);
 
-  function completeAuth(response: AuthResponse, redirectMode: AuthMode) {
-    clearSessionData();
+  const completeAuth = useCallback(
+    (response: AuthResponse, redirectMode: AuthMode) => {
+      clearSessionData();
 
-    setSession({
-      token: response.token,
-      user: {
-        id: response.user.id,
-        name: response.user.name,
-        email: response.user.email,
-        picture: response.user.pictureUrl ?? undefined,
-        emailVerified: response.user.emailVerified,
-      },
-    });
-    closeAuthModal();
-    navigate(redirectMode === 'register' ? '/onboarding' : '/app/dashboard');
-  }
+      setSession({
+        token: response.token,
+        user: {
+          id: response.user.id,
+          name: response.user.name,
+          email: response.user.email,
+          picture: response.user.pictureUrl ?? undefined,
+          emailVerified: response.user.emailVerified,
+        },
+      });
+      closeAuthModal();
+      navigate(redirectMode === 'register' ? '/onboarding' : '/app/dashboard');
+    },
+    [closeAuthModal, navigate, setSession]
+  );
+
+  const submitGoogleAuth = useCallback(
+    async (credential: string) => {
+      setError(null);
+      setNotice(null);
+      setGoogleSubmitting(true);
+
+      try {
+        const response = await apiRequest<AuthResponse>('/api/auth/google', {
+          method: 'POST',
+          body: JSON.stringify({ credential }),
+        });
+
+        completeAuth(response, response.isNewUser ? 'register' : 'login');
+      } catch (err) {
+        setError(getAuthErrorMessage(err, t('auth.googleError')));
+      } finally {
+        setGoogleSubmitting(false);
+      }
+    },
+    [completeAuth, t]
+  );
+
+  useEffect(() => {
+    if (!googleClientId || mode === 'forgot' || mode === 'reset' || !googleButtonRef.current) {
+      return;
+    }
+
+    let cancelled = false;
+    const buttonElement = googleButtonRef.current;
+    buttonElement.innerHTML = '';
+
+    void loadGoogleIdentityScript()
+      .then(() => {
+        if (cancelled || !window.google?.accounts?.id) return;
+
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+          callback: response => {
+            if (response.credential) {
+              void submitGoogleAuth(response.credential);
+            } else {
+              setError(t('auth.googleError'));
+            }
+          },
+        });
+
+        const buttonWidth = Math.min(320, Math.max(220, buttonElement.clientWidth || 320));
+
+        window.google.accounts.id.renderButton(buttonElement, {
+          theme: 'outline',
+          size: 'large',
+          type: 'standard',
+          shape: 'rectangular',
+          text: 'continue_with',
+          width: buttonWidth,
+          logo_alignment: 'left',
+        });
+      })
+      .catch(() => {
+        if (!cancelled) setError(t('auth.googleScriptError'));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [googleClientId, mode, submitGoogleAuth, t]);
 
   async function submitEmailAuth(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -255,6 +360,30 @@ export default function AuthModal({
             >
               {t('auth.registerTab', 'Sign up')}
             </button>
+          </div>
+        )}
+
+        {mode !== 'forgot' && mode !== 'reset' && googleClientId && (
+          <div className="w-full mb-4">
+            <div
+              ref={googleButtonRef}
+              className={`flex min-h-11 w-full items-center justify-center overflow-hidden rounded-xl transition-opacity ${
+                googleSubmitting ? 'pointer-events-none opacity-60' : ''
+              }`}
+              aria-label={t('auth.googleContinue')}
+            />
+            {googleSubmitting && (
+              <p className="mt-2 text-center text-xs text-muted-foreground">
+                {t('auth.googleLoading')}
+              </p>
+            )}
+            <div className="mt-4 flex items-center gap-3">
+              <span className="h-px flex-1 bg-border" />
+              <span className="text-xs font-medium text-muted-foreground">
+                {t('auth.orWithEmail')}
+              </span>
+              <span className="h-px flex-1 bg-border" />
+            </div>
           </div>
         )}
 

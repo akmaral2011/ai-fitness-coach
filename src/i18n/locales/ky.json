@@ -68,6 +68,11 @@
     "showPassword": "Сыр сөздү көрсөтүү",
     "hidePassword": "Сыр сөздү жашыруу",
     "networkError": "Серверге туташуу мүмкүн болгон жок",
+    "googleContinue": "Google менен улантуу",
+    "googleLoading": "Google аркылуу кирип жатат...",
+    "googleError": "Google менен кирүү ишке ашкан жок. Кайра аракет кылыңыз.",
+    "googleScriptError": "Google кирүү модулу жүктөлгөн жок. Кайра аракет кылыңыз.",
+    "orWithEmail": "же email менен",
     "resetEmailSent": "Почтаңызды текшериңиз: сыр сөздү жаңылоо токени жөнөтүлдү.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"

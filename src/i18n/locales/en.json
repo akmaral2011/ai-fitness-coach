@@ -68,6 +68,11 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "networkError": "Could not connect to the server",
+    "googleContinue": "Continue with Google",
+    "googleLoading": "Signing in with Google...",
+    "googleError": "Google sign-in failed. Please try again.",
+    "googleScriptError": "Could not load Google sign-in. Please try again.",
+    "orWithEmail": "or use email",
     "resetEmailSent": "Check your email for the reset token.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"

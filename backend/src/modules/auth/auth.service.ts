@@ -69,15 +69,25 @@ export async function loginWithGoogle(credential: string) {
   const googleUser = await verifyGoogleCredential(credential);
   if (!googleUser) return null;
 
-  return prisma.user.upsert({
+  const existingUser = await prisma.user.findUnique({
     where: { email: googleUser.email },
-    update: {
-      googleSubject: googleUser.sub,
-      name: googleUser.name ?? undefined,
-      pictureUrl: googleUser.picture ?? undefined,
-      emailVerifiedAt: new Date(),
-    },
-    create: {
+  });
+
+  if (existingUser) {
+    const user = await prisma.user.update({
+      where: { id: existingUser.id },
+      data: {
+        googleSubject: googleUser.sub,
+        pictureUrl: googleUser.picture ?? undefined,
+        emailVerifiedAt: new Date(),
+      },
+    });
+
+    return { user, isNewUser: false };
+  }
+
+  const user = await prisma.user.create({
+    data: {
       email: googleUser.email,
       name: googleUser.name ?? googleUser.email.split('@')[0],
       pictureUrl: googleUser.picture,
@@ -85,6 +95,8 @@ export async function loginWithGoogle(credential: string) {
       emailVerifiedAt: new Date(),
     },
   });
+
+  return { user, isNewUser: true };
 }
 
 export async function verifyEmailToken(token: string) {

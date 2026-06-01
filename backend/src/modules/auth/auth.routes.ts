@@ -101,13 +101,13 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.status(400).send({ message: 'Invalid request body' });
     }
 
-    const user = await loginWithGoogle(parsed.data.credential);
-    if (!user) {
+    const result = await loginWithGoogle(parsed.data.credential);
+    if (!result) {
       return reply.status(401).send({ message: 'Invalid Google credential' });
     }
 
-    const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' });
-    return { token, user: publicUser(user) };
+    const token = app.jwt.sign({ sub: result.user.id }, { expiresIn: '7d' });
+    return { token, user: publicUser(result.user), isNewUser: result.isNewUser };
   });
 
   app.post('/verify-email', async (request, reply) => {

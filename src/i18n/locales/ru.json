@@ -68,6 +68,11 @@
     "showPassword": "Показать пароль",
     "hidePassword": "Скрыть пароль",
     "networkError": "Не удалось подключиться к серверу",
+    "googleContinue": "Продолжить с Google",
+    "googleLoading": "Входим через Google...",
+    "googleError": "Не удалось войти через Google. Попробуйте ещё раз.",
+    "googleScriptError": "Не удалось загрузить вход через Google. Попробуйте ещё раз.",
+    "orWithEmail": "или через email",
     "resetEmailSent": "Проверьте почту: мы отправили токен для сброса пароля.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"
