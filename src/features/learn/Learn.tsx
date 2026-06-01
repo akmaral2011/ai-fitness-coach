@@ -7,6 +7,7 @@ import { BookOpen, CheckCircle, Play, Sparkles, Video } from 'lucide-react';
 import { categoryColor } from '@/features/learn/data';
 import type { ArticleCategory } from '@/features/learn/data';
 import { useLearnStore } from '@/features/learn/learnStore';
+import { getLessonSummary, getLessonTitle } from '@/features/learn/lessonText';
 import { useLessons } from '@/features/learn/useLessons';
 
 type Filter = 'all' | 'video' | ArticleCategory;
@@ -21,7 +22,7 @@ const CATEGORIES: { key: Filter; labelKey: string }[] = [
 ];
 
 export default function Learn() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<Filter>('all');
   const { completedIds } = useLearnStore();
@@ -116,10 +117,10 @@ export default function Learn() {
             <span className="text-3xl leading-none">{recommendedLesson.emoji}</span>
             <span className="min-w-0 flex-1">
               <span className="app-card-title block">
-                {recommendedLesson.remoteTitle ?? t(recommendedLesson.titleKey)}
+                {getLessonTitle(recommendedLesson, t, i18n)}
               </span>
               <span className="app-card-meta mt-1 block line-clamp-2">
-                {recommendedLesson.remoteSummary ?? t(recommendedLesson.summaryKey)}
+                {getLessonSummary(recommendedLesson, t, i18n)}
               </span>
             </span>
             <span className="app-chip-label shrink-0 rounded-full bg-background px-2 py-1 text-muted-foreground">
@@ -180,11 +181,9 @@ export default function Learn() {
                   </span>
                 </div>
                 <p className="app-card-title mb-1 transition-colors group-hover:text-emerald-500">
-                  {lesson.remoteTitle ?? t(lesson.titleKey)}
+                  {getLessonTitle(lesson, t, i18n)}
                 </p>
-                <p className="app-card-meta line-clamp-2">
-                  {lesson.remoteSummary ?? t(lesson.summaryKey)}
-                </p>
+                <p className="app-card-meta line-clamp-2">{getLessonSummary(lesson, t, i18n)}</p>
               </div>
               {isComplete && <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-1" />}
             </button>

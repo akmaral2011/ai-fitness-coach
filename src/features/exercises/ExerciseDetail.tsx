@@ -21,6 +21,7 @@ import { getExercise } from '@/features/exercises/data';
 import { DIFFICULTY_COLOR } from '@/features/exercises/types';
 import type { Exercise } from '@/features/exercises/types';
 import { useExerciseRules } from '@/features/exercises/useExerciseRules';
+import { getLessonTitle } from '@/features/learn/lessonText';
 import type { DisplayLesson } from '@/features/learn/useLessons';
 import { useLessons } from '@/features/learn/useLessons';
 
@@ -137,7 +138,7 @@ function TechniqueGuideCard({
   loading: boolean;
   onOpen: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   if (loading) {
     return (
@@ -173,9 +174,7 @@ function TechniqueGuideCard({
       </span>
       <span className="min-w-0 flex-1">
         <span className="app-card-title block">{t('catalog.detail.techniqueGuide')}</span>
-        <span className="app-card-meta mt-1 block truncate">
-          {lesson.remoteTitle ?? t(lesson.titleKey)}
-        </span>
+        <span className="app-card-meta mt-1 block truncate">{getLessonTitle(lesson, t, i18n)}</span>
         <span className="app-card-meta mt-1 block text-emerald-500">
           {lesson.type === 'video'
             ? `${lesson.durationMinutes ?? 0} ${t('learn.videoMin')}`

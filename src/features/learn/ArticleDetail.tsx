@@ -8,12 +8,18 @@ import { useAuthStore } from '@/features/auth/authStore';
 import { EXERCISES } from '@/features/exercises/data';
 import { categoryColor } from '@/features/learn/data';
 import { useLearnStore } from '@/features/learn/learnStore';
+import {
+  getLessonBody,
+  getLessonSummary,
+  getLessonTakeaways,
+  getLessonTitle,
+} from '@/features/learn/lessonText';
 import { useLessons } from '@/features/learn/useLessons';
 import { apiRequest } from '@/lib/api';
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { completedIds, markComplete } = useLearnStore();
   const token = useAuthStore(s => s.token);
@@ -33,6 +39,10 @@ export default function ArticleDetail() {
   const linkedExercise = lesson.linkedExerciseId
     ? EXERCISES.find(e => e.id === lesson.linkedExerciseId)
     : undefined;
+  const lessonTitle = getLessonTitle(lesson, t, i18n);
+  const lessonSummary = getLessonSummary(lesson, t, i18n);
+  const lessonBody = getLessonBody(lesson, t, i18n);
+  const lessonTakeaways = getLessonTakeaways(lesson, t, i18n);
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-10 app-page-flow">
@@ -62,7 +72,7 @@ export default function ArticleDetail() {
                 className="w-full aspect-video rounded-xl border border-border"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                title={lesson.remoteTitle ?? t(lesson.titleKey)}
+                title={lessonTitle}
               />
             ) : (
               <div className="w-full aspect-video rounded-xl bg-muted border border-border flex flex-col items-center justify-center gap-3">
@@ -97,18 +107,17 @@ export default function ArticleDetail() {
                 : `${lesson.readMinutes} ${t('learn.readMin')}`}
             </span>
           </div>
-          <h1 className="app-detail-title mb-5">{lesson.remoteTitle ?? t(lesson.titleKey)}</h1>
+          <h1 className="app-detail-title mb-5">{lessonTitle}</h1>
           <p className="app-body-text border-l-2 border-emerald-500/50 pl-4 mb-8 italic">
-            {lesson.remoteSummary ?? t(lesson.summaryKey)}
+            {lessonSummary}
           </p>
         </div>
 
-        {((lesson.remoteKeyTakeaways?.length ?? 0) > 0 ||
-          (lesson.keyTakeawayKeys?.length ?? 0) > 0) && (
+        {lessonTakeaways.length > 0 && (
           <div className="mb-8 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
             <h2 className="app-section-title mb-3 text-emerald-500">{t('learn.keyTakeaways')}</h2>
             <ul className="flex flex-col gap-2.5">
-              {(lesson.remoteKeyTakeaways ?? lesson.keyTakeawayKeys ?? []).map((item, i) => (
+              {lessonTakeaways.map((item, i) => (
                 <li
                   key={i}
                   className="flex items-start gap-2.5 app-card-title font-medium text-foreground/85"
@@ -116,7 +125,7 @@ export default function ArticleDetail() {
                   <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                     {i + 1}
                   </span>
-                  {lesson.remoteKeyTakeaways ? item : t(item)}
+                  {item}
                 </li>
               ))}
             </ul>
@@ -124,9 +133,9 @@ export default function ArticleDetail() {
         )}
 
         <div className="flex flex-col gap-6 pb-8">
-          {(lesson.remoteBody ?? lesson.bodyKeys).map((item, i) => (
+          {lessonBody.map((item, i) => (
             <p key={i} className="app-body-text text-foreground/85">
-              {lesson.remoteBody ? item : t(item)}
+              {item}
             </p>
           ))}
         </div>

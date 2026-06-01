@@ -16,7 +16,12 @@ i18n
       ru: { translation: ru },
       ky: { translation: ky },
     },
-    fallbackLng: 'en',
+    fallbackLng: 'ru',
+    supportedLngs: ['en', 'ru', 'ky'],
+    detection: {
+      order: ['localStorage'],
+      caches: ['localStorage'],
+    },
     interpolation: { escapeValue: false },
   });
 
