@@ -6,7 +6,6 @@ import { Eye, EyeOff, Shield, X, Zap } from 'lucide-react';
 
 import { useAuthStore } from '@/features/auth/authStore';
 import { clearSessionData } from '@/features/auth/sessionData';
-import { useProfileStore } from '@/features/profile/profileStore';
 import { ApiError, apiRequest } from '@/lib/api';
 
 type AuthMode = 'login' | 'register' | 'forgot' | 'reset';
@@ -94,11 +93,7 @@ export default function AuthModal({
   }, [closeAuthModal]);
 
   function completeAuth(response: AuthResponse, redirectMode: AuthMode) {
-    const currentUser = useAuthStore.getState().user;
-    const { profile } = useProfileStore.getState();
-    const isDifferentStoredUser = currentUser !== null && currentUser.id !== response.user.id;
-    const isDifferentProfile = profile !== null && profile.userId !== response.user.id;
-    if (isDifferentStoredUser || isDifferentProfile) clearSessionData();
+    clearSessionData();
 
     setSession({
       token: response.token,
