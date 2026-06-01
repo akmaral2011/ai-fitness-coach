@@ -72,7 +72,7 @@
     "googleLoading": "Входим через Google...",
     "googleError": "Не удалось войти через Google. Попробуйте ещё раз.",
     "googleScriptError": "Не удалось загрузить вход через Google. Попробуйте ещё раз.",
-    "orWithEmail": "или через email",
+    "orWithGoogle": "или продолжить с Google",
     "resetEmailSent": "Проверьте почту: мы отправили токен для сброса пароля.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"

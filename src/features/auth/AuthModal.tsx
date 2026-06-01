@@ -363,30 +363,6 @@ export default function AuthModal({
           </div>
         )}
 
-        {mode !== 'forgot' && mode !== 'reset' && googleClientId && (
-          <div className="w-full mb-4">
-            <div
-              ref={googleButtonRef}
-              className={`flex min-h-11 w-full items-center justify-center overflow-hidden rounded-xl transition-opacity ${
-                googleSubmitting ? 'pointer-events-none opacity-60' : ''
-              }`}
-              aria-label={t('auth.googleContinue')}
-            />
-            {googleSubmitting && (
-              <p className="mt-2 text-center text-xs text-muted-foreground">
-                {t('auth.googleLoading')}
-              </p>
-            )}
-            <div className="mt-4 flex items-center gap-3">
-              <span className="h-px flex-1 bg-border" />
-              <span className="text-xs font-medium text-muted-foreground">
-                {t('auth.orWithEmail')}
-              </span>
-              <span className="h-px flex-1 bg-border" />
-            </div>
-          </div>
-        )}
-
         {mode !== 'forgot' && mode !== 'reset' && (
           <form onSubmit={submitEmailAuth} className="w-full flex flex-col gap-3 text-left">
             {mode === 'register' && (
@@ -470,6 +446,30 @@ export default function AuthModal({
                   ? t('auth.loginAction', 'Log in')
                   : t('auth.registerAction', 'Create account')}
             </button>
+
+            {googleClientId && (
+              <div className="w-full pt-1">
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="h-px flex-1 bg-border" />
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {t('auth.orWithGoogle')}
+                  </span>
+                  <span className="h-px flex-1 bg-border" />
+                </div>
+                <div
+                  ref={googleButtonRef}
+                  className={`flex min-h-11 w-full items-center justify-center overflow-hidden rounded-xl transition-opacity ${
+                    googleSubmitting ? 'pointer-events-none opacity-60' : ''
+                  }`}
+                  aria-label={t('auth.googleContinue')}
+                />
+                {googleSubmitting && (
+                  <p className="mt-2 text-center text-xs text-muted-foreground">
+                    {t('auth.googleLoading')}
+                  </p>
+                )}
+              </div>
+            )}
           </form>
         )}
 

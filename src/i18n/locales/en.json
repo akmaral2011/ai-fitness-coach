@@ -72,7 +72,7 @@
     "googleLoading": "Signing in with Google...",
     "googleError": "Google sign-in failed. Please try again.",
     "googleScriptError": "Could not load Google sign-in. Please try again.",
-    "orWithEmail": "or use email",
+    "orWithGoogle": "or continue with Google",
     "resetEmailSent": "Check your email for the reset token.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"

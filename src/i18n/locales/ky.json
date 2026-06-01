@@ -72,7 +72,7 @@
     "googleLoading": "Google аркылуу кирип жатат...",
     "googleError": "Google менен кирүү ишке ашкан жок. Кайра аракет кылыңыз.",
     "googleScriptError": "Google кирүү модулу жүктөлгөн жок. Кайра аракет кылыңыз.",
-    "orWithEmail": "же email менен",
+    "orWithGoogle": "же Google менен улантуу",
     "resetEmailSent": "Почтаңызды текшериңиз: сыр сөздү жаңылоо токени жөнөтүлдү.",
     "resetTokenDev": "Dev reset token: {{token}}",
     "verifyEmailDev": "Dev email verification token: {{token}}"
