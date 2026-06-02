@@ -140,7 +140,3 @@ backend/
 - Backend and PostgreSQL are currently local; production deployment is a future step.
 - Email verification and password reset currently return dev tokens; production should send them through an email provider.
 - Next.js migration is planned later, after the current MVP is stable.
-
-## Demo Notes
-
-Use [DEMO_GUIDE.md](./DEMO_GUIDE.md) for the presentation flow and [INTERVIEW_NOTES.md](./INTERVIEW_NOTES.md) for architecture explanations and likely questions.

@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -109,6 +109,16 @@ function SessionVerifier() {
   return null;
 }
 
+function HomeRoute() {
+  const user = useAuthStore(s => s.user);
+
+  if (user) {
+    return <Navigate to="/app/dashboard" replace />;
+  }
+
+  return <Home />;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -116,7 +126,7 @@ function App() {
         <SessionVerifier />
         <Suspense fallback={<Spinner />}>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<HomeRoute />} />
 
             <Route
               path="/onboarding"
