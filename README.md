@@ -4,7 +4,7 @@ Full-stack AI fitness coaching MVP. The app analyzes exercise technique in the b
 
 ## What It Does
 
-- Email/password registration and login with JWT, email verification tokens, password reset flow, and a backend-ready Google sign-in endpoint for later.
+- Email/password registration and login with JWT, email verification tokens, password reset flow, and Google sign-in support.
 - Onboarding profile with goal, level, activity, measurements, injuries, and camera setup.
 - Exercise catalog with 20 seeded exercises and seeded AI technique rules.
 - Camera-based workout mode with pose tracking, rep counting, technique score, and backend-driven technique feedback.
@@ -22,7 +22,7 @@ Full-stack AI fitness coaching MVP. The app analyzes exercise technique in the b
 | Styling    | Tailwind CSS v4                        |
 | State      | Zustand                                |
 | Routing    | React Router                           |
-| AI / Pose  | MediaPipe Tasks Vision + TensorFlow.js |
+| AI / Pose  | MediaPipe Tasks Vision                  |
 | Backend    | Node.js + Fastify                      |
 | Database   | PostgreSQL                             |
 | ORM        | Prisma                                 |
@@ -67,6 +67,20 @@ Open:
 https://localhost:5173/
 ```
 
+## Production
+
+Frontend:
+
+```text
+https://ai-fitness-coach-vert.vercel.app
+```
+
+Backend API:
+
+```text
+https://ai-fitness-coach-api-w0fn.onrender.com
+```
+
 ## Useful Commands
 
 ```bash
@@ -107,7 +121,7 @@ backend/
   src/
     config/        env validation
     lib/           Prisma and auth helpers
-    routes/        Fastify route modules
+    modules/       Fastify routes, services, schemas, presenters
 ```
 
 ## Backend API
@@ -133,10 +147,8 @@ backend/
 - `POST /api/lessons/:id/complete`
 - `GET /api/achievements/me`
 
-## MVP Limitations
+## Production Notes
 
-- Google auth endpoint exists, but the demo UI uses email/password to avoid OAuth setup risk.
 - MediaPipe analysis runs client-side, so performance depends on the user's device.
-- Backend and PostgreSQL are currently local; production deployment is a future step.
-- Email verification and password reset currently return dev tokens; production should send them through an email provider.
-- Next.js migration is planned later, after the current MVP is stable.
+- Password reset email delivery requires a verified email domain in the email provider for general public recipients.
+- Frontend is deployed on Vercel, and the backend API is deployed on Render.

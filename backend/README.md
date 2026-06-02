@@ -74,6 +74,10 @@ JWT_SECRET="local-dev-secret-change-before-production"
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
+- `POST /api/auth/google`
+- `POST /api/auth/verify-email`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
 - `GET /api/auth/me`
 
 ### Profile
@@ -85,6 +89,7 @@ JWT_SECRET="local-dev-secret-change-before-production"
 
 - `GET /api/exercises`
 - `GET /api/exercises/:slug`
+- `GET /api/exercises/:slug/rules`
 
 ### Workouts
 
