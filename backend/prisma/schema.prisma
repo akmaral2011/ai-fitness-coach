@@ -148,6 +148,7 @@ model WorkoutSession {
   id              String    @id @default(cuid())
   userId          String
   exerciseId      String
+  clientMutationId String?
   repCount        Int
   averageScore    Int
   durationSeconds Int
@@ -158,6 +159,7 @@ model WorkoutSession {
 
   @@index([userId, completedAt])
   @@index([exerciseId])
+  @@unique([userId, clientMutationId])
 }
 
 model Program {

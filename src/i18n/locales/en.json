@@ -695,6 +695,8 @@
       "strong": "Great consistency. Keep the quality high and protect your streak.",
       "improve": "Focus on controlled reps today. The AI rules will guide your technique in real time.",
       "synced": "Synced",
+      "syncPending": "{{count}} pending",
+      "syncFailed": "{{count}} failed",
       "local": "Local",
       "thisWeek": "This week",
       "bestScore": "Best score",

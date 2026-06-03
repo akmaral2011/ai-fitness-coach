@@ -16,6 +16,7 @@ import { useAchievementStore } from '@/features/profile/achievementStore';
 import { type ProgramEnrollment, useProgramStore } from '@/features/programs/programStore';
 import { useProgressStore } from '@/features/progress/progressStore';
 import type { CompletedSession } from '@/features/workout/types';
+import { syncPendingWorkouts } from '@/features/workout/workoutSyncStore';
 import { apiRequest } from '@/lib/api';
 
 type NavItem = {
@@ -47,6 +48,19 @@ export default function AppLayout({ children }: Props) {
   const setEnrollments = useProgramStore(s => s.setEnrollments);
   const setCompletedLessonIds = useLearnStore(s => s.setCompletedIds);
   const setUnlockedAchievementIds = useAchievementStore(s => s.setUnlockedIds);
+
+  useEffect(() => {
+    if (!token) return;
+    const authToken = token;
+
+    function handleOnline() {
+      void syncPendingWorkouts(authToken);
+    }
+
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [token]);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -54,6 +68,8 @@ export default function AppLayout({ children }: Props) {
       if (!token) return;
 
       try {
+        await syncPendingWorkouts(token);
+
         const [workoutsResponse, enrollmentsResponse, lessonsResponse, achievementsResponse] =
           await Promise.all([
             apiRequest<{ workouts: CompletedSession[] }>('/api/workouts?limit=100', { token }),

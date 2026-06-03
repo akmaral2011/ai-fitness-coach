@@ -20,6 +20,7 @@ import { useLearnStore } from '@/features/learn/learnStore';
 import { PROGRAMS } from '@/features/programs/data';
 import { useProgramStore } from '@/features/programs/programStore';
 import { useProgressStore } from '@/features/progress/progressStore';
+import { useWorkoutSyncStore } from '@/features/workout/workoutSyncStore';
 import { formatDuration } from '@/lib/utils';
 
 function StatCard({
@@ -106,6 +107,7 @@ export default function Dashboard() {
   const { getSummary, getXPData, getRecentSessions } = useProgressStore();
   const allSessions = useProgressStore(s => s.sessions);
   const token = useAuthStore(s => s.token);
+  const syncCounts = useWorkoutSyncStore(s => s.getCounts());
 
   const summary = getSummary();
   const xp = getXPData();
@@ -136,6 +138,22 @@ export default function Dashboard() {
       : summary.averageScore >= 85
         ? t('dashboard.coach.strong')
         : t('dashboard.coach.improve');
+  const syncState =
+    syncCounts.failed > 0 ? 'failed' : syncCounts.pending > 0 ? 'pending' : 'synced';
+  const syncLabel = !token
+    ? t('dashboard.coach.local')
+    : syncState === 'failed'
+      ? t('dashboard.coach.syncFailed', { count: syncCounts.failed })
+      : syncState === 'pending'
+        ? t('dashboard.coach.syncPending', { count: syncCounts.pending })
+        : t('dashboard.coach.synced');
+  const syncClass = !token
+    ? 'bg-yellow-500/15 text-yellow-500'
+    : syncState === 'failed'
+      ? 'bg-red-500/15 text-red-500'
+      : syncState === 'pending'
+        ? 'bg-blue-500/15 text-blue-500'
+        : 'bg-emerald-500/15 text-emerald-500';
 
   return (
     <div className="app-page app-page-flow">
@@ -161,12 +179,10 @@ export default function Dashboard() {
                 <p className="app-hero-body mt-1">{coachMessage}</p>
               </div>
               <span
-                className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                  token ? 'bg-emerald-500/15 text-emerald-500' : 'bg-yellow-500/15 text-yellow-500'
-                }`}
+                className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${syncClass}`}
               >
                 <CheckCircle2 size={13} />
-                {token ? t('dashboard.coach.synced') : t('dashboard.coach.local')}
+                {syncLabel}
               </span>
             </div>
 

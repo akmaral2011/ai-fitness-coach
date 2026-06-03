@@ -32,7 +32,7 @@ import {
   WorkoutSummary,
 } from '@/features/workout/workoutModeSections';
 import { useWorkoutStore } from '@/features/workout/workoutStore';
-import { apiRequest } from '@/lib/api';
+import { syncPendingWorkouts, useWorkoutSyncStore } from '@/features/workout/workoutSyncStore';
 
 export default function WorkoutMode() {
   const { t } = useTranslation();
@@ -58,6 +58,7 @@ export default function WorkoutMode() {
     buildCompletedSession,
   } = useWorkoutStore();
   const { addSession } = useProgressStore();
+  const enqueueWorkout = useWorkoutSyncStore(s => s.enqueueWorkout);
   const token = useAuthStore(s => s.token);
   const { processFrame } = useWorkoutEngine(exercise ?? null);
 
@@ -231,23 +232,11 @@ export default function WorkoutMode() {
 
   function saveCompletedWorkout(session: NonNullable<ReturnType<typeof buildCompletedSession>>) {
     const savedSession = addSession(session);
+    enqueueWorkout(savedSession);
     recordWorkoutDone();
 
     if (token) {
-      void apiRequest('/api/workouts', {
-        method: 'POST',
-        token,
-        body: JSON.stringify({
-          exerciseSlug: savedSession.exerciseId,
-          repCount: savedSession.repCount,
-          averageScore: savedSession.averageScore,
-          durationSeconds: savedSession.durationSeconds,
-          scoreHistory: savedSession.scoreHistory,
-          completedAt: savedSession.date,
-        }),
-      }).catch(error => {
-        console.error('Failed to save workout to backend', error);
-      });
+      void syncPendingWorkouts(token);
     }
   }
 

@@ -3,6 +3,20 @@ import type { CreateWorkoutInput } from './workout.schemas.js';
 import { calculateCurrentStreak, sessionXP, xpData } from './workout.stats.js';
 
 export async function createWorkoutSession(userId: string, input: CreateWorkoutInput) {
+  if (input.clientMutationId) {
+    const existing = await prisma.workoutSession.findUnique({
+      where: {
+        userId_clientMutationId: {
+          userId,
+          clientMutationId: input.clientMutationId,
+        },
+      },
+      include: { exercise: { select: { slug: true } } },
+    });
+
+    if (existing) return existing;
+  }
+
   const exercise = input.exerciseId
     ? await prisma.exercise.findUnique({ where: { id: input.exerciseId } })
     : await prisma.exercise.findUnique({ where: { slug: input.exerciseSlug } });
@@ -13,6 +27,7 @@ export async function createWorkoutSession(userId: string, input: CreateWorkoutI
     data: {
       userId,
       exerciseId: exercise.id,
+      clientMutationId: input.clientMutationId,
       repCount: input.repCount,
       averageScore: input.averageScore,
       durationSeconds: input.durationSeconds,

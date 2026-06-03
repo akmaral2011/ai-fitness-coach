@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const createWorkoutSchema = z.object({
+  clientMutationId: z.string().min(1).optional(),
   exerciseId: z.string().min(1).optional(),
   exerciseSlug: z.string().min(1).optional(),
   repCount: z.number().int().min(0),

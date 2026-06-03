@@ -30,3 +30,8 @@ Object.defineProperty(globalThis, 'localStorage', {
   value: new MemoryStorage(),
   configurable: true,
 });
+
+Object.defineProperty(globalThis, 'navigator', {
+  value: { onLine: true },
+  configurable: true,
+});

@@ -12,7 +12,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write src",
     "stylelint": "stylelint src/**/*.css",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:i18n": "vitest run src/i18n/i18nQuality.test.ts"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
