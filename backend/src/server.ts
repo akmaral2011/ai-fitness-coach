@@ -20,12 +20,21 @@ const app = Fastify({
   logger: true,
 });
 
+const allowedOrigins = env.frontendUrl
+  ? [
+      env.frontendUrl,
+      ...(env.nodeEnv === 'development'
+        ? ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://localhost:5173']
+        : []),
+    ]
+  : true;
+
 await app.register(helmet, {
   contentSecurityPolicy: false,
 });
 
 await app.register(cors, {
-  origin: env.frontendUrl ? [env.frontendUrl] : true,
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 });
