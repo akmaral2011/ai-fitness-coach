@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -107,7 +107,7 @@ export default function Dashboard() {
   const { getSummary, getXPData, getRecentSessions } = useProgressStore();
   const allSessions = useProgressStore(s => s.sessions);
   const token = useAuthStore(s => s.token);
-  const syncCounts = useWorkoutSyncStore(s => s.getCounts());
+  const syncItems = useWorkoutSyncStore(s => s.items);
 
   const summary = getSummary();
   const xp = getXPData();
@@ -138,6 +138,17 @@ export default function Dashboard() {
       : summary.averageScore >= 85
         ? t('dashboard.coach.strong')
         : t('dashboard.coach.improve');
+  const syncCounts = useMemo(
+    () =>
+      syncItems.reduce(
+        (counts, item) => {
+          counts[item.status] += 1;
+          return counts;
+        },
+        { pending: 0, failed: 0, synced: 0 }
+      ),
+    [syncItems]
+  );
   const syncState =
     syncCounts.failed > 0 ? 'failed' : syncCounts.pending > 0 ? 'pending' : 'synced';
   const syncLabel = !token
