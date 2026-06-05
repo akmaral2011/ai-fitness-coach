@@ -81,6 +81,22 @@ describe('workoutSyncStore', () => {
     expect(useWorkoutSyncStore.getState().items[0].status).toBe('synced');
   });
 
+  it('stops retrying workouts after three failed sync attempts', async () => {
+    useWorkoutSyncStore.getState().enqueueWorkout(makeSession());
+    const failingRequest = vi.fn().mockRejectedValue(new Error('Backend unavailable'));
+
+    await syncPendingWorkouts('token', failingRequest);
+    await syncPendingWorkouts('token', failingRequest);
+    await syncPendingWorkouts('token', failingRequest);
+    await syncPendingWorkouts('token', failingRequest);
+
+    expect(failingRequest).toHaveBeenCalledTimes(3);
+    expect(useWorkoutSyncStore.getState().items[0]).toMatchObject({
+      status: 'failed',
+      attempts: 3,
+    });
+  });
+
   it('waits while the browser is offline', async () => {
     useWorkoutSyncStore.getState().enqueueWorkout(makeSession());
     Object.defineProperty(globalThis.navigator, 'onLine', {

@@ -4,6 +4,8 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import type { CompletedSession } from '@/features/workout/types';
 import { apiRequest } from '@/lib/api';
 
+const MAX_SYNC_ATTEMPTS = 3;
+
 export type WorkoutSyncStatus = 'pending' | 'failed' | 'synced';
 
 export type WorkoutSyncPayload = {
@@ -132,7 +134,7 @@ export const useWorkoutSyncStore = create<WorkoutSyncState>()(
               ? {
                   ...item,
                   status: 'failed',
-                  attempts: item.attempts + 1,
+                  attempts: (item.attempts ?? 0) + 1,
                   updatedAt: now(),
                   lastError: errorMessage(error),
                 }
@@ -165,7 +167,11 @@ export async function syncPendingWorkouts(token: string, request: RequestFn = ap
 
   const items = useWorkoutSyncStore
     .getState()
-    .items.filter(item => item.status === 'pending' || item.status === 'failed');
+    .items.filter(
+      item =>
+        (item.status === 'pending' || item.status === 'failed') &&
+        (item.attempts ?? 0) < MAX_SYNC_ATTEMPTS
+    );
 
   for (const item of items) {
     try {
