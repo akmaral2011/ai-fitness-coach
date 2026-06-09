@@ -26,6 +26,7 @@ const LeaderboardPage = lazy(() => import('./features/leaderboard/Leaderboard'))
 const ProfilePage = lazy(() => import('./features/profile/Profile'));
 const ProgramsPage = lazy(() => import('./features/programs/Programs'));
 const ProgramDetailPage = lazy(() => import('./features/programs/ProgramDetail'));
+const TodayWorkoutSessionPage = lazy(() => import('./features/programs/TodayWorkoutSession'));
 const LearnPage = lazy(() => import('./features/learn/Learn'));
 const ArticleDetailPage = lazy(() => import('./features/learn/ArticleDetail'));
 
@@ -228,6 +229,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProgramDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/programs/:programId/session/:dayId"
+              element={
+                <ProtectedRoute>
+                  <TodayWorkoutSessionPage />
                 </ProtectedRoute>
               }
             />

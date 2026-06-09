@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
 import { useAuthStore } from '@/features/auth/authStore';
@@ -17,6 +17,7 @@ import {
   REST_DURATION,
   type SetResult,
   type Stage,
+  hasCompletedWorkoutActivity,
 } from '@/features/workout/workoutModeHelpers';
 import {
   CameraErrorScreen,
@@ -38,8 +39,15 @@ export default function WorkoutMode() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const localExercise = id ? (getExercise(id) ?? null) : null;
   const { exercise } = useExerciseRules(localExercise);
+  const programId = searchParams.get('programId');
+  const dayId = searchParams.get('dayId');
+  const guidedSessionUrl =
+    programId && dayId && exercise
+      ? `/app/programs/${programId}/session/${dayId}?completed=${exercise.id}`
+      : null;
 
   // store
   const {
@@ -250,6 +258,7 @@ export default function WorkoutMode() {
       repCount: session?.repCount ?? repCount,
       averageScore: session?.averageScore ?? techniqueScore,
       durationSeconds: session?.durationSeconds ?? 0,
+      scoreHistory: session?.scoreHistory ?? [],
       holdSeconds: isStatic ? holdSecs : undefined,
     };
     sound.setDone();
@@ -268,6 +277,7 @@ export default function WorkoutMode() {
             allSets.reduce((a, s) => a + s.averageScore, 0) / allSets.length
           ),
           durationSeconds: allSets.reduce((a, s) => a + s.durationSeconds, 0),
+          scoreHistory: allSets.flatMap(set => set.scoreHistory),
         });
       }
       stopCamera();
@@ -298,6 +308,17 @@ export default function WorkoutMode() {
 
   function handleFinishEarly() {
     if (setCompletingRef.current) return;
+
+    if (
+      !hasCompletedWorkoutActivity(isStatic, repCount, holdSecs) &&
+      setResultsRef.current.length === 0
+    ) {
+      stopCamera();
+      resetWorkout();
+      navigate(-1);
+      return;
+    }
+
     setCompletingRef.current = true;
     finishWorkout();
     const session = buildCompletedSession();
@@ -305,6 +326,7 @@ export default function WorkoutMode() {
       repCount: session?.repCount ?? repCount,
       averageScore: session?.averageScore ?? techniqueScore,
       durationSeconds: session?.durationSeconds ?? 0,
+      scoreHistory: session?.scoreHistory ?? [],
     };
     const allSets = [...setResultsRef.current, result];
     if (session && allSets.length > 0) {
@@ -313,6 +335,7 @@ export default function WorkoutMode() {
         repCount: allSets.reduce((a, s) => a + s.repCount, 0),
         averageScore: Math.round(allSets.reduce((a, s) => a + s.averageScore, 0) / allSets.length),
         durationSeconds: allSets.reduce((a, s) => a + s.durationSeconds, 0),
+        scoreHistory: allSets.flatMap(set => set.scoreHistory),
       });
     }
     setSetResults(allSets);
@@ -347,8 +370,11 @@ export default function WorkoutMode() {
         sets={setResults}
         exercise={exercise}
         t={t}
-        onBack={() => navigate('/app/catalog')}
+        onChooseExercise={() => navigate(guidedSessionUrl ?? '/app/catalog')}
+        onProgress={() => navigate(guidedSessionUrl ?? '/app/progress')}
         onRetry={handleRetry}
+        primaryActionLabel={guidedSessionUrl ? t('programs.session.backToTodayWorkout') : undefined}
+        secondaryActionLabel={guidedSessionUrl ? t('programs.session.backToProgram') : undefined}
       />
     );
   }

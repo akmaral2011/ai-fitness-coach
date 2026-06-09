@@ -17,6 +17,65 @@ type ExerciseSummary = {
   sets: number;
 };
 
+function sessionXP(totalReps: number, averageScore: number) {
+  return totalReps * 2 + Math.round(averageScore / 5);
+}
+
+function scoreTone(score: number) {
+  if (score >= 80) return 'emerald';
+  if (score >= 60) return 'yellow';
+  return 'red';
+}
+
+function scoreClass(score: number, type: 'bg' | 'text') {
+  const tone = scoreTone(score);
+  if (type === 'bg') {
+    if (tone === 'emerald') return 'bg-emerald-500';
+    if (tone === 'yellow') return 'bg-yellow-500';
+    return 'bg-red-500';
+  }
+
+  if (tone === 'emerald') return 'text-emerald-500';
+  if (tone === 'yellow') return 'text-yellow-500';
+  return 'text-red-500';
+}
+
+function buildScorePath(scores: number[]) {
+  if (scores.length === 0) return '';
+
+  const width = 280;
+  const height = 96;
+  const step = scores.length > 1 ? width / (scores.length - 1) : width;
+
+  return scores
+    .map((score, index) => {
+      const x = index * step;
+      const y = height - (Math.max(0, Math.min(100, score)) / 100) * height;
+      return `${index === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    })
+    .join(' ');
+}
+
+function getSummaryNotes(averageScore: number, totalReps: number, t: TranslationFn) {
+  const wins = [
+    averageScore >= 80
+      ? t('workout.summary.wins.strongTechnique')
+      : t('workout.summary.wins.completed'),
+    totalReps > 0 ? t('workout.summary.wins.repVolume') : t('workout.summary.wins.showedUp'),
+  ];
+
+  const improvements = [
+    averageScore >= 80
+      ? t('workout.summary.improvements.keepConsistency')
+      : t('workout.summary.improvements.slowDown'),
+    averageScore >= 70
+      ? t('workout.summary.improvements.nextLevel')
+      : t('workout.summary.improvements.watchCues'),
+  ];
+
+  return { wins, improvements };
+}
+
 export function IntroScreen({
   exercise,
   totalSets,
@@ -279,20 +338,32 @@ export function WorkoutSummary({
   sets,
   exercise,
   t,
-  onBack,
+  onChooseExercise,
+  onProgress,
   onRetry,
+  primaryActionLabel,
+  secondaryActionLabel,
 }: {
   sets: SetResult[];
   exercise: ExerciseSummary;
   t: TranslationFn;
-  onBack: () => void;
+  onChooseExercise: () => void;
+  onProgress: () => void;
   onRetry: () => void;
+  primaryActionLabel?: string;
+  secondaryActionLabel?: string;
 }) {
   const totalReps = sets.reduce((sum, setResult) => sum + setResult.repCount, 0);
   const totalSeconds = sets.reduce((sum, setResult) => sum + setResult.durationSeconds, 0);
   const averageScore = Math.round(
     sets.reduce((sum, setResult) => sum + setResult.averageScore, 0) / Math.max(1, sets.length)
   );
+  const earnedXP = sessionXP(totalReps, averageScore);
+  const scoreHistory = sets.flatMap(setResult => setResult.scoreHistory);
+  const chartScores =
+    scoreHistory.length > 0 ? scoreHistory : sets.map(setResult => setResult.averageScore);
+  const chartPath = buildScorePath(chartScores);
+  const { wins, improvements } = getSummaryNotes(averageScore, totalReps, t);
 
   useEffect(() => {
     if (averageScore < 50) return;
@@ -330,14 +401,8 @@ export function WorkoutSummary({
 
   const grade = getGrade(averageScore);
   const message = getMessage(averageScore, t);
-  const scoreColor =
-    averageScore >= 80 ? 'bg-emerald-500' : averageScore >= 60 ? 'bg-yellow-500' : 'bg-red-500';
-  const scoreText =
-    averageScore >= 80
-      ? 'text-emerald-500'
-      : averageScore >= 60
-        ? 'text-yellow-500'
-        : 'text-red-500';
+  const scoreColor = scoreClass(averageScore, 'bg');
+  const scoreText = scoreClass(averageScore, 'text');
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -369,11 +434,12 @@ export function WorkoutSummary({
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
+            { value: `${averageScore}%`, label: t('workout.summary.score') },
             { value: totalReps, label: t('workout.summary.totalReps') },
-            { value: sets.length, label: t('workout.summary.setsCompleted') },
             { value: fmtTime(totalSeconds), label: t('workout.summary.duration') },
+            { value: `+${earnedXP}`, label: t('workout.summary.xp') },
           ].map(({ value, label }) => (
             <div
               key={label}
@@ -385,6 +451,92 @@ export function WorkoutSummary({
               </span>
             </div>
           ))}
+        </div>
+
+        <div className="app-card p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm font-semibold text-foreground">
+              {t('workout.summary.scoreTrend')}
+            </p>
+            <span className={`text-sm font-bold ${scoreText}`}>
+              {chartScores[chartScores.length - 1] ?? averageScore}%
+            </span>
+          </div>
+          <div className="h-32 rounded-xl bg-muted/50 p-3">
+            {chartPath ? (
+              <svg viewBox="0 0 280 96" className="h-full w-full overflow-visible">
+                <line
+                  x1="0"
+                  y1="19.2"
+                  x2="280"
+                  y2="19.2"
+                  stroke="currentColor"
+                  className="text-border"
+                  strokeDasharray="4 4"
+                />
+                <line
+                  x1="0"
+                  y1="48"
+                  x2="280"
+                  y2="48"
+                  stroke="currentColor"
+                  className="text-border"
+                  strokeDasharray="4 4"
+                />
+                <line
+                  x1="0"
+                  y1="76.8"
+                  x2="280"
+                  y2="76.8"
+                  stroke="currentColor"
+                  className="text-border"
+                  strokeDasharray="4 4"
+                />
+                <path
+                  d={chartPath}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={scoreText}
+                />
+              </svg>
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                {t('workout.summary.noScoreData')}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="app-card p-4">
+            <p className="mb-3 text-sm font-semibold text-foreground">
+              {t('workout.summary.whatWentWell')}
+            </p>
+            <div className="space-y-2">
+              {wins.map(note => (
+                <p key={note} className="flex gap-2 text-sm text-muted-foreground">
+                  <span className="mt-0.5 text-emerald-500">✓</span>
+                  <span>{note}</span>
+                </p>
+              ))}
+            </div>
+          </div>
+          <div className="app-card p-4">
+            <p className="mb-3 text-sm font-semibold text-foreground">
+              {t('workout.summary.improveNext')}
+            </p>
+            <div className="space-y-2">
+              {improvements.map(note => (
+                <p key={note} className="flex gap-2 text-sm text-muted-foreground">
+                  <span className="mt-0.5 text-yellow-500">•</span>
+                  <span>{note}</span>
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
 
         {sets.length > 1 && (
@@ -409,7 +561,9 @@ export function WorkoutSummary({
                     {t('workout.setOf', { current: index + 1, total: sets.length })}
                   </span>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-foreground">{setResult.repCount} reps</span>
+                    <span className="text-sm text-foreground">
+                      {setResult.repCount} {t('workout.summary.repsShort')}
+                    </span>
                     <span className={`text-sm font-bold ${breakdownColor}`}>
                       {setResult.averageScore}%
                     </span>
@@ -421,11 +575,8 @@ export function WorkoutSummary({
         )}
 
         <div className="flex flex-col gap-3 mt-1">
-          <button
-            onClick={onBack}
-            className="w-full py-4 bg-emerald-500 text-white font-bold text-base rounded-2xl hover:bg-emerald-600 active:scale-[0.98] transition-all"
-          >
-            {t('workout.summary.save')}
+          <button onClick={onProgress} className="app-primary-action w-full py-4">
+            {primaryActionLabel ?? t('workout.summary.goToProgress')}
           </button>
           <div className="flex gap-3">
             <button
@@ -433,6 +584,12 @@ export function WorkoutSummary({
               className="flex-1 py-4 border border-border text-foreground rounded-2xl font-semibold hover:bg-muted active:scale-[0.98] transition-all text-sm"
             >
               {t('workout.summary.tryAgain')}
+            </button>
+            <button
+              onClick={onChooseExercise}
+              className="flex-1 py-4 border border-border text-foreground rounded-2xl font-semibold hover:bg-muted active:scale-[0.98] transition-all text-sm"
+            >
+              {secondaryActionLabel ?? t('workout.summary.chooseAnother')}
             </button>
             {'share' in navigator && (
               <button

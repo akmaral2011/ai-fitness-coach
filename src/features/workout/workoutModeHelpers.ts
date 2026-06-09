@@ -13,11 +13,20 @@ export type SetResult = {
   repCount: number;
   averageScore: number;
   durationSeconds: number;
+  scoreHistory: number[];
   holdSeconds?: number;
 };
 
 export const REST_DURATION = 30;
 export const HOLD_DURATION = 30;
+
+export function hasCompletedWorkoutActivity(
+  isStatic: boolean,
+  repCount: number,
+  holdSeconds: number
+) {
+  return isStatic ? holdSeconds >= HOLD_DURATION : repCount > 0;
+}
 
 export function getGrade(score: number) {
   if (score >= 90) return { label: 'A+', color: 'text-emerald-400' };

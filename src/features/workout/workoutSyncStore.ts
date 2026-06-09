@@ -35,7 +35,7 @@ type WorkoutSyncState = {
   markPending: (clientMutationId: string) => void;
   markSynced: (clientMutationId: string) => void;
   markFailed: (clientMutationId: string, error: unknown) => void;
-  clearSynced: () => void;
+  retryFailed: () => void;
   clearQueue: () => void;
   getCounts: () => Record<WorkoutSyncStatus, number>;
 };
@@ -141,9 +141,19 @@ export const useWorkoutSyncStore = create<WorkoutSyncState>()(
               : item
           ),
         })),
-      clearSynced: () =>
+      retryFailed: () =>
         set(state => ({
-          items: state.items.filter(item => item.status !== 'synced'),
+          items: state.items.map(item =>
+            item.status === 'failed'
+              ? {
+                  ...item,
+                  status: 'pending',
+                  attempts: 0,
+                  updatedAt: now(),
+                  lastError: undefined,
+                }
+              : item
+          ),
         })),
       clearQueue: () => set({ items: [] }),
       getCounts: () =>

@@ -2,10 +2,13 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
+import { Heart } from 'lucide-react';
+
 import SearchIcon from '@/components/icons/SearchIcon';
 import { DIFFICULTY_COLOR } from '@/features/exercises/types';
 import type { Category, Difficulty } from '@/features/exercises/types';
 import { useExercises } from '@/features/exercises/useExercises';
+import { useFavoriteExercisesStore } from '@/features/exercises/useFavoriteExercisesStore';
 
 type Filter = { category: Category | 'all'; difficulty: Difficulty | 'all' };
 
@@ -17,7 +20,11 @@ export default function ExerciseCatalog() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Filter>({ category: 'all', difficulty: 'all' });
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [animatedFavoriteId, setAnimatedFavoriteId] = useState<string | null>(null);
   const { exercises, loading } = useExercises();
+  const favoriteIds = useFavoriteExercisesStore(state => state.favoriteIds);
+  const toggleFavorite = useFavoriteExercisesStore(state => state.toggleFavorite);
 
   const filtered = useMemo(() => {
     return exercises.filter(ex => {
@@ -25,9 +32,20 @@ export default function ExerciseCatalog() {
       const matchSearch = name.includes(search.toLowerCase());
       const matchCategory = filter.category === 'all' || ex.category === filter.category;
       const matchDifficulty = filter.difficulty === 'all' || ex.difficulty === filter.difficulty;
-      return matchSearch && matchCategory && matchDifficulty;
+      const matchFavorite = !favoritesOnly || favoriteIds.includes(ex.id);
+      return matchSearch && matchCategory && matchDifficulty && matchFavorite;
     });
-  }, [exercises, search, filter, t]);
+  }, [exercises, search, filter, favoritesOnly, favoriteIds, t]);
+
+  function handleFavoriteToggle(exerciseId: string) {
+    const isAdding = !favoriteIds.includes(exerciseId);
+    toggleFavorite(exerciseId);
+
+    if (isAdding) {
+      setAnimatedFavoriteId(exerciseId);
+      window.setTimeout(() => setAnimatedFavoriteId(null), 520);
+    }
+  }
 
   return (
     <div className="app-page app-page-flow">
@@ -78,6 +96,19 @@ export default function ExerciseCatalog() {
         ))}
       </div>
 
+      <button
+        type="button"
+        onClick={() => setFavoritesOnly(value => !value)}
+        className={`mb-5 flex w-fit items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+          favoritesOnly
+            ? 'bg-rose-500/15 text-rose-500'
+            : 'bg-muted text-muted-foreground hover:text-foreground'
+        }`}
+      >
+        <Heart size={16} fill={favoritesOnly ? 'currentColor' : 'none'} />
+        {t('catalog.favorites')}
+      </button>
+
       {loading ? (
         <div className="text-center py-12 text-muted-foreground">
           {t('common.loading', 'Loading...')}
@@ -87,34 +118,58 @@ export default function ExerciseCatalog() {
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {filtered.map(ex => (
-            <button
+            <article
               key={ex.id}
-              onClick={() => navigate(`/app/exercise/${ex.id}`)}
-              className="app-card app-card-hover flex min-h-40 flex-col items-start gap-2 p-4 text-left"
+              className="app-card app-card-hover relative min-h-40 overflow-hidden text-left"
             >
-              <div className="flex items-start justify-between w-full">
-                <span className="text-3xl">{ex.thumbnailEmoji}</span>
-                <span
-                  className={`app-chip-label px-2 py-0.5 rounded-full ${DIFFICULTY_COLOR[ex.difficulty]}`}
-                >
-                  {t(`catalog.difficulty.${ex.difficulty}`)}
-                </span>
-              </div>
-              <div>
-                <p className="app-card-title line-clamp-2">{t(ex.nameKey)}</p>
-                <p className="app-card-meta mt-0.5">
-                  {ex.sets} × {ex.reps} {t('catalog.detail.reps')} · {ex.estimatedDuration}
-                  {t('common.min')}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-1 mt-auto">
-                {ex.primaryMuscles.slice(0, 2).map(m => (
-                  <span key={m} className="app-card-meta rounded-full bg-muted px-2 py-0.5">
-                    {t(`catalog.muscles.${m}`)}
+              <button
+                type="button"
+                onClick={() => handleFavoriteToggle(ex.id)}
+                className={`absolute right-3 top-3 z-10 rounded-lg p-2 transition-colors ${
+                  favoriteIds.includes(ex.id)
+                    ? 'bg-rose-500/15 text-rose-500'
+                    : 'bg-background/85 text-muted-foreground hover:text-rose-500'
+                }`}
+                aria-label={
+                  favoriteIds.includes(ex.id) ? 'Remove from favorites' : 'Add to favorites'
+                }
+              >
+                <Heart
+                  size={15}
+                  fill={favoriteIds.includes(ex.id) ? 'currentColor' : 'none'}
+                  className={animatedFavoriteId === ex.id ? 'app-heart-pop' : undefined}
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate(`/app/exercise/${ex.id}`)}
+                className="flex min-h-40 w-full flex-col items-start gap-2 p-4 pr-12 text-left"
+              >
+                <div className="flex items-start justify-between w-full">
+                  <span className="text-3xl">{ex.thumbnailEmoji}</span>
+                  <span
+                    className={`app-chip-label px-2 py-0.5 rounded-full ${DIFFICULTY_COLOR[ex.difficulty]}`}
+                  >
+                    {t(`catalog.difficulty.${ex.difficulty}`)}
                   </span>
-                ))}
-              </div>
-            </button>
+                </div>
+                <div>
+                  <p className="app-card-title line-clamp-2">{t(ex.nameKey)}</p>
+                  <p className="app-card-meta mt-0.5">
+                    {ex.sets} × {ex.reps} {t('catalog.detail.reps')} · {ex.estimatedDuration}
+                    {t('common.min')}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-1 mt-auto">
+                  {ex.primaryMuscles.slice(0, 2).map(m => (
+                    <span key={m} className="app-card-meta rounded-full bg-muted px-2 py-0.5">
+                      {t(`catalog.muscles.${m}`)}
+                    </span>
+                  ))}
+                </div>
+              </button>
+            </article>
           ))}
         </div>
       )}

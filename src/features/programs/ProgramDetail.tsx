@@ -15,6 +15,7 @@ import {
   isProgramUnlocked,
 } from '@/features/programs/programProgress';
 import { type ProgramEnrollment, useProgramStore } from '@/features/programs/programStore';
+import { useProgramWorkoutSessionStore } from '@/features/programs/programWorkoutSessionStore';
 import type { ProgramDay, ProgramWeek } from '@/features/programs/types';
 import { useProgressStore } from '@/features/progress/progressStore';
 import { apiRequest } from '@/lib/api';
@@ -23,6 +24,7 @@ function WorkoutDayCard({
   day,
   dayNumber,
   programId,
+  canStart,
   canComplete,
   disabledReasonKey,
   missingExerciseIds,
@@ -30,6 +32,7 @@ function WorkoutDayCard({
   day: ProgramDay;
   dayNumber: number;
   programId: string;
+  canStart: boolean;
   canComplete: boolean;
   disabledReasonKey?: string;
   missingExerciseIds: string[];
@@ -115,6 +118,17 @@ function WorkoutDayCard({
                 })}
               </p>
             )}
+            <button
+              disabled={!canStart}
+              onClick={() => navigate(`/app/programs/${programId}/session/${day.id}`)}
+              className={`mb-2 w-full rounded-xl py-2 text-sm font-semibold transition-colors ${
+                canStart
+                  ? 'app-primary-action'
+                  : 'cursor-not-allowed bg-muted text-muted-foreground'
+              }`}
+            >
+              {t('programs.session.startToday')}
+            </button>
             <button
               disabled={!canComplete || submitting}
               onClick={async () => {
@@ -229,6 +243,7 @@ function WeekAccordion({
                     canComplete={
                       !isProgramLocked && isEnrolled && day.id === nextWorkoutDayId && exercisesDone
                     }
+                    canStart={!isProgramLocked && isEnrolled && day.id === nextWorkoutDayId}
                     disabledReasonKey={
                       isProgramLocked
                         ? 'programs.lockedByPreviousProgram'
@@ -255,6 +270,7 @@ export default function ProgramDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { getEnrollment, getCompletedCount, enroll, setEnrollment, unenroll } = useProgramStore();
+  const clearProgramSessions = useProgramWorkoutSessionStore(s => s.clearProgramSessions);
   const sessions = useProgressStore(s => s.sessions);
   const token = useAuthStore(s => s.token);
 
@@ -289,6 +305,7 @@ export default function ProgramDetail() {
     if (enrollment) {
       if (window.confirm(t('programs.unenrollConfirm'))) {
         unenroll(programId);
+        clearProgramSessions(programId);
         if (token) {
           void apiRequest(`/api/programs/${programId}/enroll`, {
             method: 'DELETE',

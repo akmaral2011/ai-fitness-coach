@@ -8,6 +8,7 @@ import {
   Brain,
   CheckCircle2,
   Dumbbell,
+  Heart,
   ListChecks,
   Trophy,
 } from 'lucide-react';
@@ -15,6 +16,7 @@ import {
 import UserAvatar from '@/components/UserAvatar';
 import { useAuthStore } from '@/features/auth/authStore';
 import { EXERCISES } from '@/features/exercises/data';
+import { useFavoriteExercisesStore } from '@/features/exercises/useFavoriteExercisesStore';
 import { LESSONS } from '@/features/learn/data';
 import { useLearnStore } from '@/features/learn/learnStore';
 import { PROGRAMS } from '@/features/programs/data';
@@ -108,6 +110,8 @@ export default function Dashboard() {
   const allSessions = useProgressStore(s => s.sessions);
   const token = useAuthStore(s => s.token);
   const syncItems = useWorkoutSyncStore(s => s.items);
+  const favoriteIds = useFavoriteExercisesStore(s => s.favoriteIds);
+  const toggleFavorite = useFavoriteExercisesStore(s => s.toggleFavorite);
 
   const summary = getSummary();
   const xp = getXPData();
@@ -127,6 +131,10 @@ export default function Dashboard() {
     : t('dashboard.greetingDefault');
 
   const quickStart = EXERCISES.slice(0, 4);
+  const favoriteExercises = EXERCISES.filter(exercise => favoriteIds.includes(exercise.id)).slice(
+    0,
+    4
+  );
   const nextLesson = LESSONS.find(lesson => !completedLessonIds.includes(lesson.id)) ?? LESSONS[0];
 
   const primaryExercise = recent[0]
@@ -315,6 +323,59 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="app-section-title mb-0">{t('dashboard.favoriteExercises')}</h2>
+          <button
+            onClick={() => navigate('/app/catalog')}
+            className="text-xs font-semibold text-emerald-500"
+          >
+            {t('catalog.title')}
+          </button>
+        </div>
+
+        {favoriteExercises.length > 0 ? (
+          <div className="grid grid-cols-2 gap-3">
+            {favoriteExercises.map(ex => (
+              <article key={ex.id} className="app-card app-card-hover relative overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite(ex.id)}
+                  className="absolute right-3 top-3 z-10 rounded-lg bg-rose-500/15 p-2 text-rose-500 transition-colors hover:bg-rose-500/25"
+                  aria-label={t('catalog.removeFavorite')}
+                >
+                  <Heart size={16} fill="currentColor" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/app/exercise/${ex.id}`)}
+                  className="flex w-full flex-col items-start gap-2 p-4 pr-12 text-left"
+                >
+                  <span className="text-3xl">{ex.thumbnailEmoji}</span>
+                  <span className="app-card-title">{t(ex.nameKey)}</span>
+                  <span className="app-card-meta">
+                    {ex.sets} × {ex.reps} {t('catalog.detail.reps')}
+                  </span>
+                </button>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <button
+            onClick={() => navigate('/app/catalog')}
+            className="app-card app-card-hover flex w-full items-center gap-3 p-4 text-left"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/15 text-rose-500">
+              <Heart size={18} />
+            </span>
+            <span>
+              <span className="app-card-title block">{t('dashboard.noFavoriteExercises')}</span>
+              <span className="app-card-meta block">{t('dashboard.addFavoritesHint')}</span>
+            </span>
+          </button>
+        )}
+      </div>
 
       <div className="mb-6">
         <h2 className="app-section-title">{t('dashboard.quickStart')}</h2>

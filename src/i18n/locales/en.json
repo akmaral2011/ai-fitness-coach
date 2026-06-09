@@ -653,16 +653,37 @@
     "getInPosition": "Get in position and press Start",
     "summary": {
       "title": "Workout Complete!",
+      "score": "Score",
       "totalReps": "Total Reps",
       "formScore": "Form Score",
       "duration": "Duration",
+      "xp": "XP",
       "grade": "Grade",
       "setsCompleted": "Sets Done",
+      "scoreTrend": "Score trend",
+      "noScoreData": "No score data yet",
+      "whatWentWell": "What went well",
+      "improveNext": "What to improve next time",
+      "repsShort": "reps",
       "setBreakdown": "Set Breakdown",
       "save": "Save & Continue",
       "tryAgain": "Try Again",
+      "chooseAnother": "Choose another",
+      "goToProgress": "Go to progress",
       "shareText": "{{name}}: {{score}}% form, {{reps}} reps 💪",
       "backToExercises": "Back to Exercises",
+      "wins": {
+        "strongTechnique": "Your technique stayed controlled through the workout.",
+        "completed": "You completed the session and saved useful training data.",
+        "repVolume": "You built solid training volume with completed reps.",
+        "showedUp": "You showed up and started the movement practice."
+      },
+      "improvements": {
+        "keepConsistency": "Repeat this quality and keep the same movement rhythm.",
+        "slowDown": "Slow the movement down and prioritize clean positions.",
+        "nextLevel": "Aim for a smoother last few reps next time.",
+        "watchCues": "Watch the form cues before starting the next attempt."
+      },
       "message": {
         "excellent": "Outstanding form — keep it up!",
         "good": "Good work — small tweaks will perfect it.",
@@ -708,12 +729,17 @@
       "continueProgram": "Continue program",
       "chooseProgram": "Choose a program",
       "learnTechnique": "Learn technique"
-    }
+    },
+    "favoriteExercises": "Favorite exercises",
+    "noFavoriteExercises": "No favorites yet",
+    "addFavoritesHint": "Mark exercises with the heart icon to keep them here."
   },
   "catalog": {
     "title": "Exercise Library",
     "searchPlaceholder": "Search exercises...",
     "all": "All",
+    "favorites": "Favorites",
+    "removeFavorite": "Remove from favorites",
     "noResults": "No exercises found",
     "categories": {
       "strength": "Strength",
@@ -911,6 +937,30 @@
     "durationWeeks": "{{n}} weeks",
     "sessionsPerWeek": "{{n}}×/week",
     "minutesPerSession": "~{{n}} min/session",
+    "session": {
+      "title": "Program workout",
+      "todayWorkout": "Today's workout",
+      "progress": "{{done}} of {{total}} exercises completed",
+      "exerciseList": "Exercise order",
+      "rest": "rest",
+      "restTimer": "Rest before the next exercise",
+      "skipRest": "Skip rest",
+      "startToday": "Start today's workout",
+      "startNext": "Start next exercise",
+      "dayComplete": "Day complete",
+      "finishDay": "Finish day",
+      "completeError": "Could not finish the day. Please try again.",
+      "completeMissingSpecificError": "The server has not received: {{exercises}}. Complete these exercises again, then finish the day.",
+      "backToTodayWorkout": "Back to today's workout",
+      "backToProgram": "Back to program",
+      "notFound": "Program workout not found.",
+      "summary": {
+        "bestExercise": "{{name}} went especially well with a {{score}}% score.",
+        "improveExercise": "Next time, focus on improving {{name}}. Current score: {{score}}%.",
+        "completedAll": "You completed every exercise planned for today.",
+        "recover": "Recover well before your next program workout."
+      }
+    },
     "themes": {
       "foundation": "Foundation",
       "build": "Build",
