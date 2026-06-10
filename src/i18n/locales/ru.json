@@ -737,6 +737,7 @@
     "searchPlaceholder": "Поиск упражнений...",
     "all": "Все",
     "favorites": "Избранные",
+    "addFavorite": "Добавить в избранное",
     "removeFavorite": "Удалить из избранного",
     "noResults": "Упражнения не найдены",
     "categories": {

@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   Clock3,
   Dumbbell,
+  Heart,
   Play,
   Video,
 } from 'lucide-react';
@@ -21,6 +22,7 @@ import { getExercise } from '@/features/exercises/data';
 import { DIFFICULTY_COLOR } from '@/features/exercises/types';
 import type { Exercise } from '@/features/exercises/types';
 import { useExerciseRules } from '@/features/exercises/useExerciseRules';
+import { useFavoriteExercisesStore } from '@/features/exercises/useFavoriteExercisesStore';
 import { getLessonTitle } from '@/features/learn/lessonText';
 import type { DisplayLesson } from '@/features/learn/useLessons';
 import { useLessons } from '@/features/learn/useLessons';
@@ -195,6 +197,9 @@ export default function ExerciseDetail() {
   const localExercise = id ? (getExercise(id) ?? null) : null;
   const { exercise, usingRemoteRules } = useExerciseRules(localExercise);
   const { lessons, loading: lessonsLoading } = useLessons();
+  const favoriteIds = useFavoriteExercisesStore(state => state.favoriteIds);
+  const toggleFavorite = useFavoriteExercisesStore(state => state.toggleFavorite);
+  const isFavorite = exercise ? favoriteIds.includes(exercise.id) : false;
   const linkedLesson = exercise
     ? lessons.find(lesson => lesson.linkedExerciseId === exercise.id)
     : undefined;
@@ -233,11 +238,29 @@ export default function ExerciseDetail() {
                 </span>
               </div>
             </div>
-            <span
-              className={`app-chip-label shrink-0 rounded-full px-2.5 py-1 ${DIFFICULTY_COLOR[exercise.difficulty]}`}
-            >
-              {t(`catalog.difficulty.${exercise.difficulty}`)}
-            </span>
+            <div className="flex shrink-0 items-center gap-2">
+              <span
+                className={`app-chip-label rounded-full px-2.5 py-1 ${DIFFICULTY_COLOR[exercise.difficulty]}`}
+              >
+                {t(`catalog.difficulty.${exercise.difficulty}`)}
+              </span>
+              <button
+                type="button"
+                onClick={() => toggleFavorite(exercise.id)}
+                className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+                  isFavorite
+                    ? 'bg-rose-500/15 text-rose-500'
+                    : 'bg-background/80 text-muted-foreground hover:text-rose-500'
+                }`}
+                aria-label={isFavorite ? t('catalog.removeFavorite') : t('catalog.addFavorite')}
+              >
+                <Heart
+                  size={16}
+                  fill={isFavorite ? 'currentColor' : 'none'}
+                  className={isFavorite ? 'app-heart-pop' : undefined}
+                />
+              </button>
+            </div>
           </div>
 
           <p className="app-body-text mb-4">{t(exercise.descriptionKey)}</p>
