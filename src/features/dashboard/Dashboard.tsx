@@ -23,7 +23,6 @@ import { PROGRAMS } from '@/features/programs/data';
 import { useProgramStore } from '@/features/programs/programStore';
 import { useProgressStore } from '@/features/progress/progressStore';
 import { useWorkoutSyncStore } from '@/features/workout/workoutSyncStore';
-import { formatDuration } from '@/lib/utils';
 
 function StatCard({
   label,
@@ -115,7 +114,7 @@ export default function Dashboard() {
 
   const summary = getSummary();
   const xp = getXPData();
-  const recent = getRecentSessions(5);
+  const recent = getRecentSessions(1);
   const weeklySessions = allSessions.filter(session => isThisWeek(session.date));
   const bestScore = allSessions.reduce(
     (best, session) => Math.max(best, session.averageScore),
@@ -395,35 +394,6 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
-
-      {recent.length > 0 && (
-        <div>
-          <h2 className="app-section-title">{t('dashboard.recentActivity')}</h2>
-          <div className="flex flex-col gap-2">
-            {recent.map(session => {
-              const ex = EXERCISES.find(e => e.id === session.exerciseId);
-              return (
-                <div key={session.id} className="app-card flex items-center gap-3 p-3">
-                  <span className="text-2xl">{ex?.thumbnailEmoji ?? '🏋️'}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="app-card-title truncate">
-                      {ex ? t(ex.nameKey) : session.exerciseId}
-                    </p>
-                    <p className="app-card-meta">
-                      {session.repCount} {t('dashboard.reps')} ·{' '}
-                      {formatDuration(session.durationSeconds, t)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="app-card-title text-emerald-500">{session.averageScore}%</p>
-                    <p className="app-card-meta">{t('dashboard.score')}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {recent.length === 0 && (
         <div className="text-center py-12">

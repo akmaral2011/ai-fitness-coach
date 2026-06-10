@@ -35,12 +35,12 @@ export function calculateRulePenalty({
 }
 
 export function averageScore(history: number[]): number {
-  if (history.length === 0) return 100;
+  if (history.length === 0) return 0;
   return history.reduce((sum, score) => sum + score, 0) / history.length;
 }
 
 export function rollingAverage(history: number[], alpha = 0.3): number {
-  if (history.length === 0) return 100;
+  if (history.length === 0) return 0;
   return history.reduce((ema, val) => ema * (1 - alpha) + val * alpha, history[0]);
 }
 

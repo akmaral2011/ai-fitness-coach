@@ -42,6 +42,13 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
   const repCountRef = useRef(repCount);
   const angleHistoryRef = useRef<number[]>([]);
   const lastPhaseSwitchRef = useRef<number>(0);
+  const movementStartedRef = useRef(false);
+
+  useEffect(() => {
+    angleHistoryRef.current = [];
+    lastPhaseSwitchRef.current = 0;
+    movementStartedRef.current = false;
+  }, [exercise?.id]);
 
   useEffect(() => {
     phaseRef.current = phase;
@@ -67,7 +74,6 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
       const b = landmarks[repBIndex];
 
       if (!hasReliableLandmarks(a, vertex, b)) {
-        pushScore(45);
         return;
       }
 
@@ -83,6 +89,7 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
       if (canSwitch) {
         if (currentPhase === 'up' && repAngle < downThresh) {
           setPhase('down');
+          movementStartedRef.current = true;
           lastPhaseSwitchRef.current = now;
         } else if (currentPhase === 'down' && repAngle > upThresh) {
           setPhase('up');
@@ -144,7 +151,10 @@ export function useWorkoutEngine(exercise: Exercise | null): UseWorkoutEngineRet
         frameScore -= missingRuleLandmarks * 10;
       }
 
-      pushScore(frameScore);
+      const isStatic = exercise.rules.some(rule => rule.phase === 'hold');
+      if ((isStatic && checkedRules > 0) || movementStartedRef.current) {
+        pushScore(frameScore);
+      }
     },
     [exercise, targetReps, setPhase, incrementRep, pushScore, addFeedback, clearFeedback]
   );

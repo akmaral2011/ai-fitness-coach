@@ -9,7 +9,6 @@ import { EXERCISES } from '@/features/exercises/data';
 import { DifficultyBadge, ProgressBar } from '@/features/programs/Programs';
 import { getProgram } from '@/features/programs/data';
 import {
-  getMissingExerciseIdsForDay,
   getRequiredPreviousProgramId,
   getWorkoutDays,
   isProgramUnlocked,
@@ -17,7 +16,6 @@ import {
 import { type ProgramEnrollment, useProgramStore } from '@/features/programs/programStore';
 import { useProgramWorkoutSessionStore } from '@/features/programs/programWorkoutSessionStore';
 import type { ProgramDay, ProgramWeek } from '@/features/programs/types';
-import { useProgressStore } from '@/features/progress/progressStore';
 import { apiRequest } from '@/lib/api';
 
 function WorkoutDayCard({
@@ -25,23 +23,15 @@ function WorkoutDayCard({
   dayNumber,
   programId,
   canStart,
-  canComplete,
-  disabledReasonKey,
-  missingExerciseIds,
 }: {
   day: ProgramDay;
   dayNumber: number;
   programId: string;
   canStart: boolean;
-  canComplete: boolean;
-  disabledReasonKey?: string;
-  missingExerciseIds: string[];
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isDayComplete, markDayComplete, setEnrollment } = useProgramStore();
-  const token = useAuthStore(s => s.token);
-  const [submitting, setSubmitting] = useState(false);
+  const { isDayComplete } = useProgramStore();
   const complete = isDayComplete(programId, day.id);
 
   if (day.type === 'rest') {
@@ -92,8 +82,11 @@ function WorkoutDayCard({
             return (
               <button
                 key={pe.exerciseId}
+                disabled={!canStart && !complete}
                 onClick={() => navigate(`/app/exercise/${pe.exerciseId}`)}
-                className="flex items-center justify-between text-left hover:bg-muted/50 rounded-lg px-2 py-1.5 transition-colors"
+                className={`flex items-center justify-between rounded-lg px-2 py-1.5 text-left transition-colors ${
+                  canStart || complete ? 'hover:bg-muted/50' : 'cursor-not-allowed opacity-55'
+                }`}
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{ex?.thumbnailEmoji ?? '🏋️'}</span>
@@ -110,63 +103,15 @@ function WorkoutDayCard({
         </div>
 
         {!complete && (
-          <>
-            {missingExerciseIds.length > 0 && (
-              <p className="app-card-meta mb-2">
-                {t('programs.missingExercises', {
-                  count: missingExerciseIds.length,
-                })}
-              </p>
-            )}
-            <button
-              disabled={!canStart}
-              onClick={() => navigate(`/app/programs/${programId}/session/${day.id}`)}
-              className={`mb-2 w-full rounded-xl py-2 text-sm font-semibold transition-colors ${
-                canStart
-                  ? 'app-primary-action'
-                  : 'cursor-not-allowed bg-muted text-muted-foreground'
-              }`}
-            >
-              {t('programs.session.startToday')}
-            </button>
-            <button
-              disabled={!canComplete || submitting}
-              onClick={async () => {
-                if (!canComplete || submitting) return;
-
-                if (token) {
-                  setSubmitting(true);
-                  try {
-                    const response = await apiRequest<{ enrollment: ProgramEnrollment }>(
-                      `/api/programs/${programId}/days/${day.id}/complete`,
-                      {
-                        method: 'POST',
-                        token,
-                      }
-                    );
-                    setEnrollment(response.enrollment);
-                  } catch (error) {
-                    console.error('Failed to mark program day complete', error);
-                  } finally {
-                    setSubmitting(false);
-                  }
-                } else {
-                  markDayComplete(programId, day.id);
-                }
-              }}
-              className={`w-full rounded-xl py-2 text-sm font-semibold transition-colors ${
-                canComplete
-                  ? 'app-primary-action'
-                  : 'cursor-not-allowed bg-muted text-muted-foreground'
-              }`}
-            >
-              {canComplete
-                ? submitting
-                  ? t('common.loading')
-                  : `${t('programs.completed')} ✓`
-                : t(disabledReasonKey ?? 'programs.completePrevious')}
-            </button>
-          </>
+          <button
+            disabled={!canStart}
+            onClick={() => navigate(`/app/programs/${programId}/session/${day.id}`)}
+            className={`w-full rounded-xl py-2 text-sm font-semibold transition-colors ${
+              canStart ? 'app-primary-action' : 'cursor-not-allowed bg-muted text-muted-foreground'
+            }`}
+          >
+            {t('programs.session.startToday')}
+          </button>
         )}
       </div>
     </div>
@@ -179,8 +124,6 @@ function WeekAccordion({
   defaultOpen,
   nextWorkoutDayId,
   isEnrolled,
-  enrollmentStartedAt,
-  sessions,
   isProgramLocked,
 }: {
   week: ProgramWeek;
@@ -188,8 +131,6 @@ function WeekAccordion({
   defaultOpen: boolean;
   nextWorkoutDayId: string | null;
   isEnrolled: boolean;
-  enrollmentStartedAt?: string;
-  sessions: ReturnType<typeof useProgressStore.getState>['sessions'];
   isProgramLocked: boolean;
 }) {
   const { t } = useTranslation();
@@ -228,35 +169,12 @@ function WeekAccordion({
         <div className="px-4 pb-4 flex flex-col gap-2 border-t border-border bg-background">
           {week.days.map((day, i) => (
             <div key={day.id} className="mt-2">
-              {(() => {
-                const missingExerciseIds = getMissingExerciseIdsForDay(
-                  day,
-                  sessions,
-                  enrollmentStartedAt
-                );
-                const exercisesDone = day.type !== 'workout' || missingExerciseIds.length === 0;
-                return (
-                  <WorkoutDayCard
-                    day={day}
-                    dayNumber={i + 1}
-                    programId={programId}
-                    canComplete={
-                      !isProgramLocked && isEnrolled && day.id === nextWorkoutDayId && exercisesDone
-                    }
-                    canStart={!isProgramLocked && isEnrolled && day.id === nextWorkoutDayId}
-                    disabledReasonKey={
-                      isProgramLocked
-                        ? 'programs.lockedByPreviousProgram'
-                        : !isEnrolled
-                          ? 'programs.startProgramFirst'
-                          : !exercisesDone
-                            ? 'programs.completeExercisesFirst'
-                            : 'programs.completePrevious'
-                    }
-                    missingExerciseIds={missingExerciseIds}
-                  />
-                );
-              })()}
+              <WorkoutDayCard
+                day={day}
+                dayNumber={i + 1}
+                programId={programId}
+                canStart={!isProgramLocked && isEnrolled && day.id === nextWorkoutDayId}
+              />
             </div>
           ))}
         </div>
@@ -271,7 +189,6 @@ export default function ProgramDetail() {
   const navigate = useNavigate();
   const { getEnrollment, getCompletedCount, enroll, setEnrollment, unenroll } = useProgramStore();
   const clearProgramSessions = useProgramWorkoutSessionStore(s => s.clearProgramSessions);
-  const sessions = useProgressStore(s => s.sessions);
   const token = useAuthStore(s => s.token);
 
   const program = id ? getProgram(id) : undefined;
@@ -426,8 +343,6 @@ export default function ProgramDetail() {
               defaultOpen={i === 0}
               nextWorkoutDayId={nextWorkoutDayId}
               isEnrolled={Boolean(enrollment)}
-              enrollmentStartedAt={enrollment?.startedAt}
-              sessions={sessions}
               isProgramLocked={!unlocked}
             />
           ))}

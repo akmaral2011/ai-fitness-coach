@@ -44,7 +44,7 @@ const InitialWorkoutState: Pick<
   phase: 'up',
   repCount: 0,
   targetReps: 0,
-  techniqueScore: 100,
+  techniqueScore: 0,
   scoreHistory: [],
   feedback: [],
   isRunning: false,
@@ -140,6 +140,7 @@ export const useWorkoutStore = create<WorkoutStore>()(
           const exercise = state.exerciseId ? getExercise(state.exerciseId) : null;
           return {
             repCount: 0,
+            techniqueScore: 0,
             scoreHistory: [],
             feedback: [],
             startedAt: null,

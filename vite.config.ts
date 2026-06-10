@@ -9,14 +9,12 @@ import checker from 'vite-plugin-checker';
 import { compression } from 'vite-plugin-compression2';
 import mkcert from 'vite-plugin-mkcert';
 import { VitePWA } from 'vite-plugin-pwa';
-import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import { reactClickToComponent } from 'vite-plugin-react-click-to-component';
 
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     tailwindcss(),
-    ViteEjsPlugin(),
     checker({ typescript: true }),
     mode === 'development' && mkcert(),
     mode === 'development' && reactClickToComponent(),

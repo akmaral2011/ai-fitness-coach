@@ -194,7 +194,7 @@ export default function Progress() {
         getExercisePersonalBest={getExercisePersonalBest}
       />
 
-      {hasData ? <SessionHistory sessions={sessions} /> : <EmptyProgressState />}
+      {hasData ? <SessionHistory sessions={sessions.slice(0, 4)} /> : <EmptyProgressState />}
     </div>
   );
 }

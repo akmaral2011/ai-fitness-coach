@@ -52,8 +52,6 @@
     "vite": "8.0.8",
     "vite-plugin-checker": "^0.13.0",
     "vite-plugin-compression2": "^2.5.3",
-    "vite-plugin-ejs": "^1.7.0",
-    "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-mkcert": "^1.17.12",
     "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-react-click-to-component": "^4.2.1",

@@ -18,6 +18,7 @@ type ProgramWorkoutSessionStore = {
   resetSession: (programId: string, dayId: string) => void;
   skipRest: (programId: string, dayId: string) => void;
   clearProgramSessions: (programId: string) => void;
+  clearAllSessions: () => void;
   getSession: (programId: string, dayId: string) => ProgramWorkoutSession;
 };
 
@@ -100,6 +101,8 @@ export const useProgramWorkoutSessionStore = create<ProgramWorkoutSessionStore>(
             Object.entries(state.sessions).filter(([key]) => !key.startsWith(`${programId}:`))
           ),
         })),
+
+      clearAllSessions: () => set({ sessions: {} }),
 
       getSession: (programId, dayId) =>
         get().sessions[sessionKey(programId, dayId)]?.startedAt

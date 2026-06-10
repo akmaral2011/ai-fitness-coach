@@ -17,7 +17,7 @@ import {
   REST_DURATION,
   type SetResult,
   type Stage,
-  hasCompletedWorkoutActivity,
+  hasMetWorkoutCompletionRequirement,
 } from '@/features/workout/workoutModeHelpers';
 import {
   CameraErrorScreen,
@@ -79,6 +79,7 @@ export default function WorkoutMode() {
   const [setResults, setSetResults] = useState<SetResult[]>([]);
   const [holdSecs, setHoldSecs] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [completionWarning, setCompletionWarning] = useState(false);
 
   const sound = useSound(soundEnabled);
 
@@ -102,6 +103,20 @@ export default function WorkoutMode() {
 
   const totalSets = exercise?.sets ?? 1;
   const isStatic = exercise ? exercise.rules.some(r => r.phase === 'hold') : false;
+  const completionRequirementMet = hasMetWorkoutCompletionRequirement({
+    isStatic,
+    completedSets: setResults,
+    currentRepCount: repCount,
+    targetReps,
+    currentHoldSeconds: holdSecs,
+    totalSets,
+  });
+
+  useEffect(() => {
+    if (completionRequirementMet) {
+      setCompletionWarning(false);
+    }
+  }, [completionRequirementMet]);
 
   // camera
   const {
@@ -309,13 +324,8 @@ export default function WorkoutMode() {
   function handleFinishEarly() {
     if (setCompletingRef.current) return;
 
-    if (
-      !hasCompletedWorkoutActivity(isStatic, repCount, holdSecs) &&
-      setResultsRef.current.length === 0
-    ) {
-      stopCamera();
-      resetWorkout();
-      navigate(-1);
+    if (!completionRequirementMet) {
+      setCompletionWarning(true);
       return;
     }
 
@@ -327,6 +337,7 @@ export default function WorkoutMode() {
       averageScore: session?.averageScore ?? techniqueScore,
       durationSeconds: session?.durationSeconds ?? 0,
       scoreHistory: session?.scoreHistory ?? [],
+      holdSeconds: isStatic ? holdSecs : undefined,
     };
     const allSets = [...setResultsRef.current, result];
     if (session && allSets.length > 0) {
@@ -349,6 +360,7 @@ export default function WorkoutMode() {
     setCurrentSet(0);
     setSetResults([]);
     setHoldSecs(0);
+    setCompletionWarning(false);
     prevRepCount.current = 0;
     setCompletingRef.current = false;
     resetWorkout();
@@ -524,6 +536,15 @@ export default function WorkoutMode() {
 
             {/* bottom controls */}
             <div className="absolute bottom-5 left-4 right-4 flex gap-3">
+              {completionWarning && (
+                <div
+                  role="alert"
+                  className="absolute bottom-[4.75rem] left-0 right-0 rounded-xl border border-amber-400/30 bg-amber-500/90 px-4 py-3 text-center text-sm font-semibold text-zinc-950 shadow-lg backdrop-blur-sm"
+                >
+                  {t('workout.completeEightyPercent')}
+                </div>
+              )}
+
               {stage === 'active' ? (
                 <>
                   <button

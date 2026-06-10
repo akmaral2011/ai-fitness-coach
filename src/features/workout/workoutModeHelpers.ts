@@ -19,13 +19,36 @@ export type SetResult = {
 
 export const REST_DURATION = 30;
 export const HOLD_DURATION = 30;
+export const WORKOUT_COMPLETION_RATIO = 0.8;
 
-export function hasCompletedWorkoutActivity(
-  isStatic: boolean,
-  repCount: number,
-  holdSeconds: number
-) {
-  return isStatic ? holdSeconds >= HOLD_DURATION : repCount > 0;
+export function hasMetWorkoutCompletionRequirement({
+  isStatic,
+  completedSets,
+  currentRepCount,
+  targetReps,
+  currentHoldSeconds,
+  totalSets,
+}: {
+  isStatic: boolean;
+  completedSets: SetResult[];
+  currentRepCount: number;
+  targetReps: number;
+  currentHoldSeconds: number;
+  totalSets: number;
+}) {
+  if (isStatic) {
+    const completedHoldSeconds = completedSets.reduce(
+      (sum, setResult) => sum + (setResult.holdSeconds ?? 0),
+      currentHoldSeconds
+    );
+    return completedHoldSeconds >= Math.ceil(HOLD_DURATION * totalSets * WORKOUT_COMPLETION_RATIO);
+  }
+
+  const completedReps = completedSets.reduce(
+    (sum, setResult) => sum + setResult.repCount,
+    currentRepCount
+  );
+  return completedReps >= Math.ceil(targetReps * totalSets * WORKOUT_COMPLETION_RATIO);
 }
 
 export function getGrade(score: number) {

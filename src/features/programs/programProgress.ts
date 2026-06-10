@@ -1,6 +1,5 @@
 import { PROGRAMS } from '@/features/programs/data';
-import type { Program, ProgramDay } from '@/features/programs/types';
-import type { CompletedSession } from '@/features/workout/types';
+import type { Program } from '@/features/programs/types';
 
 export const PROGRAM_ORDER = ['foundation-4w', 'build-4w', 'athlete-4w'] as const;
 
@@ -42,23 +41,4 @@ export function isProgramUnlocked(
   if (!previousProgramId) return true;
 
   return isProgramComplete(previousProgramId, getCompletedDayIds(previousProgramId));
-}
-
-export function getMissingExerciseIdsForDay(
-  day: ProgramDay,
-  sessions: CompletedSession[],
-  startedAt?: string
-) {
-  if (day.type !== 'workout') return [];
-
-  const startedAtTime = startedAt ? new Date(startedAt).getTime() : 0;
-  const completedExerciseIds = new Set(
-    sessions
-      .filter(session => new Date(session.date).getTime() >= startedAtTime)
-      .map(session => session.exerciseId)
-  );
-
-  return [...new Set(day.exercises.map(exercise => exercise.exerciseId))].filter(
-    exerciseId => !completedExerciseIds.has(exerciseId)
-  );
 }
