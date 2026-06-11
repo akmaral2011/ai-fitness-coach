@@ -90,7 +90,7 @@ function DashboardExerciseCard({
     <article className="app-card app-card-hover flex min-h-40 flex-col overflow-hidden p-4">
       <div className="flex items-start justify-between gap-2">
         <span className="text-3xl">{exercise.thumbnailEmoji}</span>
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-3">
           <span
             className={`app-chip-label rounded-full px-2 py-0.5 ${DIFFICULTY_COLOR[exercise.difficulty]}`}
           >
@@ -390,7 +390,7 @@ export default function Dashboard() {
         </div>
 
         {favoriteExercises.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 min-[430px]:grid-cols-2">
             {favoriteExercises.map(ex => (
               <DashboardExerciseCard
                 key={ex.id}
