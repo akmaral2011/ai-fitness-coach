@@ -119,19 +119,19 @@ export default function AppLayout({ children }: Props) {
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_30px_rgba(0,0,0,0.08)] backdrop-blur">
-        <div className="flex items-stretch h-16 max-w-lg mx-auto">
+        <div className="mx-auto flex h-16 max-w-lg items-stretch">
           {NAV_ITEMS.map(item => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center flex-1 gap-0.5 transition duration-200 min-w-0 px-0.5 ${
+                `flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 transition duration-200 ${
                   isActive ? 'text-emerald-500' : 'text-muted-foreground hover:text-foreground'
                 }`
               }
             >
               {item.icon}
-              <span className="text-[10px] leading-none truncate w-full text-center">
+              <span className="w-full truncate text-center text-[9px] leading-none max-[359px]:sr-only min-[400px]:text-[10px]">
                 {t(item.labelKey)}
               </span>
             </NavLink>

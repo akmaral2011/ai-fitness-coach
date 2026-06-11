@@ -16,6 +16,8 @@ import {
 import UserAvatar from '@/components/UserAvatar';
 import { useAuthStore } from '@/features/auth/authStore';
 import { EXERCISES } from '@/features/exercises/data';
+import { DIFFICULTY_COLOR } from '@/features/exercises/types';
+import type { Exercise } from '@/features/exercises/types';
 import { useFavoriteExercisesStore } from '@/features/exercises/useFavoriteExercisesStore';
 import { LESSONS } from '@/features/learn/data';
 import { useLearnStore } from '@/features/learn/learnStore';
@@ -71,6 +73,57 @@ function ActionButton({
   );
 }
 
+function DashboardExerciseCard({
+  exercise,
+  isFavorite,
+  onOpen,
+  onToggleFavorite,
+}: {
+  exercise: Exercise;
+  isFavorite: boolean;
+  onOpen: () => void;
+  onToggleFavorite: () => void;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <article className="app-card app-card-hover flex min-h-40 flex-col overflow-hidden p-4">
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-3xl">{exercise.thumbnailEmoji}</span>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span
+            className={`app-chip-label rounded-full px-2 py-0.5 ${DIFFICULTY_COLOR[exercise.difficulty]}`}
+          >
+            {t(`catalog.difficulty.${exercise.difficulty}`)}
+          </span>
+          <button
+            type="button"
+            onClick={onToggleFavorite}
+            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors ${
+              isFavorite
+                ? 'bg-rose-500/15 text-rose-500'
+                : 'bg-muted text-muted-foreground hover:text-rose-500'
+            }`}
+            aria-label={isFavorite ? t('catalog.removeFavorite') : t('catalog.addFavorite')}
+          >
+            <Heart size={15} fill={isFavorite ? 'currentColor' : 'none'} />
+          </button>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex flex-1 flex-col items-start gap-2 pt-3 text-left"
+      >
+        <span className="app-card-title line-clamp-2">{t(exercise.nameKey)}</span>
+        <span className="app-card-meta">
+          {exercise.sets} × {exercise.reps} {t('catalog.detail.reps')}
+        </span>
+      </button>
+    </article>
+  );
+}
+
 function CoachMetric({
   label,
   value,
@@ -81,10 +134,12 @@ function CoachMetric({
   icon: ReactNode;
 }) {
   return (
-    <div className="app-metric-tile">
-      <div className="mb-2 text-emerald-500">{icon}</div>
-      <p className="app-metric-value">{value}</p>
-      <p className="app-metric-label">{label}</p>
+    <div className="app-metric-tile flex min-w-0 items-center gap-2 min-[340px]:last:col-span-2 min-[400px]:block min-[400px]:last:col-span-1">
+      <div className="shrink-0 text-emerald-500 min-[400px]:mb-2">{icon}</div>
+      <div className="min-w-0">
+        <p className="app-metric-value">{value}</p>
+        <p className="app-metric-label break-words">{label}</p>
+      </div>
     </div>
   );
 }
@@ -175,36 +230,36 @@ export default function Dashboard() {
 
   return (
     <div className="app-page app-page-flow">
-      <div className="flex items-center gap-3 mb-6">
+      <div className="mb-5 flex min-w-0 items-center gap-3 sm:mb-6">
         <UserAvatar
           picture={user?.picture}
           name={user?.name}
-          className="w-10 h-10"
+          className="h-10 w-10 shrink-0"
           textClassName="text-sm"
         />
-        <div>
-          <h1 className="app-page-title">{greeting}</h1>
+        <div className="min-w-0">
+          <h1 className="app-page-title break-words">{greeting}</h1>
         </div>
       </div>
 
       <div className="app-hero-panel mb-5">
-        <div className="relative p-4">
+        <div className="relative p-3.5 min-[400px]:p-4">
           <div className="relative">
-            <div className="mb-4 flex items-start justify-between gap-3">
-              <div>
+            <div className="mb-4 flex flex-col items-start gap-3 min-[400px]:flex-row min-[400px]:justify-between">
+              <div className="min-w-0">
                 <p className="app-hero-eyebrow">{t('dashboard.coach.title')}</p>
-                <h2 className="app-hero-title">{t(primaryExercise.nameKey)}</h2>
+                <h2 className="app-hero-title break-words">{t(primaryExercise.nameKey)}</h2>
                 <p className="app-hero-body mt-1">{coachMessage}</p>
               </div>
               <span
-                className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${syncClass}`}
+                className={`flex max-w-full shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${syncClass}`}
               >
-                <CheckCircle2 size={13} />
-                {syncLabel}
+                <CheckCircle2 className="shrink-0" size={13} />
+                <span className="break-words">{syncLabel}</span>
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 gap-2 min-[340px]:grid-cols-2 min-[400px]:grid-cols-3">
               <CoachMetric
                 icon={<Activity size={17} />}
                 label={t('dashboard.coach.thisWeek')}
@@ -335,29 +390,15 @@ export default function Dashboard() {
         </div>
 
         {favoriteExercises.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
             {favoriteExercises.map(ex => (
-              <article key={ex.id} className="app-card app-card-hover relative overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => toggleFavorite(ex.id)}
-                  className="absolute right-3 top-3 z-10 rounded-lg bg-rose-500/15 p-2 text-rose-500 transition-colors hover:bg-rose-500/25"
-                  aria-label={t('catalog.removeFavorite')}
-                >
-                  <Heart size={16} fill="currentColor" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate(`/app/exercise/${ex.id}`)}
-                  className="flex w-full flex-col items-start gap-2 p-4 pr-12 text-left"
-                >
-                  <span className="text-3xl">{ex.thumbnailEmoji}</span>
-                  <span className="app-card-title">{t(ex.nameKey)}</span>
-                  <span className="app-card-meta">
-                    {ex.sets} × {ex.reps} {t('catalog.detail.reps')}
-                  </span>
-                </button>
-              </article>
+              <DashboardExerciseCard
+                key={ex.id}
+                exercise={ex}
+                isFavorite
+                onOpen={() => navigate(`/app/exercise/${ex.id}`)}
+                onToggleFavorite={() => toggleFavorite(ex.id)}
+              />
             ))}
           </div>
         ) : (
@@ -378,7 +419,7 @@ export default function Dashboard() {
 
       <div className="mb-6">
         <h2 className="app-section-title">{t('dashboard.quickStart')}</h2>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
           {quickStart.map(ex => (
             <button
               key={ex.id}
