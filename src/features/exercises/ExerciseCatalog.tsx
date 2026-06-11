@@ -144,7 +144,7 @@ export default function ExerciseCatalog() {
               <button
                 type="button"
                 onClick={() => navigate(`/app/exercise/${ex.id}`)}
-                className="flex min-h-40 w-full flex-col items-start gap-2 p-4 pr-12 text-left"
+                className="flex min-h-40 w-full flex-col items-start gap-2 p-4 pr-16 text-left"
               >
                 <div className="flex items-start justify-between w-full">
                   <span className="text-3xl">{ex.thumbnailEmoji}</span>
